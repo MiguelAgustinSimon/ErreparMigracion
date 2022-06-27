@@ -1,0 +1,15 @@
+C:\Users\AgustínSimón\Desktop\Errepar\Migracion\CapaDatos\bin\Debug\net6.0\CapaDatos.deps.json
+C:\Users\AgustínSimón\Desktop\Errepar\Migracion\CapaDatos\bin\Debug\net6.0\CapaDatos.dll
+C:\Users\AgustínSimón\Desktop\Errepar\Migracion\CapaDatos\bin\Debug\net6.0\CapaDatos.pdb
+C:\Users\AgustínSimón\Desktop\Errepar\Migracion\CapaDatos\bin\Debug\net6.0\CapaNegocio.dll
+C:\Users\AgustínSimón\Desktop\Errepar\Migracion\CapaDatos\bin\Debug\net6.0\CapaNegocio.pdb
+C:\Users\AgustínSimón\Desktop\Errepar\Migracion\CapaDatos\obj\Debug\net6.0\CapaDatos.csproj.AssemblyReference.cache
+C:\Users\AgustínSimón\Desktop\Errepar\Migracion\CapaDatos\obj\Debug\net6.0\CapaDatos.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\AgustínSimón\Desktop\Errepar\Migracion\CapaDatos\obj\Debug\net6.0\CapaDatos.AssemblyInfoInputs.cache
+C:\Users\AgustínSimón\Desktop\Errepar\Migracion\CapaDatos\obj\Debug\net6.0\CapaDatos.AssemblyInfo.cs
+C:\Users\AgustínSimón\Desktop\Errepar\Migracion\CapaDatos\obj\Debug\net6.0\CapaDatos.csproj.CoreCompileInputs.cache
+C:\Users\AgustínSimón\Desktop\Errepar\Migracion\CapaDatos\obj\Debug\net6.0\CapaDatos.csproj.CopyComplete
+C:\Users\AgustínSimón\Desktop\Errepar\Migracion\CapaDatos\obj\Debug\net6.0\CapaDatos.dll
+C:\Users\AgustínSimón\Desktop\Errepar\Migracion\CapaDatos\obj\Debug\net6.0\refint\CapaDatos.dll
+C:\Users\AgustínSimón\Desktop\Errepar\Migracion\CapaDatos\obj\Debug\net6.0\CapaDatos.pdb
+C:\Users\AgustínSimón\Desktop\Errepar\Migracion\CapaDatos\obj\Debug\net6.0\ref\CapaDatos.dll

@@ -1,0 +1,12 @@
+C:\Users\AgustínSimón\Desktop\Errepar\Migracion\CapaNegocio\bin\Debug\net6.0\CapaNegocio.deps.json
+C:\Users\AgustínSimón\Desktop\Errepar\Migracion\CapaNegocio\bin\Debug\net6.0\CapaNegocio.dll
+C:\Users\AgustínSimón\Desktop\Errepar\Migracion\CapaNegocio\bin\Debug\net6.0\CapaNegocio.pdb
+C:\Users\AgustínSimón\Desktop\Errepar\Migracion\CapaNegocio\obj\Debug\net6.0\CapaNegocio.csproj.AssemblyReference.cache
+C:\Users\AgustínSimón\Desktop\Errepar\Migracion\CapaNegocio\obj\Debug\net6.0\CapaNegocio.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\AgustínSimón\Desktop\Errepar\Migracion\CapaNegocio\obj\Debug\net6.0\CapaNegocio.AssemblyInfoInputs.cache
+C:\Users\AgustínSimón\Desktop\Errepar\Migracion\CapaNegocio\obj\Debug\net6.0\CapaNegocio.AssemblyInfo.cs
+C:\Users\AgustínSimón\Desktop\Errepar\Migracion\CapaNegocio\obj\Debug\net6.0\CapaNegocio.csproj.CoreCompileInputs.cache
+C:\Users\AgustínSimón\Desktop\Errepar\Migracion\CapaNegocio\obj\Debug\net6.0\CapaNegocio.dll
+C:\Users\AgustínSimón\Desktop\Errepar\Migracion\CapaNegocio\obj\Debug\net6.0\refint\CapaNegocio.dll
+C:\Users\AgustínSimón\Desktop\Errepar\Migracion\CapaNegocio\obj\Debug\net6.0\CapaNegocio.pdb
+C:\Users\AgustínSimón\Desktop\Errepar\Migracion\CapaNegocio\obj\Debug\net6.0\ref\CapaNegocio.dll
