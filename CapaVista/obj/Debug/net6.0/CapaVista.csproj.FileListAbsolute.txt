@@ -71,3 +71,4 @@ C:\Users\AgustínSimón\Desktop\Errepar\Migracion\CapaVista\obj\Debug\net6.0\ref
 C:\Users\AgustínSimón\Desktop\Errepar\Migracion\CapaVista\obj\Debug\net6.0\CapaVista.pdb
 C:\Users\AgustínSimón\Desktop\Errepar\Migracion\CapaVista\obj\Debug\net6.0\CapaVista.genruntimeconfig.cache
 C:\Users\AgustínSimón\Desktop\Errepar\Migracion\CapaVista\obj\Debug\net6.0\ref\CapaVista.dll
+C:\Users\AgustínSimón\Desktop\Errepar\Migracion\CapaVista\bin\Debug\net6.0\RestSharp.dll

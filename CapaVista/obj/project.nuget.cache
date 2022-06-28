@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "Xx9dCY1IEy4TxQUQQ1h4iEIpnimpgI7wmL/N8MiwxxYYlfHtYVkM/3okvoIRTa9wEnWRJ4ardABqH/rf4edqww==",
+  "dgSpecHash": "bunFl7oo5J6jfMVymDsSoQiCA9ZGXYNReXKF4n7YHaNTP7TlGafG0bsraAzYM1ox1u5fb/Ql1jJNFPqcKD+/oQ==",
   "success": true,
   "projectFilePath": "C:\\Users\\AgustínSimón\\Desktop\\Errepar\\Migracion\\CapaVista\\CapaVista.csproj",
   "expectedPackageFiles": [
@@ -36,6 +36,7 @@
     "C:\\Users\\AgustínSimón\\.nuget\\packages\\microsoft.netcore.platforms\\3.1.0\\microsoft.netcore.platforms.3.1.0.nupkg.sha512",
     "C:\\Users\\AgustínSimón\\.nuget\\packages\\microsoft.win32.registry\\4.7.0\\microsoft.win32.registry.4.7.0.nupkg.sha512",
     "C:\\Users\\AgustínSimón\\.nuget\\packages\\microsoft.win32.systemevents\\6.0.0\\microsoft.win32.systemevents.6.0.0.nupkg.sha512",
+    "C:\\Users\\AgustínSimón\\.nuget\\packages\\restsharp\\108.0.1\\restsharp.108.0.1.nupkg.sha512",
     "C:\\Users\\AgustínSimón\\.nuget\\packages\\runtime.native.system.data.sqlclient.sni\\4.7.0\\runtime.native.system.data.sqlclient.sni.4.7.0.nupkg.sha512",
     "C:\\Users\\AgustínSimón\\.nuget\\packages\\runtime.win-arm64.runtime.native.system.data.sqlclient.sni\\4.4.0\\runtime.win-arm64.runtime.native.system.data.sqlclient.sni.4.4.0.nupkg.sha512",
     "C:\\Users\\AgustínSimón\\.nuget\\packages\\runtime.win-x64.runtime.native.system.data.sqlclient.sni\\4.4.0\\runtime.win-x64.runtime.native.system.data.sqlclient.sni.4.4.0.nupkg.sha512",

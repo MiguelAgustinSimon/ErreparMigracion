@@ -13,6 +13,8 @@ namespace CapaVista
         List<Cliente> clientesA = new List<Cliente>();
         List<Cliente> clientesB = new List<Cliente>();
         List<Cliente> clientesM = new List<Cliente>();
+        Log unLog = new Log();
+
         //-------------------------------------------------------------------  C L I E N T E S   ---------------------------------------------------
         public async Task verificarDatosClientes()
         {
