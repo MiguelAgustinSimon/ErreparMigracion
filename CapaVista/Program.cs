@@ -17,24 +17,20 @@ namespace CapaVista // Note: actual namespace depends on the project name.
         {
             Program p=new Program();
             p.iniciarSistema();
-           
         }
            
         public async Task iniciarSistema()
         {
             try
             {
-                /*await this.realizarClonadoTablas();
+                await this.realizarClonadoTablas();
 
                 if (this.bandera == false) //ya hay una copia previa asi que verificaremos caso por caso
                 {
                     Console.WriteLine("Aguarde mientras se ejecutan las operaciones...");
                     await this.verificarClientes();
                     await this.verificarSuscripciones();
-                }*/
-                Endpoint e = new Endpoint();
-                e.GetItems();
-
+                }
             }
             catch (Exception ex)
             {

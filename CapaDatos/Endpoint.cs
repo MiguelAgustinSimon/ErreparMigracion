@@ -7,15 +7,59 @@ using RestSharp;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Globalization;
+using CapaNegocio;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace CapaDatos
 {
     public class Endpoint
     {
+    
+
         private readonly RestClient _client;
 
         // https://www.luisllamas.es/consumir-un-api-rest-en-c-facilmente-con-restsharp/
         //https://pokeapi.co/
+        public async Task agregarLog(string texto)
+        {
+
+            int cont = 0;
+
+            string ruta = @"..\\..\\..\\Logs\\log.txt";
+
+            if (System.IO.Path.GetExtension(ruta).ToLower() == ".txt")
+            {
+                //Determina si existe el archivo.
+                if (File.Exists(ruta))
+                {
+                    //El archivo existe, añadimos un log
+                    string[] lineas = File.ReadAllLines(ruta);
+                    List<string> lista = new List<string>(lineas.ToList());
+                    lista.Add("Test realized at " + DateTime.Now);
+                    lista.Add(texto);
+                    lista.Add("____________________________________________________");
+
+                    File.WriteAllLines(ruta, lista);
+                }
+                else
+                {
+                    //El archivo no existe, lo creamos
+                    StreamWriter OurStream;
+                    OurStream = File.CreateText(ruta);
+                    OurStream.WriteLine("Test realized at " + DateTime.Now);
+                    OurStream.WriteLine(texto);
+                    OurStream.WriteLine("____________________________________________________");
+                    OurStream.Close();
+                }
+            }
+            else
+            {
+                //El archivo no es un PDF, continua sin realizar acción.
+                Console.WriteLine("El archivo " + ruta + " no es un .txt.");
+            }
+
+        }
         public void GetItems()
         {
             try
@@ -24,8 +68,7 @@ namespace CapaDatos
                 var request = new RestRequest("pokemon/ditto", Method.Get);
                 var response = client.Execute(request);
                 if (response.StatusCode == System.Net.HttpStatusCode.OK) {
-                    Console.WriteLine(response.Content);
-                    this.ExampleAsync();
+                   Console.WriteLine(response.Content);
                 }
                 else {
                     Console.WriteLine(response.StatusDescription);
@@ -38,67 +81,153 @@ namespace CapaDatos
             
         }
 
-        public async Task ExampleAsync()
-        {
-            string text ="A class is the most powerful data type in C#. Like a structure, " +
-                "a class defines the data and behavior of the data typeeeeeeeee. ";
-
-            string nombre = DateTime.Now.ToLongDateString();
-            string ext = ".txt";
-            string ruta = "..\\..\\..\\Logs\\"+nombre+ext;
-            await File.WriteAllTextAsync(ruta, text);
-
-          
-        }
-
-
-        private void PostItem(string data)
+        public async Task<string> getDatosSuscriptor(int? unId)
         {
             try
             {
-                var client = new RestClient("http://localhost:8080");
-                var request = new RestRequest("items", Method.Post);
-                request.AddParameter("data", data);
+                var client = new RestClient("http://localhost:3000/api/");
+                var request = new RestRequest("getSubscriberCorpEntities/"+unId, Method.Get);
+
                 var response = client.Execute(request);
                 if (response.StatusCode == System.Net.HttpStatusCode.OK)
                 {
-                    Console.WriteLine(response.Content);
+                    //Console.WriteLine(response.Content);
+                    var content = response.Content;
+                    SuscriptorEndpoint? enp =JsonSerializer.Deserialize<SuscriptorEndpoint>(content);
+                    //Console.WriteLine($"subscriber_id: {enp?.subscriber_id}");
+                    return enp?.subscriber_id;
                 }
                 else
                 {
                     Console.WriteLine(response.StatusDescription);
+                    return null;
                 }
             }
             catch (Exception ex)
             {
                 Console.WriteLine("Exception: " + ex.Message);
+                return null;
             }
-            
         }
-        private void PutItem(int id, string data)
+
+        //ALTA SUSCRIPTOR
+        public async Task<Boolean> createSubscriberCorpEntities(Cliente clie)
         {
             try
             {
-                var client = new RestClient("http://localhost:8080");
-                var request = new RestRequest("items", Method.Put);
-                request.AddParameter("id", id);
-                request.AddParameter("data", data);
+                var client = new RestClient("http://localhost:3000/api/");
+                var request = new RestRequest("createSubscriberCorpEntities", Method.Post);
+                request.RequestFormat = DataFormat.Json;
+
+                request.AddParameter("clicod", clie.idCliente.ToString());
+                request.AddParameter("subscriber_name", clie.razonSocial);
+               // request.AddParameter("organization_cuit", clie.cuit);
+                request.AddParameter("organization_cuit", "30582622945");
+                //request.AddParameter("organization_legal_name", clie.razonSocial);
+                request.AddParameter("organization_legal_name", "ERREPAR PLUS");
+
+                if (clie.suspendido == "S")
+                {
+                    request.AddParameter("subscriber_status_id", 3);
+                }
+                else
+                {
+                    if (clie.suscriptorActivo == "N")
+                    {
+                        request.AddParameter("subscriber_status_id", 2);
+                    }
+                    else
+                    {
+                        request.AddParameter("subscriber_status_id", 1); //ACTIVO
+                    }
+                }
+                request.AddParameter("subscriber_max_user_count", 5);//esto puede cambiar segun los productos que tenga
+                request.AddParameter("creation_date", clie.timeStamp.ToString());
+                request.AddParameter("creation_user", "INTEGRACION-SG");
+
                 var response = client.Execute(request);
-                if (response.StatusCode == System.Net.HttpStatusCode.OK)
+                if (response.StatusCode == System.Net.HttpStatusCode.Created)
                 {
                     Console.WriteLine(response.Content);
+                    await this.agregarLog("Alta Suscriptor OK - Suscriptor: " + clie.idCliente.ToString());
+                    return true;
                 }
                 else
                 {
                     Console.WriteLine(response.StatusDescription);
+                    await this.agregarLog("Falló Alta Suscriptor: ERROR - Suscriptor: " + clie.idCliente.ToString() + response.StatusDescription);
+                    return false;
+                }                
+            }
+            catch (Exception ex)
+            {
+                //display error message
+                Console.WriteLine("Exception: " + ex.Message);
+                return false;
+            }
+        }
+
+        //UPDATE SUSCRIPTOR
+        public async Task<Boolean> actualizarDatosSuscriptor(Cliente clie)
+        {
+            try
+            {
+                string suscriberId = await this.getDatosSuscriptor(clie.idCliente);
+
+                var client = new RestClient("http://localhost:3000/api/");
+                //var request = new RestRequest("updateSubscriberCorpEntities/" + suscriberId, Method.Put);
+                var request = new RestRequest($"updateSubscriberCorpEntities/{suscriberId}", Method.Put);
+                request.RequestFormat = DataFormat.Json;
+
+                request.AddParameter("clicod", clie.idCliente.ToString());
+                request.AddParameter("subscriber_name", clie.razonSocial);
+                // request.AddParameter("organization_cuit", clie.cuit);
+                request.AddParameter("organization_cuit", "30582622945");
+                //request.AddParameter("organization_legal_name", clie.razonSocial);
+                request.AddParameter("organization_legal_name", "ERREPAR PLUS");
+
+                if (clie.suspendido == "S")
+                {
+                    request.AddParameter("subscriber_status_id", 3);
+                }
+                else
+                {
+                    if (clie.suscriptorActivo == "N")
+                    {
+                        request.AddParameter("subscriber_status_id", 2);
+                    }
+                    else
+                    {
+                        request.AddParameter("subscriber_status_id", 1); //ACTIVO
+                    }
+                }
+                request.AddParameter("subscriber_max_user_count", 5);//esto puede cambiar segun los productos que tenga
+                request.AddParameter("modification_date", clie.timeStamp.ToString());
+                request.AddParameter("modification_user", "INTEGRACION-SG");
+
+                var response = client.Execute(request);
+                if (response.StatusCode == System.Net.HttpStatusCode.OK)
+                {
+                    Console.WriteLine(response.Content);
+                    await this.agregarLog("Actualizacion Suscriptor OK - Suscriptor: " + clie.idCliente.ToString());
+                    return true;
+                }
+                else
+                {
+                    Console.WriteLine(response.StatusDescription);
+                    await this.agregarLog("Falló Actualizacion Suscriptor: ERROR - Suscriptor: " + clie.idCliente.ToString() + response.StatusDescription);
+                    return false;
                 }
             }
             catch (Exception ex)
             {
+                //display error message
                 Console.WriteLine("Exception: " + ex.Message);
+                return false;
             }
-            
         }
+
+      
         private void DeleteItem(int id)
         {
             try

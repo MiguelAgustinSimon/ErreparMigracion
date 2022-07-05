@@ -1,1 +1,15 @@
-A class is the most powerful data type in C#. Like a structure, a class defines the data and behavior of the data typeeeeeeeee. 
+Test realized at 29/6/2022 15:27:11
+log ok
+____________________________________________________
+Test realized at 29/6/2022 16:01:00
+Este es un texto nuevo
+____________________________________________________
+Test realized at 5/7/2022 14:12:20
+Alta Suscriptor OK - Suscriptor: 455190{"subscriber_id":"785dc1a3-3731-4e64-91ec-31c8e5be9603","organization_id":"0c8477c2-539c-4a71-8bb6-29d64108ef38","subscriber_name":"COLEGIO GRADUADOS C.E. TUCUMAN","subscriber_ref_id":"455190","subscriber_max_user_count":5,"subscriber_status_id":2,"creation_date":"2020-01-09T14:00:51.000Z","creation_user":"INTEGRACION-SG","modification_date":null,"modification_user":null}
+____________________________________________________
+Test realized at 5/7/2022 17:33:03
+Falló Actualizacion Suscriptor: ERROR - Suscriptor: 409436
+____________________________________________________
+Test realized at 5/7/2022 17:45:54
+Actualizacion Suscriptor OK - Suscriptor: 455190
+____________________________________________________

@@ -13,6 +13,7 @@ namespace CapaDatos
     public class Command
     {
         MapperClonadoBD mprCBD = new MapperClonadoBD();// al llamar al constructor asigno sus propiedades
+        Endpoint endpoint = new Endpoint();
 
         private static SqlCommand mCom;
         public static SqlCommand CommandObj(string pConsulta, SqlConnection pCon)
@@ -270,6 +271,9 @@ namespace CapaDatos
                 if (resultado > 0)
                 {
                     await this.ActualizarNovedadesSuscriptor(clie, "Alta");
+
+                    //aca tengo que llamar a endpoint AltaCliente: createSubscriberCorpEntities
+                    await endpoint.createSubscriberCorpEntities(clie);
                     return true;
                 }
                 else
@@ -322,6 +326,9 @@ namespace CapaDatos
                 if (resultado > 0)
                 {
                     await this.ActualizarNovedadesSuscriptor(clie,"Modificacion");
+                    //aca tengo que llamar a endpoint UpdateCliente: createSubscriberCorpEntities
+                    await endpoint.actualizarDatosSuscriptor(clie);
+
                     return true;
                 }
                 else
