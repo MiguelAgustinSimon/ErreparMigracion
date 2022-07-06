@@ -13,7 +13,7 @@ namespace CapaDatos
     public class Command
     {
         MapperClonadoBD mprCBD = new MapperClonadoBD();// al llamar al constructor asigno sus propiedades
-        Endpoint endpoint = new Endpoint();
+        Endpoint endpoint = new Endpoint();// al llamar al constructor asigno sus propiedades
 
         private static SqlCommand mCom;
         public static SqlCommand CommandObj(string pConsulta, SqlConnection pCon)

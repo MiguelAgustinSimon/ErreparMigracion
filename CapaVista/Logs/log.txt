@@ -13,3 +13,18 @@ ____________________________________________________
 Test realized at 5/7/2022 17:45:54
 Actualizacion Suscriptor OK - Suscriptor: 455190
 ____________________________________________________
+Test realized at 6/7/2022 09:43:58
+Alta Suscriptor OK - Suscriptor: 325302
+____________________________________________________
+Test realized at 6/7/2022 10:18:37
+Alta Suscriptor OK - Suscriptor: 396855
+____________________________________________________
+Test realized at 6/7/2022 10:20:15
+Actualizacion Suscriptor OK - Suscriptor: 396855
+____________________________________________________
+Evento sucedido a las: 6/7/2022 14:52:30
+Actualizacion Suscriptor OK - Suscriptor: 396855
+____________________________________________________
+Evento sucedido a las: 6/7/2022 14:57:41
+Alta Suscriptor OK - Suscriptor: 456511
+____________________________________________________

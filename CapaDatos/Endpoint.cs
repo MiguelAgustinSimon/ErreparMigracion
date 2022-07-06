@@ -15,14 +15,45 @@ namespace CapaDatos
 {
     public class Endpoint
     {
-    
 
-        private readonly RestClient _client;
+        public string headerApi;
+        public string getSubscriber;
+        public string postSubscriber;
+        public string updateSubscriber;
+        string[] arrApi;
 
-        // https://www.luisllamas.es/consumir-un-api-rest-en-c-facilmente-con-restsharp/
+        //https://www.luisllamas.es/consumir-un-api-rest-en-c-facilmente-con-restsharp/
         //https://pokeapi.co/
-        public async Task agregarLog(string texto)
+        public Endpoint()
         {
+
+            Connection mConeccion = new Connection();
+
+            //Aca obtengo el nombre de las tablas que esta en appsettings.json
+            this.arrApi = mConeccion.ObtenerRutasEndpoint();
+            
+
+            foreach (var item in this.arrApi.Select((elemento, i) => new { i, elemento }))
+            {
+                switch (item.i)
+                {
+                    case 0:
+                        this.headerApi = item.elemento;
+                        break;
+                    case 1:
+                        this.getSubscriber = item.elemento;
+                        break;
+                    case 2:
+                        this.postSubscriber = item.elemento;
+                        break;
+                    case 3:
+                        this.updateSubscriber = item.elemento;
+                        break;
+                }
+            }
+        }
+            public async Task agregarLog(string texto)
+            {
 
             int cont = 0;
 
@@ -36,7 +67,7 @@ namespace CapaDatos
                     //El archivo existe, añadimos un log
                     string[] lineas = File.ReadAllLines(ruta);
                     List<string> lista = new List<string>(lineas.ToList());
-                    lista.Add("Test realized at " + DateTime.Now);
+                    lista.Add("Evento sucedido a las: " + DateTime.Now);
                     lista.Add(texto);
                     lista.Add("____________________________________________________");
 
@@ -47,7 +78,7 @@ namespace CapaDatos
                     //El archivo no existe, lo creamos
                     StreamWriter OurStream;
                     OurStream = File.CreateText(ruta);
-                    OurStream.WriteLine("Test realized at " + DateTime.Now);
+                    OurStream.WriteLine("Evento sucedido a las: " + DateTime.Now);
                     OurStream.WriteLine(texto);
                     OurStream.WriteLine("____________________________________________________");
                     OurStream.Close();
@@ -59,7 +90,7 @@ namespace CapaDatos
                 Console.WriteLine("El archivo " + ruta + " no es un .txt.");
             }
 
-        }
+             }
         public void GetItems()
         {
             try
@@ -85,8 +116,8 @@ namespace CapaDatos
         {
             try
             {
-                var client = new RestClient("http://localhost:3000/api/");
-                var request = new RestRequest("getSubscriberCorpEntities/"+unId, Method.Get);
+                var client = new RestClient(this.headerApi);
+                var request = new RestRequest(this.getSubscriber + unId, Method.Get);
 
                 var response = client.Execute(request);
                 if (response.StatusCode == System.Net.HttpStatusCode.OK)
@@ -115,8 +146,9 @@ namespace CapaDatos
         {
             try
             {
-                var client = new RestClient("http://localhost:3000/api/");
-                var request = new RestRequest("createSubscriberCorpEntities", Method.Post);
+                //headerApi, postSubscriber y demas estan en appConfig
+                var client = new RestClient(this.headerApi);
+                var request = new RestRequest(this.postSubscriber, Method.Post);
                 request.RequestFormat = DataFormat.Json;
 
                 request.AddParameter("clicod", clie.idCliente.ToString());
@@ -174,9 +206,9 @@ namespace CapaDatos
             {
                 string suscriberId = await this.getDatosSuscriptor(clie.idCliente);
 
-                var client = new RestClient("http://localhost:3000/api/");
-                //var request = new RestRequest("updateSubscriberCorpEntities/" + suscriberId, Method.Put);
-                var request = new RestRequest($"updateSubscriberCorpEntities/{suscriberId}", Method.Put);
+                var client = new RestClient(this.headerApi);
+                //var request = new RestRequest($"updateSubscriberCorpEntities/{suscriberId}", Method.Put);
+                var request = new RestRequest(this.updateSubscriber + suscriberId, Method.Put);
                 request.RequestFormat = DataFormat.Json;
 
                 request.AddParameter("clicod", clie.idCliente.ToString());

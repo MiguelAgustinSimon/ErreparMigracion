@@ -72,5 +72,25 @@ namespace CapaDatos
             }
         }
 
+        public string[] ObtenerRutasEndpoint()
+        {
+            try
+            {
+                var headerApi = ConfigurationManager.AppSettings["HeaderApi"];
+                var getSubscriber = ConfigurationManager.AppSettings["GetSubscriber"];
+                var postSubscriber = ConfigurationManager.AppSettings["PostSubscriber"];
+                var updateSubscriber = ConfigurationManager.AppSettings["UpdateSubscriber"];
+                
+                string[] rutas = { headerApi, getSubscriber, postSubscriber, updateSubscriber };
+                return rutas;
+            }
+            catch (Exception ex)
+            {
+                //display error message
+                Console.WriteLine("Exception: " + ex.Message);
+                return null;
+            }
+        }
+
     }
 }
