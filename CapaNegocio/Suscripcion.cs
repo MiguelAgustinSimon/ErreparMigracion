@@ -12,6 +12,12 @@ namespace CapaNegocio
         public int? idProducto;
         public int? idEjecutivo;
         public string? tema { get; set; }
+        public string? product_code;
+        public string? product_name;
+        public string? product_type_id;
+        public string? apply_eol;
+        public string? apply_ius;
+
         public DateTime? vencimiento { get; set; }
 
         public Suscripcion(int? cliente, int? idProd)

@@ -15,10 +15,10 @@ namespace CapaVista // Note: actual namespace depends on the project name.
         //LOAD
         static void Main(string[] args)
         {
-            Program p=new Program();
+            Program p = new Program();
             p.iniciarSistema();
         }
-           
+
         public async Task iniciarSistema()
         {
             try

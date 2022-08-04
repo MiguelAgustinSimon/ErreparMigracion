@@ -28,3 +28,21 @@ ____________________________________________________
 Evento sucedido a las: 6/7/2022 14:57:41
 Alta Suscriptor OK - Suscriptor: 456511
 ____________________________________________________
+Evento sucedido a las: 1/8/2022 14:11:18
+Alta Suscriptor OK - Suscriptor: 395731
+____________________________________________________
+Evento sucedido a las: 3/8/2022 10:59:34
+Falló Alta Suscriptor AWS: ERROR - Suscriptor: 409436Unauthorized
+____________________________________________________
+Evento sucedido a las: 3/8/2022 11:13:17
+Falló Alta Suscriptor AWS: ERROR - Suscriptor: 396855 - Conflict
+____________________________________________________
+Evento sucedido a las: 3/8/2022 14:06:59
+Falló Alta Suscriptor AWS: ERROR - Suscriptor: 415742 - Internal Server Error
+____________________________________________________
+Evento sucedido a las: 3/8/2022 14:08:47
+Alta Suscriptor OK - Suscriptor: 325559
+____________________________________________________
+Evento sucedido a las: 3/8/2022 14:34:53
+Actualizacion Suscriptor OK - Suscriptor: 455190
+____________________________________________________

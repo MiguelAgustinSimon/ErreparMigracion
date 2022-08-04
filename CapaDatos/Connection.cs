@@ -72,17 +72,51 @@ namespace CapaDatos
             }
         }
 
-        public string[] ObtenerRutasEndpoint()
+        public string[] ObtenerEndpointsSuscriptor()
         {
             try
             {
-                var headerApi = ConfigurationManager.AppSettings["HeaderApi"];
+                var headerApi = ConfigurationManager.AppSettings["HeaderApiSuscriptor"];
                 var getSubscriber = ConfigurationManager.AppSettings["GetSubscriber"];
                 var postSubscriber = ConfigurationManager.AppSettings["PostSubscriber"];
                 var updateSubscriber = ConfigurationManager.AppSettings["UpdateSubscriber"];
                 
                 string[] rutas = { headerApi, getSubscriber, postSubscriber, updateSubscriber };
                 return rutas;
+            }
+            catch (Exception ex)
+            {
+                //display error message
+                Console.WriteLine("Exception: " + ex.Message);
+                return null;
+            }
+        }
+        public string[] ObtenerEndpointsSuscripcion()
+        {
+            try
+            {
+                var headerApi = ConfigurationManager.AppSettings["HeaderApiSuscripcion"];
+                var PostProduct = ConfigurationManager.AppSettings["PostProduct"];
+                var UpdateProduct = ConfigurationManager.AppSettings["UpdateProduct"];
+                var getSubscriberSuscriptionCommProduct = ConfigurationManager.AppSettings["getSubscriberSuscriptionCommProduct"];
+                
+                string[] rutas = { headerApi, PostProduct, UpdateProduct, getSubscriberSuscriptionCommProduct };
+                return rutas;
+            }
+            catch (Exception ex)
+            {
+                //display error message
+                Console.WriteLine("Exception: " + ex.Message);
+                return null;
+            }
+        }
+        public string ObtenerTokenApi()
+        {
+            try
+            {
+                var tokenApi = ConfigurationManager.AppSettings["TokenApi"];
+               
+                return tokenApi;
             }
             catch (Exception ex)
             {
