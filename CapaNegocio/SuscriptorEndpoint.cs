@@ -9,6 +9,7 @@ namespace CapaNegocio
     public class SuscriptorEndpoint
     {
         public string subscriber_id { get; set; }
+        public string product_id { get; set; }
         public string organization_id { get; set; }
         public string subscriber_name { get; set; }
         public string subscriber_ref_id { get; set; }
@@ -17,6 +18,7 @@ namespace CapaNegocio
         public string creation_user { get; set; }
         public string? modification_date { get; set; }
         public string modification_user { get; set; }
+        public string idLoginAccount { get; set; }
 
 
     }

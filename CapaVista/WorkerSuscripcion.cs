@@ -62,9 +62,13 @@ namespace CapaVista
             {
                 foreach (Suscripcion unaSuscipcion in suscripcionesA)
                 {
-                    //Console.WriteLine(unCliente.idCliente + " - " + unCliente.mailComercial );
-                    var rta = await mprSuscipcion.AltaNuevaSuscripcion(unaSuscipcion);
-                    Console.WriteLine("La RTA ALTA DE SUSCRIPCION ES: " + rta.ToString());
+                    //aca tengo que llamar a endpoint 
+                    var rta1 = await endpoint.actualizarDatosSuscriptor(unCliente);
+                    if (rta1 == true)
+                    {
+                        var rta2 = await mprSuscipcion.AltaNuevaSuscripcion(unaSuscipcion);
+                        Console.WriteLine("La RTA ALTA DE SUSCRIPCION ES: " + rta2.ToString());
+                    }
                 }
             }
             catch (Exception ex)

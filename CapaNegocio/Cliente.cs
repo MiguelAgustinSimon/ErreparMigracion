@@ -15,6 +15,9 @@
         public string? tipoSuscriptor { get; set; }
         public decimal? perIIBB { get; set; }
         public string? cuit { get; set; }
+        public string? subscriber_id{ get; set; }
+        public int? subscriber_max_user_count { get; set; }
+        public string? organization_id { get; set; }
 
         public Cliente(int? cliente)
         {

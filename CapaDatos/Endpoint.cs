@@ -143,12 +143,12 @@ namespace CapaDatos
         }
 
         //---------------------------------------------------- S U S C R I P T O R ----------------------------------------------------
-        public async Task<string> getDatosSuscriptor(int? unId)
+        public async Task<string> verificarLoginAccount(string? unCuit)
         {
             try
             {
                 var client = new RestClient(this.headerApi);
-                var request = new RestRequest(this.getSubscriber + unId, Method.Get);
+                var request = new RestRequest("https://accounts.errepar.net/organization-api/api/organization/" + unCuit, Method.Get);
                 request.AddHeader("Authorization", this.tokenApi);
 
                 var response = client.Execute(request);
@@ -156,9 +156,141 @@ namespace CapaDatos
                 {
                     //Console.WriteLine(response.Content);
                     var content = response.Content;
-                    SuscriptorEndpoint? enp =JsonSerializer.Deserialize<SuscriptorEndpoint>(content);
-                    //Console.WriteLine($"subscriber_id: {enp?.subscriber_id}");
+                    SuscriptorEndpoint? enp = JsonSerializer.Deserialize<SuscriptorEndpoint>(content);
+
                     return enp?.subscriber_id;
+                }
+                else
+                {
+                    Console.WriteLine(response.StatusDescription);
+                    return null;
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Exception: " + ex.Message);
+                return null;
+            }
+        }
+
+        public async Task<Boolean> getByCuitOrganizationCorpEntities(string? unCuit)
+        {
+            try
+            {
+                var client = new RestClient("https://accounts.errepar.net/organization-api/api/organization/");
+                var request = new RestRequest("getByCuitOrganizationCorpEntities/" + unCuit, Method.Get);
+                request.AddHeader("Authorization", this.tokenApi);
+
+                var response = client.Execute(request);
+                if (response.StatusCode == System.Net.HttpStatusCode.OK)
+                {
+                    //Console.WriteLine(response.Content);
+                    var content = response.Content;
+                    SuscriptorEndpoint? enp = JsonSerializer.Deserialize<SuscriptorEndpoint>(content);
+                    
+                    return true;
+                }
+                else
+                {
+                    Console.WriteLine(response.StatusDescription);
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Exception: " + ex.Message);
+                return false;
+            }
+        }
+
+
+        public async Task<Boolean> assignUserSubscriberCorpEntity(string subscriber_id, string user_id)
+        {
+            try
+            {
+                //headerApi, postSubscriber y demas estan en appConfig
+                var client = new RestClient(this.headerApi);
+                var request = new RestRequest("assignUserSubscriberCorpEntity", Method.Post);
+                request.RequestFormat = DataFormat.Json;
+
+                request.AddHeader("Authentication", this.tokenApi);
+
+
+                request.AddParameter("subscriber_id", subscriber_id);
+                request.AddParameter("user_id", user_id);
+                request.AddParameter("creation_user", "SG");
+                request.AddParameter("creation_date", DateTime.Now.ToString("yyyy-MM-dd"));
+
+
+                var response = client.Execute(request);
+                if (response.StatusCode == System.Net.HttpStatusCode.Created)
+                {
+                    Console.WriteLine(response.Content);
+                    await this.agregarLog("assignUserSubscriberCorpEntity OK - subscriber_id: " + subscriber_id);
+                    return true;
+                }
+                else
+                {
+                    Console.WriteLine(response.StatusDescription);
+                    await this.agregarLog("Falló assignUserSubscriberCorpEntity: ERROR - subscriber_id: " + subscriber_id + response.StatusDescription);
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                //display error message
+                Console.WriteLine("Exception: " + ex.Message);
+                return false;
+            }
+        }
+
+        public async Task<Cliente> getDatosSuscriptor(int? unId)
+        {
+            try
+            {
+                var client = new RestClient(this.headerApi);
+                var request = new RestRequest(this.getSubscriber + "?clicod="+unId, Method.Get);
+                request.AddHeader("Authorization", this.tokenApi);
+
+                var response = client.Execute(request);
+                if (response.StatusCode == System.Net.HttpStatusCode.OK)
+                {
+                    //Console.WriteLine(response.Content);
+                    var content = response.Content;
+                    Cliente? clie =JsonSerializer.Deserialize<Cliente>(content);
+                    //Console.WriteLine($"subscriber_id: {enp?.subscriber_id}");
+                    return clie;
+                }
+                else
+                {
+                    Console.WriteLine(response.StatusDescription);
+                    return null;
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Exception: " + ex.Message);
+                return null;
+            }
+        }
+
+        public async Task<string> getUsersSubscriberCorpEntities(int? unId)
+        {
+            try
+            {
+                var client = new RestClient(this.headerApi);
+                var request = new RestRequest("getUsersSubscriberCorpEntities/" + unId + "?offset=0&limit=9999", Method.Get);
+                request.AddHeader("Authorization", this.tokenApi);
+
+                var response = client.Execute(request);
+                if (response.StatusCode == System.Net.HttpStatusCode.OK)
+                {
+                    //Console.WriteLine(response.Content);
+                    var content = response.Content;
+                    Object? clie = JsonSerializer.Deserialize<Object>(content);
+                    //Console.WriteLine($"subscriber_id: {enp?.subscriber_id}");
+                    //return clie.login_account.email; //VER COMO RETORNAR EMAIL
+                    return "aaa@gmail.com"; 
                 }
                 else
                 {
@@ -182,46 +314,38 @@ namespace CapaDatos
                 var client = new RestClient(this.headerApi);
                 var request = new RestRequest(this.postSubscriber, Method.Post);
                 request.RequestFormat = DataFormat.Json;
-
-                //request.AddHeader("Authentication", this.tokenApi);
                 request.AddHeader("Authorization", this.tokenApi);
-                
+
+                //traigo el UUID del Cliente
+                Cliente unCliente = await this.getDatosSuscriptor(clie.idCliente);
+
+                //https://accounts.errepar.net/organization-api/api-docs/#/Organization/createOrganizationCorpEntities
+                //paso 1 -> veo si existe la organizacion
+                var rtaOrg = await this.getByCuitOrganizationCorpEntities(clie.cuit);
+                if (rtaOrg==false) {
+                    //paso 2 creo la organizacion
+                    await this.createOrganizationCorpEntities(clie);
+                }
+
+                //paso 3 verificar si existe cta Login
+                var rtaLogin = await this.verificarLoginAccount(clie.mailComercial);
+                if (rtaLogin == "false")
+                {
+                    
+                    if (unCliente.subscriber_id != null)
+                    {
+                        //paso 4 si no exista cta login, crearla: createLoginAccountCorpEntities (login) y createUserBaseAccountEAuth(cognito)
+                        await this.createLoginAccountCorpEntities(clie);
+                        await this.createUserBaseAccountEAuth(clie);
+                    }
+                        
+                }
+
+
                 request.AddParameter("clicod", clie.idCliente.ToString());
                 request.AddParameter("subscriber_name", clie.razonSocial);
                 request.AddParameter("organization_cuit", clie.cuit);
-
-                //https://accounts.errepar.net/organization-api/api-docs/#/Organization/createOrganizationCorpEntities
-                //PASO 1: ver si existe la organización=> ver endpoint de consultar organizacion... getByCuitOrganizationCorpEntities
-
-                //PASO 2: si no existe ORG consumir Endpoint POST crearOrganizacion (createOrganizationCorpEntities)
-                //{
-                //"organizationName": "Organization name",
-                //  "organizationTypeCode": "ORGANISMO", //cliente-principal-test
-                //  -> "MAIN-ORG" es "Organización Principal" // "TESTING-ORG" es "Organización de Testeo"
-                //  "organizationLegalName": "Organization legal name", esto es la RAZONSOCIAL
-                //  "organizationCuit": 12345678901, CUIT
-                //  "organizationMaxAccessCount": 1 //preguntar cuanto
-                //}
-
-
-
-                //PASO 3: También da de alta el usuario de organización: ENDPOINT HERNAN createSubscriberCorpEntities
-                //{
-                //    "loginAccountId": "4212d1e4-4ae2-4ab3-a8ac-dfe595c8cfef",
-                //  "organizationId": "9854a1ad-2baf-4ed8-b7f4-733c27ce8ddc",
-                //  "organizationUserTypeCode": "DERIV-USER",
-                //  "organizationCommercialUserTypeCode": "SUBSCRIBER",
-                //  "userStatusCode": "ACTIVE",
-                //  "legacyUserRefId": ""
-                //}
-
-                //PASO 4: verificar si existe la cuenta de login
-                //Paso 5->  Si no existe... createLoginAccountCorpEntities (login) y createUserBaseAccountEAuth(cognito) NECESITO LAS URLS
-
-                //Paso 6-> Si esta Inactivo: Reactivacion Suscriptor => PUT updateSubscriberCorpEntities/idSuscriptor
-
-                request.AddParameter("organization_cuit", "30582622945");
-                //request.AddParameter("organization_legal_name", clie.razonSocial);
+                request.AddParameter("organization_legal_name", clie.razonSocial); //ejemplo: 30582622945
                 request.AddParameter("organization_legal_name", "ERREPAR PLUS");
 
                 if (clie.suspendido == "S")
@@ -232,14 +356,18 @@ namespace CapaDatos
                 {
                     if (clie.suscriptorActivo == "N")
                     {
-                        request.AddParameter("subscriber_status_id", 2);
+                        //Paso 5->Si esta Inactivo: Reactivacion Suscriptor
+                        await this.reactivarSuscriptor(clie);
+                        //request.AddParameter("subscriber_status_id", 2);
+                        request.AddParameter("subscriber_status_id", 1);
                     }
                     else
                     {
                         request.AddParameter("subscriber_status_id", 1); //ACTIVO
                     }
                 }
-                request.AddParameter("subscriber_max_user_count", 5);//esto puede cambiar segun los productos que tenga
+
+                request.AddParameter("subscriber_max_user_count", unCliente.subscriber_max_user_count.ToString());//esto puede cambiar segun los productos que tenga   
                 request.AddParameter("creation_date", clie.timeStamp.ToString());
                 request.AddParameter("creation_user", "INTEGRACION-SG");
 
@@ -270,11 +398,62 @@ namespace CapaDatos
         {
             try
             {
-                string suscriberId = await this.getDatosSuscriptor(clie.idCliente);
+                Cliente unSusc = await this.getDatosSuscriptor(clie.idCliente);
+                string email = await this.getUsersSubscriberCorpEntities(clie.idCliente); //VER QUE VA A DEVOLVER ESTO...
+
+                int cantProdPorSuscriptor = await this.getSubscriberSuscriptionCommProduct(unSusc.subscriber_id);
+
+
+                if (email != clie.mailComercial)
+                {
+                    //baja logica
+                    if (unSusc.organization_id != null)
+                    {
+                        await this.updateUserOrganizationCorpEntities(unSusc.organization_id);
+                        var idloggingAccount = await this.loginAccountByemail(email);
+
+                        if (string.IsNullOrEmpty(idloggingAccount)) //compruebo si devuelve string nulo o vacio
+                        {
+                            //Si no existe el email lo doy de alta 
+                            await this.createLoginAccountCorpEntities(clie);
+                            if(await this.createUserBaseAccountEAuth(clie))
+                            {
+                                //createSubscriberRegistrationUserInvite (no se si se va a hacer)
+                            }
+                        }
+                    }
+                }
+                else if (email == clie.mailComercial)
+                {
+                    var idloggingAccount = await this.loginAccountByemail(email);
+                    await this.getUserOrganizationByLoginAccountCorpEntities(idloggingAccount);
+                    if (unSusc.organization_id != null)
+                    {
+                        if (await this.getUserOrganizationByLoginAccountCorpEntities(idloggingAccount))
+                        {
+                            //existe, lo hago admin
+                            await this.updateUserOrganizationCorpEntities(unSusc.organization_id);
+                        }
+                        else
+                        {
+                            //no existe, darlo de alta
+                            await this.addUserOrganizationCorpEntities(unSusc.organization_id);
+                        }
+                    }  
+                }
+                else //no trae nada, darlo de alta
+                {
+                    string user_id = await this.getUsersSubscriberCorpEntities(clie.idCliente); //VER QUE VA A DEVOLVER ESTO...
+                    if (unSusc.subscriber_id!=null && user_id != null)
+                    {
+                        await this.assignUserSubscriberCorpEntity(unSusc.subscriber_id, user_id);
+                    }
+                }
+
 
                 var client = new RestClient(this.headerApi);
 
-                var request = new RestRequest(this.updateSubscriber + suscriberId, Method.Put);
+                var request = new RestRequest(this.updateSubscriber + unSusc.subscriber_id, Method.Put);
                 request.RequestFormat = DataFormat.Json;
                 request.AddHeader("Authorization", this.tokenApi);
 
@@ -300,9 +479,16 @@ namespace CapaDatos
                         request.AddParameter("subscriber_status_id", 1); //ACTIVO
                     }
                 }
-                int cantProdPorSuscriptor = await this.getSubscriberSuscriptionCommProduct(suscriberId);
-
-                request.AddParameter("subscriber_max_user_count", cantProdPorSuscriptor);//esto puede cambiar segun los productos que tenga
+                
+                
+                if(cantProdPorSuscriptor>0)
+                {
+                    request.AddParameter("subscriber_max_user_count", cantProdPorSuscriptor);//esto puede cambiar segun los productos que tenga
+                }
+                else
+                {
+                    request.AddParameter("subscriber_max_user_count", 0);//esto puede cambiar segun los productos que tenga
+                }
                 request.AddParameter("modification_date", clie.timeStamp.ToString());
                 request.AddParameter("modification_user", "INTEGRACION-SG");
 
@@ -328,6 +514,41 @@ namespace CapaDatos
             }
         }
 
+        public async Task<Boolean> reactivarSuscriptor(Cliente clie)
+        {
+            try
+            {
+                Cliente unSusc = await this.getDatosSuscriptor(clie.idCliente);
+
+                var client = new RestClient(this.headerApi);
+
+                var request = new RestRequest(this.updateSubscriber + unSusc.subscriber_id, Method.Put);
+                request.RequestFormat = DataFormat.Json;
+                request.AddHeader("Authorization", this.tokenApi);
+
+                request.AddParameter("subscriber_status_id", 1); //ACTIVO
+
+                var response = client.Execute(request);
+                if (response.StatusCode == System.Net.HttpStatusCode.OK)
+                {
+                    Console.WriteLine(response.Content);
+                    await this.agregarLog("Actualizacion Suscriptor OK - Suscriptor: " + clie.idCliente.ToString());
+                    return true;
+                }
+                else
+                {
+                    Console.WriteLine(response.StatusDescription);
+                    await this.agregarLog("Falló Actualizacion Suscriptor: ERROR - Suscriptor: " + clie.idCliente.ToString() + response.StatusDescription);
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                //display error message
+                Console.WriteLine("Exception: " + ex.Message);
+                return false;
+            }
+        }
 
         //---------------------------------------------------- S U S C R I P C I O N ----------------------------------------------------
         //Traer los Productos por Suscriptor
@@ -367,63 +588,81 @@ namespace CapaDatos
             }
         }
 
-        //ALTA SUSCRIPCION
 
-        //alta -> addSubscriptionCommProduct
-        //baja-> disableSubscriptionCommProduct
-        //modif -> 
-        public async Task<Boolean> createProductCommProduct(Suscripcion susc)
+        public async Task<string> getProductCommProduct(int? unIdProd)
         {
             try
             {
-                Console.WriteLine("llego");
-                return true;
+                var client = new RestClient(this.headerApiSuscripcion);
+                var request = new RestRequest("getProductCommProduct/" + unIdProd, Method.Get);
+                request.AddHeader("Authorization", this.tokenApi);
+
+                var response = client.Execute(request);
+                if (response.StatusCode == System.Net.HttpStatusCode.OK)
+                {
+                    //Console.WriteLine(response.Content);
+                    var content = response.Content;
+                    SuscriptorEndpoint? enp = JsonSerializer.Deserialize<SuscriptorEndpoint>(content);
+                    //Console.WriteLine($"subscriber_id: {enp?.subscriber_id}");
+                    return enp?.product_id;
+                }
+                else
+                {
+                    Console.WriteLine(response.StatusDescription);
+                    return null;
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Exception: " + ex.Message);
+                return null;
+            }
+        }
+
+        //ALTA SUSCRIPCION
+        public async Task<Boolean> addSubscriptionCommProduct(Suscripcion susc)
+        {
+            try
+            {
                 //headerApi, postSubscriber y demas estan en appConfig
-                //var client = new RestClient(this.headerApi);
-                //var request = new RestRequest(this.postSubscriber, Method.Post);
-                //request.RequestFormat = DataFormat.Json;
+                var client = new RestClient(this.headerApi);
+                var request = new RestRequest(this.postSubscriber, Method.Post);
+                request.RequestFormat = DataFormat.Json;
+                request.AddHeader("Authorization", this.tokenApi);
 
-                //request.AddHeader("Authentication", this.tokenApi);
 
-                //request.AddParameter("product_code", susc.product_code.ToString());
-                //request.AddParameter("subscriber_name", clie.razonSocial);
-                //// request.AddParameter("organization_cuit", clie.cuit);
-                //request.AddParameter("organization_cuit", "30582622945");
-                ////request.AddParameter("organization_legal_name", clie.razonSocial);
-                //request.AddParameter("organization_legal_name", "ERREPAR PLUS");
+                //paso 1 -> traigo el UUID subscriber_id
+                Cliente unCli = new Cliente(susc.idCliente);
 
-                //if (clie.suspendido == "S")
-                //{
-                //    request.AddParameter("subscriber_status_id", 3);
-                //}
-                //else
-                //{
-                //    if (clie.suscriptorActivo == "N")
-                //    {
-                //        request.AddParameter("subscriber_status_id", 2);
-                //    }
-                //    else
-                //    {
-                //        request.AddParameter("subscriber_status_id", 1); //ACTIVO
-                //    }
-                //}
-                //request.AddParameter("subscriber_max_user_count", 5);//esto puede cambiar segun los productos que tenga
-                //request.AddParameter("creation_date", clie.timeStamp.ToString());
-                //request.AddParameter("creation_user", "INTEGRACION-SG");
 
-                //var response = client.Execute(request);
-                //if (response.StatusCode == System.Net.HttpStatusCode.Created)
-                //{
-                //    Console.WriteLine(response.Content);
-                //    await this.agregarLog("Alta Suscriptor OK - Suscriptor: " + clie.idCliente.ToString());
-                //    return true;
-                //}
-                //else
-                //{
-                //    Console.WriteLine(response.StatusDescription);
-                //    await this.agregarLog("Falló Alta Suscriptor: ERROR - Suscriptor: " + clie.idCliente.ToString() + response.StatusDescription);
-                //    return false;
-                //}
+                unCli = await this.getDatosSuscriptor(susc.idCliente);
+                string product_id = "";
+                if (unCli.subscriber_id != null)
+                {
+                    //traigo UUID producto
+                    product_id = await this.getProductCommProduct(susc.idProducto);
+                }
+
+                request.AddParameter("subscriber_id", unCli.subscriber_id);
+                request.AddParameter("product_id", product_id);
+                request.AddParameter("subscription_finish_date", susc.vencimiento.ToString());
+                request.AddParameter("account_executive_ref_id", 1);
+                request.AddParameter("creation_user", "Test");
+
+
+                var response = client.Execute(request);
+                if (response.StatusCode == System.Net.HttpStatusCode.Created)
+                {
+                    Console.WriteLine(response.Content);
+                    await this.agregarLog("Alta Suscripcion OK - Suscriptor: " + unCli.subscriber_id + ", Producto: " + product_id);
+                    return true;
+                }
+                else
+                {
+                    Console.WriteLine(response.StatusDescription);
+                    await this.agregarLog("Falló Alta Suscripcion(addSubscriptionCommProduct) - Suscriptor: " + unCli.subscriber_id + ", Producto: " + product_id + " - " + response.StatusDescription);
+                    return false;
+                }
             }
             catch (Exception ex)
             {
@@ -438,6 +677,277 @@ namespace CapaDatos
         {
             return true;
         }
+
+
+        //---------------------------------------------------- O R G A N I Z A C I O N ----------------------------------------------------
+
+        public async Task<Boolean> updateUserOrganizationCorpEntities(string organizationId)
+        {
+            try
+            {
+                //headerApi, postSubscriber y demas estan en appConfig
+                var client = new RestClient("https://accounts.errepar.net/organization-api/api/Organization/");
+                var request = new RestRequest("updateUserOrganizationCorpEntities", Method.Post);
+                request.RequestFormat = DataFormat.Json;
+                request.AddHeader("Authorization", this.tokenApi);
+
+
+
+                request.AddParameter("organizationUserId", organizationId);
+                request.AddParameter("organizationUserTypeCode", "ORG-ADMIN");
+                request.AddParameter("organizationCommercialUserTypeCode", "SUBSCRIBER");
+                request.AddParameter("userStatusCode", "UNACTIVE");
+
+
+
+                var response = client.Execute(request);
+                if (response.StatusCode == System.Net.HttpStatusCode.Created)
+                {
+                    Console.WriteLine(response.Content);
+                    //await this.agregarLog("updateUserOrganizationCorpEntities OK - Suscriptor: " + unCli.subscriber_id);
+                    return true;
+                }
+                else
+                {
+                    Console.WriteLine(response.StatusDescription);
+                    await this.agregarLog("Falló updateUserOrganizationCorpEntities - Suscriptor: "+ response.StatusDescription);
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                //display error message
+                Console.WriteLine("Exception: " + ex.Message);
+                return false;
+            }
+        }
+
+        public async Task<Boolean> addUserOrganizationCorpEntities(string organizationId)
+        {
+            try
+            {
+                //headerApi, postSubscriber y demas estan en appConfig
+                var client = new RestClient("https://accounts.errepar.net/organization-api/api/Organization/");
+                var request = new RestRequest("addUserOrganizationCorpEntities", Method.Post);
+                request.RequestFormat = DataFormat.Json;
+                request.AddHeader("Authorization", this.tokenApi);
+
+
+
+                request.AddParameter("loginAccountId", organizationId);
+                request.AddParameter("organizationUserId", organizationId);
+                request.AddParameter("organizationUserTypeCode", "ORG-ADMIN");
+                request.AddParameter("organizationCommercialUserTypeCode", "SUBSCRIBER");
+                request.AddParameter("userStatusCode", "ACTIVE");
+
+
+
+                var response = client.Execute(request);
+                if (response.StatusCode == System.Net.HttpStatusCode.Created)
+                {
+                    Console.WriteLine(response.Content);
+                    //await this.agregarLog("updateUserOrganizationCorpEntities OK - Suscriptor: " + unCli.subscriber_id);
+                    return true;
+                }
+                else
+                {
+                    Console.WriteLine(response.StatusDescription);
+                    await this.agregarLog("Falló updateUserOrganizationCorpEntities - Suscriptor: " + response.StatusDescription);
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                //display error message
+                Console.WriteLine("Exception: " + ex.Message);
+                return false;
+            }
+        }
+
+        public async Task<Boolean> createOrganizationCorpEntities(Cliente clie)
+        {
+            try
+            {
+                Console.WriteLine("llego");
+                return true;
+                //headerApi, postSubscriber y demas estan en appConfig
+                var client = new RestClient("https://accounts.errepar.net/organization-api/api/Organization/");
+                var request = new RestRequest("createOrganizationCorpEntities", Method.Post);
+                request.RequestFormat = DataFormat.Json;
+
+                request.AddHeader("Authentication", this.tokenApi);
+
+                request.AddParameter("organizationName", clie.razonSocial);
+                request.AddParameter("organizationTypeCode", "TESTING-ORG");
+                request.AddParameter("organizationLegalName", clie.razonSocial);
+                request.AddParameter("organizationCuit", clie.cuit);
+                request.AddParameter("organizationMaxAccessCount", 1);
+                request.AddParameter("isActive", true);
+
+
+                var response = client.Execute(request);
+                if (response.StatusCode == System.Net.HttpStatusCode.Created)
+                {
+                    Console.WriteLine(response.Content);
+                    await this.agregarLog("Alta Organizacion OK - Organizacion: " + clie.razonSocial);
+                    return true;
+                }
+                else
+                {
+                    Console.WriteLine(response.StatusDescription);
+                    await this.agregarLog("Falló Alta Organizacion: ERROR - Organizacion: " + clie.razonSocial + response.StatusDescription);
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                //display error message
+                Console.WriteLine("Exception: " + ex.Message);
+                return false;
+            }
+        }
+
+        //---------------------------------------------------- LOGIN ACCOUNT ----------------------------------------------------
+        public async Task<string> loginAccountByemail(string? unEmail)
+        {
+            try
+            {
+                var client = new RestClient("https://accounts.errepar.net/login/api/");
+                var request = new RestRequest("loginAccountByemail/" + "?email=" + unEmail, Method.Get);
+                request.AddHeader("Authorization", this.tokenApi);
+
+                var response = client.Execute(request);
+                if (response.StatusCode == System.Net.HttpStatusCode.OK)
+                {
+                    //Console.WriteLine(response.Content);
+                    var content = response.Content;
+                    SuscriptorEndpoint? enp = JsonSerializer.Deserialize<SuscriptorEndpoint>(content);
+
+                    return enp.idLoginAccount;
+                }
+                else
+                {
+                    Console.WriteLine(response.StatusDescription);
+                    return null;
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Exception: " + ex.Message);
+                return null;
+            }
+        }
+
+        public async Task<Boolean> getUserOrganizationByLoginAccountCorpEntities(string? loginAccountId)
+        {
+            try
+            {
+                var client = new RestClient("https://accounts.errepar.net/organization-api/api/Organization/");
+                var request = new RestRequest("getUserOrganizationByLoginAccountCorpEntities/" + "?loginAccountId=" + loginAccountId, Method.Get);
+                request.AddHeader("Authorization", this.tokenApi);
+
+                var response = client.Execute(request);
+                if (response.StatusCode == System.Net.HttpStatusCode.OK)
+                {
+                    //Console.WriteLine(response.Content);
+                    var content = response.Content;
+                    SuscriptorEndpoint? enp = JsonSerializer.Deserialize<SuscriptorEndpoint>(content);
+
+                    return true;
+                }
+                else
+                {
+                    Console.WriteLine(response.StatusDescription);
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Exception: " + ex.Message);
+                return false;
+            }
+        }
+
+        public async Task<Boolean> createLoginAccountCorpEntities(Cliente clie)
+        {
+            try
+            {
+                //headerApi, postSubscriber y demas estan en appConfig
+                var client = new RestClient("https://accounts.errepar.com/login/api/");
+                var request = new RestRequest("loginAccountCreate", Method.Post);
+                request.RequestFormat = DataFormat.Json;
+
+                request.AddHeader("Authentication", this.tokenApi);
+
+                request.AddParameter("accountExternalRefId", clie.idCliente.ToString());
+                request.AddParameter("email", clie.mailComercial);
+                request.AddParameter("firstName", clie.razonSocial);
+                request.AddParameter("lastName", clie.cuit);
+                request.AddParameter("modificationUser", 1);
+                request.AddParameter("accountStatusCode", "ACTIVE");
+                request.AddParameter("authProviderCode", "Google");
+
+
+                var response = client.Execute(request);
+                if (response.StatusCode == System.Net.HttpStatusCode.Created)
+                {
+                    Console.WriteLine(response.Content);
+                    await this.agregarLog("Alta Organizacion OK - Organizacion: " + clie.razonSocial);
+                    return true;
+                }
+                else
+                {
+                    Console.WriteLine(response.StatusDescription);
+                    await this.agregarLog("Falló Alta Organizacion: ERROR - Organizacion: " + clie.razonSocial + response.StatusDescription);
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                //display error message
+                Console.WriteLine("Exception: " + ex.Message);
+                return false;
+            }
+        }
+
+        public async Task<Boolean> createUserBaseAccountEAuth(Cliente clie)
+        {
+            try
+            {
+                //headerApi, postSubscriber y demas estan en appConfig
+                var client = new RestClient("https://accounts.errepar.com/login/eAuth/create/");
+                var request = new RestRequest("createUserBaseAccountEAuth", Method.Post);
+                request.RequestFormat = DataFormat.Json;
+
+                request.AddHeader("Authentication", this.tokenApi);
+
+
+                request.AddParameter("username", clie.mailComercial);
+                request.AddParameter("password", "123456789As+");
+
+
+                var response = client.Execute(request);
+                if (response.StatusCode == System.Net.HttpStatusCode.Created)
+                {
+                    Console.WriteLine(response.Content);
+                    await this.agregarLog("createUserBaseAccountEAuth OK - Cliente: " + clie.mailComercial);
+                    return true;
+                }
+                else
+                {
+                    Console.WriteLine(response.StatusDescription);
+                    await this.agregarLog("Falló Alta createUserBaseAccountEAuth: ERROR - Cliente: " + clie.idCliente + response.StatusDescription);
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                //display error message
+                Console.WriteLine("Exception: " + ex.Message);
+                return false;
+            }
+        }
+
 
         private void DeleteItem(int id)
         {

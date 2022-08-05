@@ -106,7 +106,7 @@ namespace CapaVista
             {
                 foreach (Cliente unCliente in clientesM)
                 {
-                    //aca tengo que llamar a endpoint AltaCliente: createSubscriberCorpEntities
+                    //aca tengo que llamar a endpoint 
                     var rta1 = await endpoint.actualizarDatosSuscriptor(unCliente);
                     if (rta1 == true)
                     {
