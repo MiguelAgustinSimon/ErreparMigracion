@@ -18,6 +18,12 @@
         public string? subscriber_id{ get; set; }
         public int? subscriber_max_user_count { get; set; }
         public string? organization_id { get; set; }
+        public string? subscriber_name { get; set; }
+        public string? subscriber_ref_id { get; set; }
+
+        public Cliente()
+        {
+        }
 
         public Cliente(int? cliente)
         {

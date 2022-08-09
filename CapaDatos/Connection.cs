@@ -126,5 +126,21 @@ namespace CapaDatos
             }
         }
 
+        public string ObtenerTokenApiOrganizacion()
+        {
+            try
+            {
+                var tokenApi = ConfigurationManager.AppSettings["tokenApiOrganization"];
+
+                return tokenApi;
+            }
+            catch (Exception ex)
+            {
+                //display error message
+                Console.WriteLine("Exception: " + ex.Message);
+                return null;
+            }
+        }
+
     }
 }

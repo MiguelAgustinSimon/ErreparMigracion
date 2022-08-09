@@ -18,6 +18,7 @@ namespace CapaDatos
     {
 
         public string tokenApi;
+        public string tokenApiOrganization;
         //atributos suscriptor
         public string headerApi;
         public string getSubscriber;
@@ -43,6 +44,7 @@ namespace CapaDatos
             this.arrApiSuscriptor = mConeccion.ObtenerEndpointsSuscriptor();
             this.arrApiSuscripcion = mConeccion.ObtenerEndpointsSuscripcion();
             this.tokenApi = mConeccion.ObtenerTokenApi();
+            this.tokenApiOrganization = mConeccion.ObtenerTokenApiOrganizacion();
             
 
             foreach (var item in this.arrApiSuscriptor.Select((elemento, i) => new { i, elemento }))
@@ -147,7 +149,7 @@ namespace CapaDatos
         {
             try
             {
-                var client = new RestClient("https://accounts.errepar.net/login/api/");
+                var client = new RestClient("https://accounts.errepar.com/login/api/");
                 var request = new RestRequest("loginAccountByemail" + "?email="+unMail, Method.Get);
                 request.AddHeader("Authorization", this.tokenApi);
 
@@ -288,7 +290,7 @@ namespace CapaDatos
                 //traigo el UUID del Cliente
                 Cliente unCliente = await this.getDatosSuscriptor(clie.idCliente);
 
-                //https://accounts.errepar.net/organization-api/api-docs/#/Organization/createOrganizationCorpEntities
+                //https://accounts.errepar.com/organization-api/api-docs/#/Organization/createOrganizationCorpEntities
                 //paso 1 -> veo si existe la organizacion
                 var rtaOrg = await this.getByCuitOrganizationCorpEntities(clie.cuit);
                 if (rtaOrg==false) {
@@ -762,13 +764,43 @@ namespace CapaDatos
 
 
         //---------------------------------------------------- O R G A N I Z A C I O N ----------------------------------------------------
+        public async Task<Boolean> getUserOrganizationByLoginAccountCorpEntities(string? loginAccountId)
+        {
+            try
+            {
+                var client = new RestClient("https://dev.organization-api.miestudio.dev.errepar.com/api/Organization/");
+                var request = new RestRequest("getUserOrganizationByLoginAccountCorpEntities/" + "?loginAccountId=" + loginAccountId, Method.Get);
+                request.AddHeader("Authorization", this.tokenApiOrganization);
+
+                var response = client.Execute(request);
+                if (response.StatusCode == System.Net.HttpStatusCode.OK)
+                {
+                    //Console.WriteLine(response.Content);
+                    var content = response.Content;
+                    SuscriptorEndpoint? enp = JsonSerializer.Deserialize<SuscriptorEndpoint>(content);
+
+                    return true;
+                }
+                else
+                {
+                    Console.WriteLine(response.StatusDescription);
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Exception: " + ex.Message);
+                return false;
+            }
+        }
+
         public async Task<Boolean> getByCuitOrganizationCorpEntities(string? unCuit)
         {
             try
             {
                 var client = new RestClient("https://dev.organization-api.miestudio.dev.errepar.com/api/Organization/");
                 var request = new RestRequest("getByCuitOrganizationCorpEntities/" + unCuit, Method.Get);
-                request.AddHeader("Authorization", this.tokenApi);
+                request.AddHeader("Authorization", this.tokenApiOrganization);
 
                 var response = client.Execute(request);
                 if (response.StatusCode == System.Net.HttpStatusCode.OK)
@@ -800,7 +832,7 @@ namespace CapaDatos
                 var client = new RestClient("https://dev.organization-api.miestudio.dev.errepar.com/api/Organization/");
                 var request = new RestRequest("updateUserOrganizationCorpEntities", Method.Post);
                 request.RequestFormat = DataFormat.Json;
-                request.AddHeader("Authorization", this.tokenApi);
+                request.AddHeader("Authorization", this.tokenApiOrganization);
                 request.AddParameter("organizationUserId", organizationId);
                 request.AddParameter("organizationUserTypeCode", "ORG-ADMIN");
                 request.AddParameter("organizationCommercialUserTypeCode", "SUBSCRIBER");
@@ -843,7 +875,7 @@ namespace CapaDatos
                 var client = new RestClient("https://dev.organization-api.miestudio.dev.errepar.com/api/Organization/");
                 var request = new RestRequest("addUserOrganizationCorpEntities", Method.Post);
                 request.RequestFormat = DataFormat.Json;
-                request.AddHeader("Authorization", this.tokenApi);
+                request.AddHeader("Authorization", this.tokenApiOrganization);
 
 
                 request.AddParameter("loginAccountId", loginAccountId);
@@ -887,7 +919,7 @@ namespace CapaDatos
                 var request = new RestRequest("createOrganizationCorpEntities", Method.Post);
                 request.RequestFormat = DataFormat.Json;
 
-                request.AddHeader("Authentication", this.tokenApi);
+                request.AddHeader("Authentication", this.tokenApiOrganization);
 
                 request.AddParameter("organizationName", clie.razonSocial);
                 request.AddParameter("organizationTypeCode", "TESTING-ORG");
@@ -950,35 +982,6 @@ namespace CapaDatos
             }
         }
 
-        public async Task<Boolean> getUserOrganizationByLoginAccountCorpEntities(string? loginAccountId)
-        {
-            try
-            {
-                var client = new RestClient("https://accounts.errepar.net/organization-api/api/Organization/");
-                var request = new RestRequest("getUserOrganizationByLoginAccountCorpEntities/" + "?loginAccountId=" + loginAccountId, Method.Get);
-                request.AddHeader("Authorization", this.tokenApi);
-
-                var response = client.Execute(request);
-                if (response.StatusCode == System.Net.HttpStatusCode.OK)
-                {
-                    //Console.WriteLine(response.Content);
-                    var content = response.Content;
-                    SuscriptorEndpoint? enp = JsonSerializer.Deserialize<SuscriptorEndpoint>(content);
-
-                    return true;
-                }
-                else
-                {
-                    Console.WriteLine(response.StatusDescription);
-                    return false;
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("Exception: " + ex.Message);
-                return false;
-            }
-        }
 
         public async Task<Boolean> createLoginAccountCorpEntities(Cliente clie)
         {
