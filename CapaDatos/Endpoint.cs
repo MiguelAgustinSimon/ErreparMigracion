@@ -32,6 +32,7 @@ namespace CapaDatos
         public string getProductosPorSuscriptor;
         string[] arrApiSuscriptor;
         string[] arrApiSuscripcion;
+        MapperLog mpLog = new MapperLog();
 
         //https://www.luisllamas.es/consumir-un-api-rest-en-c-facilmente-con-restsharp/
         //https://pokeapi.co/
@@ -45,7 +46,7 @@ namespace CapaDatos
             this.arrApiSuscripcion = mConeccion.ObtenerEndpointsSuscripcion();
             this.tokenApi = mConeccion.ObtenerTokenApi();
             this.tokenApiOrganization = mConeccion.ObtenerTokenApiOrganizacion();
-            
+
 
             foreach (var item in this.arrApiSuscriptor.Select((elemento, i) => new { i, elemento }))
             {
@@ -84,8 +85,8 @@ namespace CapaDatos
                 }
             }
         }
-            public async Task agregarLog(string texto)
-            {
+        public async Task agregarLog(string texto)
+        {
 
             int cont = 0;
 
@@ -122,7 +123,7 @@ namespace CapaDatos
                 Console.WriteLine("El archivo " + ruta + " no es un .txt.");
             }
 
-             }
+        }
         public void GetItems()
         {
             try
@@ -130,10 +131,12 @@ namespace CapaDatos
                 var client = new RestClient("https://pokeapi.co/api/v2/");
                 var request = new RestRequest("pokemon/ditto", Method.Get);
                 var response = client.Execute(request);
-                if (response.StatusCode == System.Net.HttpStatusCode.OK) {
-                   Console.WriteLine(response.Content);
+                if (response.StatusCode == System.Net.HttpStatusCode.OK)
+                {
+                    Console.WriteLine(response.Content);
                 }
-                else {
+                else
+                {
                     Console.WriteLine(response.StatusDescription);
                 }
             }
@@ -141,7 +144,7 @@ namespace CapaDatos
             {
                 Console.WriteLine("Exception: " + ex.Message);
             }
-            
+
         }
 
         //---------------------------------------------------- S U S C R I P T O R ----------------------------------------------------
@@ -150,7 +153,7 @@ namespace CapaDatos
             try
             {
                 var client = new RestClient("https://accounts.errepar.com/login/api/");
-                var request = new RestRequest("loginAccountByemail" + "?email="+unMail, Method.Get);
+                var request = new RestRequest("loginAccountByemail" + "?email=" + unMail, Method.Get);
                 request.AddHeader("Authorization", this.tokenApi);
 
                 var response = client.Execute(request);
@@ -197,13 +200,13 @@ namespace CapaDatos
                 if (response.StatusCode == System.Net.HttpStatusCode.Created)
                 {
                     Console.WriteLine(response.Content);
-                    await this.agregarLog("assignUserSubscriberCorpEntity OK - subscriber_id: " + subscriber_id);
+                    await mpLog.agregarLog("assignUserSubscriberCorpEntity OK - subscriber_id: " + subscriber_id);
                     return true;
                 }
                 else
                 {
                     Console.WriteLine(response.StatusDescription);
-                    await this.agregarLog("Falló assignUserSubscriberCorpEntity: ERROR - subscriber_id: " + subscriber_id + response.StatusDescription);
+                    await mpLog.agregarLog("Falló assignUserSubscriberCorpEntity: ERROR - subscriber_id: " + subscriber_id + response.StatusDescription);
                     return false;
                 }
             }
@@ -220,7 +223,7 @@ namespace CapaDatos
             try
             {
                 var client = new RestClient(this.headerApi);
-                var request = new RestRequest(this.getSubscriber + "?clicod="+unId, Method.Get);
+                var request = new RestRequest(this.getSubscriber + "?clicod=" + unId, Method.Get);
                 request.AddHeader("Authorization", this.tokenApi);
 
                 var response = client.Execute(request);
@@ -228,7 +231,7 @@ namespace CapaDatos
                 {
                     //Console.WriteLine(response.Content);
                     var content = response.Content;
-                    Cliente? clie =JsonSerializer.Deserialize<Cliente>(content);
+                    Cliente? clie = JsonSerializer.Deserialize<Cliente>(content);
                     //Console.WriteLine($"subscriber_id: {enp?.subscriber_id}");
                     return clie;
                 }
@@ -261,7 +264,7 @@ namespace CapaDatos
                     Object? clie = JsonSerializer.Deserialize<Object>(content);
                     //Console.WriteLine($"subscriber_id: {enp?.subscriber_id}");
                     //return clie.login_account.email; //VER COMO RETORNAR EMAIL
-                    return "aaa@gmail.com"; 
+                    return "aaa@gmail.com";
                 }
                 else
                 {
@@ -293,7 +296,8 @@ namespace CapaDatos
                 //https://accounts.errepar.com/organization-api/api-docs/#/Organization/createOrganizationCorpEntities
                 //paso 1 -> veo si existe la organizacion
                 var rtaOrg = await this.getByCuitOrganizationCorpEntities(clie.cuit);
-                if (rtaOrg==false) {
+                if (rtaOrg == false)
+                {
                     //paso 2 creo la organizacion
                     await this.createOrganizationCorpEntities(clie);
                 }
@@ -302,14 +306,14 @@ namespace CapaDatos
                 var rtaLogin = await this.verificarLoginAccount(clie.mailComercial);
                 if (rtaLogin == "false")
                 {
-                    
+
                     if (unCliente.subscriber_id != null)
                     {
                         //paso 4 si no exista cta login, crearla: createLoginAccountCorpEntities (login) y createUserBaseAccountEAuth(cognito)
                         await this.createLoginAccountCorpEntities(clie);
                         await this.createUserBaseAccountEAuth(clie);
                     }
-                        
+
                 }
 
 
@@ -346,15 +350,15 @@ namespace CapaDatos
                 if (response.StatusCode == System.Net.HttpStatusCode.Created)
                 {
                     Console.WriteLine(response.Content);
-                    await this.agregarLog("Alta Suscriptor OK - Suscriptor: " + clie.idCliente.ToString());
+                    await mpLog.agregarLog("Alta Suscriptor OK - Suscriptor: " + clie.idCliente.ToString());
                     return true;
                 }
                 else
                 {
                     Console.WriteLine(response.StatusDescription);
-                    await this.agregarLog("Falló Alta Suscriptor AWS: ERROR - Suscriptor: " + clie.idCliente.ToString() + " - " + response.StatusDescription);
+                    await mpLog.agregarLog("Falló Alta Suscriptor AWS: ERROR - Suscriptor: " + clie.idCliente.ToString() + " - " + response.StatusDescription);
                     return false;
-                }                
+                }
             }
             catch (Exception ex)
             {
@@ -380,14 +384,14 @@ namespace CapaDatos
                     //baja logica
                     if (unSusc.organization_id != null)
                     {
-                        await this.updateUserOrganizationCorpEntities(unSusc.organization_id,0);
+                        await this.updateUserOrganizationCorpEntities(unSusc.organization_id, 0);
                         var idloggingAccount = await this.loginAccountByemail(email);
 
                         if (string.IsNullOrEmpty(idloggingAccount)) //compruebo si devuelve string nulo o vacio
                         {
                             //Si no existe el email lo doy de alta 
                             await this.createLoginAccountCorpEntities(clie);
-                            if(await this.createUserBaseAccountEAuth(clie))
+                            if (await this.createUserBaseAccountEAuth(clie))
                             {
                                 //createSubscriberRegistrationUserInvite (no se si se va a hacer)
                             }
@@ -403,19 +407,19 @@ namespace CapaDatos
                         if (await this.getUserOrganizationByLoginAccountCorpEntities(idloggingAccount))
                         {
                             //existe, lo hago admin
-                            await this.updateUserOrganizationCorpEntities(unSusc.organization_id,1);
+                            await this.updateUserOrganizationCorpEntities(unSusc.organization_id, 1);
                         }
                         else
                         {
                             //no existe, darlo de alta
                             await this.addUserOrganizationCorpEntities(unSusc.organization_id, idloggingAccount);
                         }
-                    }  
+                    }
                 }
                 else //no trae nada, darlo de alta
                 {
                     string user_id = await this.getUsersSubscriberCorpEntities(clie.idCliente); //VER QUE VA A DEVOLVER ESTO...
-                    if (unSusc.subscriber_id!=null && user_id != null)
+                    if (unSusc.subscriber_id != null && user_id != null)
                     {
                         await this.assignUserSubscriberCorpEntity(unSusc.subscriber_id, user_id);
                     }
@@ -450,9 +454,9 @@ namespace CapaDatos
                         request.AddParameter("subscriber_status_id", 1); //ACTIVO
                     }
                 }
-                
-                
-                if(cantProdPorSuscriptor>0)
+
+
+                if (cantProdPorSuscriptor > 0)
                 {
                     request.AddParameter("subscriber_max_user_count", cantProdPorSuscriptor);//esto puede cambiar segun los productos que tenga
                 }
@@ -467,13 +471,13 @@ namespace CapaDatos
                 if (response.StatusCode == System.Net.HttpStatusCode.OK)
                 {
                     Console.WriteLine(response.Content);
-                    await this.agregarLog("Actualizacion Suscriptor OK - Suscriptor: " + clie.idCliente.ToString());
+                    await mpLog.agregarLog("Actualizacion Suscriptor OK - Suscriptor: " + clie.idCliente.ToString());
                     return true;
                 }
                 else
                 {
                     Console.WriteLine(response.StatusDescription);
-                    await this.agregarLog("Falló Actualizacion Suscriptor: ERROR - Suscriptor: " + clie.idCliente.ToString() + response.StatusDescription);
+                    await mpLog.agregarLog("Falló Actualizacion Suscriptor: ERROR - Suscriptor: " + clie.idCliente.ToString() + response.StatusDescription);
                     return false;
                 }
             }
@@ -503,7 +507,7 @@ namespace CapaDatos
                 request.AddParameter("clicod", suscripcion.idCliente.ToString());
                 request.AddParameter("subscriber_name", unSusc.razonSocial);
                 // request.AddParameter("organization_cuit", clie.cuit);
-                request.AddParameter("organization_cuit", "30582622945");   
+                request.AddParameter("organization_cuit", "30582622945");
                 request.AddParameter("organization_legal_name", "ERREPAR PLUS");
                 request.AddParameter("subscriber_status_id", 1); //ACTIVO
 
@@ -523,13 +527,13 @@ namespace CapaDatos
                 if (response.StatusCode == System.Net.HttpStatusCode.OK)
                 {
                     Console.WriteLine(response.Content);
-                    await this.agregarLog("Actualizacion Suscriptor OK updateSubscriberCorpEntities- Suscriptor: " + unSusc.subscriber_id.ToString());
+                    await mpLog.agregarLog("Actualizacion Suscriptor OK updateSubscriberCorpEntities- Suscriptor: " + unSusc.subscriber_id.ToString());
                     return true;
                 }
                 else
                 {
                     Console.WriteLine(response.StatusDescription);
-                    await this.agregarLog("Falló Actualizacion Suscriptor updateSubscriberCorpEntities: ERROR - Suscriptor: " + unSusc.subscriber_id.ToString() + response.StatusDescription);
+                    await mpLog.agregarLog("Falló Actualizacion Suscriptor updateSubscriberCorpEntities: ERROR - Suscriptor: " + unSusc.subscriber_id.ToString() + response.StatusDescription);
                     return false;
                 }
             }
@@ -559,13 +563,13 @@ namespace CapaDatos
                 if (response.StatusCode == System.Net.HttpStatusCode.OK)
                 {
                     Console.WriteLine(response.Content);
-                    await this.agregarLog("Actualizacion Suscriptor OK - Suscriptor: " + clie.idCliente.ToString());
+                    await mpLog.agregarLog("Actualizacion Suscriptor OK - Suscriptor: " + clie.idCliente.ToString());
                     return true;
                 }
                 else
                 {
                     Console.WriteLine(response.StatusDescription);
-                    await this.agregarLog("Falló Actualizacion Suscriptor: ERROR - Suscriptor: " + clie.idCliente.ToString() + response.StatusDescription);
+                    await mpLog.agregarLog("Falló Actualizacion Suscriptor: ERROR - Suscriptor: " + clie.idCliente.ToString() + response.StatusDescription);
                     return false;
                 }
             }
@@ -594,7 +598,8 @@ namespace CapaDatos
                 {
                     foreach (var header in response.Headers) //verifico que exista el Total de Productos en los headers
                     {
-                        if (header.Name == "X-Total-Count") {
+                        if (header.Name == "X-Total-Count")
+                        {
                             total = Convert.ToInt32(header.Value);
                         }
                     }
@@ -682,13 +687,13 @@ namespace CapaDatos
                 if (response.StatusCode == System.Net.HttpStatusCode.Created)
                 {
                     Console.WriteLine(response.Content);
-                    await this.agregarLog("Alta Suscripcion OK - Suscriptor: " + unCli.subscriber_id + ", Producto: " + product_id);
+                    await mpLog.agregarLog("Alta Suscripcion OK - Suscriptor: " + unCli.subscriber_id + ", Producto: " + product_id);
                     return true;
                 }
                 else
                 {
                     Console.WriteLine(response.StatusDescription);
-                    await this.agregarLog("Falló Alta Suscripcion(addSubscriptionCommProduct) - Suscriptor: " + unCli.subscriber_id + ", Producto: " + product_id + " - " + response.StatusDescription);
+                    await mpLog.agregarLog("Falló Alta Suscripcion(addSubscriptionCommProduct) - Suscriptor: " + unCli.subscriber_id + ", Producto: " + product_id + " - " + response.StatusDescription);
                     return false;
                 }
             }
@@ -726,7 +731,7 @@ namespace CapaDatos
                 }
                 else
                 {
-                    await this.updateUserOrganizationCorpEntities(unCliente.cuit,0);
+                    await this.updateUserOrganizationCorpEntities(unCliente.cuit, 0);
                 }
 
                 //llamo a Endpoint 
@@ -734,7 +739,7 @@ namespace CapaDatos
 
 
                 var client = new RestClient(this.headerApiSuscripcion);
-                var request = new RestRequest("disableSubscriptionCommProduct" + unSusc.subscriber_id+"/"+ uuidProd, Method.Put);
+                var request = new RestRequest("disableSubscriptionCommProduct" + unSusc.subscriber_id + "/" + uuidProd, Method.Put);
                 request.RequestFormat = DataFormat.Json;
                 request.AddHeader("Authorization", this.tokenApi);
                 request.AddParameter("is_active", 0);
@@ -743,13 +748,13 @@ namespace CapaDatos
                 if (response.StatusCode == System.Net.HttpStatusCode.OK)
                 {
                     Console.WriteLine(response.Content);
-                    await this.agregarLog("Actualizacion disableSubscriptionCommProduct OK - Suscriptor: " + susc.idCliente.ToString());
+                    await mpLog.agregarLog("Actualizacion disableSubscriptionCommProduct OK - Suscriptor: " + susc.idCliente.ToString());
                     return true;
                 }
                 else
                 {
                     Console.WriteLine(response.StatusDescription);
-                    await this.agregarLog("Falló Actualizacion disableSubscriptionCommProduct: ERROR - Suscriptor: " + susc.idCliente.ToString() + response.StatusDescription);
+                    await mpLog.agregarLog("Falló Actualizacion disableSubscriptionCommProduct: ERROR - Suscriptor: " + susc.idCliente.ToString() + response.StatusDescription);
                     return false;
                 }
             }
@@ -836,7 +841,7 @@ namespace CapaDatos
                 request.AddParameter("organizationUserId", organizationId);
                 request.AddParameter("organizationUserTypeCode", "ORG-ADMIN");
                 request.AddParameter("organizationCommercialUserTypeCode", "SUBSCRIBER");
-                if(estado>0)
+                if (estado > 0)
                 {
                     request.AddParameter("userStatusCode", "ACTIVE");
                 }
@@ -844,18 +849,18 @@ namespace CapaDatos
                 {
                     request.AddParameter("userStatusCode", 0);
                 }
-                
+
                 var response = client.Execute(request);
                 if (response.StatusCode == System.Net.HttpStatusCode.Created)
                 {
                     Console.WriteLine(response.Content);
-                    await this.agregarLog("updateUserOrganizationCorpEntities OK - organizationId: " + organizationId);
+                    await mpLog.agregarLog("updateUserOrganizationCorpEntities OK - organizationId: " + organizationId);
                     return true;
                 }
                 else
                 {
                     Console.WriteLine(response.StatusDescription);
-                    await this.agregarLog("Falló updateUserOrganizationCorpEntities - organizationId: " + organizationId + " - " + response.StatusDescription);
+                    await mpLog.agregarLog("Falló updateUserOrganizationCorpEntities - organizationId: " + organizationId + " - " + response.StatusDescription);
                     return false;
                 }
             }
@@ -890,13 +895,13 @@ namespace CapaDatos
                 if (response.StatusCode == System.Net.HttpStatusCode.Created)
                 {
                     Console.WriteLine(response.Content);
-                    //await this.agregarLog("updateUserOrganizationCorpEntities OK - Suscriptor: " + unCli.subscriber_id);
+                    //await mpLog.agregarLog("updateUserOrganizationCorpEntities OK - Suscriptor: " + unCli.subscriber_id);
                     return true;
                 }
                 else
                 {
                     Console.WriteLine(response.StatusDescription);
-                    await this.agregarLog("Falló updateUserOrganizationCorpEntities - Suscriptor: " + response.StatusDescription);
+                    await mpLog.agregarLog("Falló updateUserOrganizationCorpEntities - Suscriptor: " + response.StatusDescription);
                     return false;
                 }
             }
@@ -933,13 +938,13 @@ namespace CapaDatos
                 if (response.StatusCode == System.Net.HttpStatusCode.Created)
                 {
                     Console.WriteLine(response.Content);
-                    await this.agregarLog("Alta Organizacion OK - Organizacion: " + clie.razonSocial);
+                    await mpLog.agregarLog("Alta Organizacion OK - Organizacion: " + clie.razonSocial);
                     return true;
                 }
                 else
                 {
                     Console.WriteLine(response.StatusDescription);
-                    await this.agregarLog("Falló Alta Organizacion: ERROR - Organizacion: " + clie.razonSocial + response.StatusDescription);
+                    await mpLog.agregarLog("Falló Alta Organizacion: ERROR - Organizacion: " + clie.razonSocial + response.StatusDescription);
                     return false;
                 }
             }
@@ -1007,13 +1012,13 @@ namespace CapaDatos
                 if (response.StatusCode == System.Net.HttpStatusCode.Created)
                 {
                     Console.WriteLine(response.Content);
-                    await this.agregarLog("Alta Organizacion OK - Organizacion: " + clie.razonSocial);
+                    await mpLog.agregarLog("Alta Organizacion OK - Organizacion: " + clie.razonSocial);
                     return true;
                 }
                 else
                 {
                     Console.WriteLine(response.StatusDescription);
-                    await this.agregarLog("Falló Alta Organizacion: ERROR - Organizacion: " + clie.razonSocial + response.StatusDescription);
+                    await mpLog.agregarLog("Falló Alta Organizacion: ERROR - Organizacion: " + clie.razonSocial + response.StatusDescription);
                     return false;
                 }
             }
@@ -1045,13 +1050,13 @@ namespace CapaDatos
                 if (response.StatusCode == System.Net.HttpStatusCode.Created)
                 {
                     Console.WriteLine(response.Content);
-                    await this.agregarLog("createUserBaseAccountEAuth OK - Cliente: " + clie.mailComercial);
+                    await mpLog.agregarLog("createUserBaseAccountEAuth OK - Cliente: " + clie.mailComercial);
                     return true;
                 }
                 else
                 {
                     Console.WriteLine(response.StatusDescription);
-                    await this.agregarLog("Falló Alta createUserBaseAccountEAuth: ERROR - Cliente: " + clie.idCliente + response.StatusDescription);
+                    await mpLog.agregarLog("Falló Alta createUserBaseAccountEAuth: ERROR - Cliente: " + clie.idCliente + response.StatusDescription);
                     return false;
                 }
             }
@@ -1084,7 +1089,7 @@ namespace CapaDatos
             {
                 Console.WriteLine("Exception: " + ex.Message);
             }
-            
+
         }
 
     }

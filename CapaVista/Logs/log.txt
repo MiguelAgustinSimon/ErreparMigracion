@@ -46,3 +46,6 @@ ____________________________________________________
 Evento sucedido a las: 3/8/2022 14:34:53
 Actualizacion Suscriptor OK - Suscriptor: 455190
 ____________________________________________________
+Evento sucedido a las: 10/8/2022 10:51:10
+Falló createLoginAccountCorpEntities: ERROR -  0f6f0e6c-915f-4657-b22e-dc7bfa7de541Not Found
+____________________________________________________
