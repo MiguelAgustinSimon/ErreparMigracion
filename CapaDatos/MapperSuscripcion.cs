@@ -16,16 +16,18 @@ namespace CapaDatos
         {
             DataTable DTabla = cmd.ObtenerIDSSuscripcionesAlta();
             List<Suscripcion> unaLista = new List<Suscripcion>();
-
-            if (DTabla.Rows.Count > 0)
+            if (DTabla != null)
             {
-                foreach (DataRow x in DTabla.Rows)
+                if (DTabla.Rows.Count > 0)
                 {
-                    int? idClie = !Convert.IsDBNull(x[0]) ? (int?)x[0] : null;
-                    int? idProd = !Convert.IsDBNull(x[1]) ? (int?)x[1] : null;
+                    foreach (DataRow x in DTabla.Rows)
+                    {
+                        int? idClie = !Convert.IsDBNull(x[0]) ? (int?)x[0] : null;
+                        int? idProd = !Convert.IsDBNull(x[1]) ? (int?)x[1] : null;
 
-                    Suscripcion susc = new Suscripcion(idClie, idProd);
-                    unaLista.Add(susc);
+                        Suscripcion susc = new Suscripcion(idClie, idProd);
+                        unaLista.Add(susc);
+                    }
                 }
             }
             return unaLista;
@@ -36,16 +38,18 @@ namespace CapaDatos
         {
             DataTable DTabla = cmd.ConsultarDatosSuscripcion(idClie, idProd);
             List<Suscripcion> unaLista = new List<Suscripcion>();
-
-            if (DTabla.Rows.Count > 0)
+            if (DTabla != null)
             {
-                foreach (DataRow x in DTabla.Rows)
+                if (DTabla.Rows.Count > 0)
                 {
-                    string? tema = !Convert.IsDBNull(x[2]) ? (string?)x[2] : null;
-                    int? ejecutivo = !Convert.IsDBNull(x[4]) ? (int?)x[4] : null;
+                    foreach (DataRow x in DTabla.Rows)
+                    {
+                        string? tema = !Convert.IsDBNull(x[2]) ? (string?)x[2] : null;
+                        int? ejecutivo = !Convert.IsDBNull(x[4]) ? (int?)x[4] : null;
 
-                    Suscripcion susc = new Suscripcion((int)x[0], (int)x[1], tema, (DateTime)x[3], ejecutivo);
-                    unaLista.Add(susc);
+                        Suscripcion susc = new Suscripcion((int)x[0], (int)x[1], tema, (DateTime)x[3], ejecutivo);
+                        unaLista.Add(susc);
+                    }
                 }
             }
             return unaLista;
@@ -55,16 +59,18 @@ namespace CapaDatos
         {
             DataTable DTabla = cmd.ObtenerSuscripcionesBorradas();
             List<Suscripcion> unaLista = new List<Suscripcion>();
-
-            if (DTabla.Rows.Count > 0)
+            if (DTabla != null)
             {
-                foreach (DataRow x in DTabla.Rows)
+                if (DTabla.Rows.Count > 0)
                 {
-                    int? idClie = !Convert.IsDBNull(x[0]) ? (int?)x[0] : null;
-                    int? idProd = !Convert.IsDBNull(x[1]) ? (int?)x[1] : null;
+                    foreach (DataRow x in DTabla.Rows)
+                    {
+                        int? idClie = !Convert.IsDBNull(x[0]) ? (int?)x[0] : null;
+                        int? idProd = !Convert.IsDBNull(x[1]) ? (int?)x[1] : null;
 
-                    Suscripcion susc = new Suscripcion(idClie,idProd);
-                    unaLista.Add(susc);
+                        Suscripcion susc = new Suscripcion(idClie, idProd);
+                        unaLista.Add(susc);
+                    }
                 }
             }
             return unaLista;
@@ -74,15 +80,17 @@ namespace CapaDatos
         {
             DataTable DTabla = cmd.ObtenerSuscripcionesModificadas();
             List<Suscripcion> unaLista = new List<Suscripcion>();
-
-            if (DTabla.Rows.Count > 0)
+            if (DTabla != null)
             {
-                foreach (DataRow x in DTabla.Rows)
+                if (DTabla.Rows.Count > 0)
                 {
-                    string? tema = !Convert.IsDBNull(x[2]) ? (string?)x[2] : null;
-                    
-                    Suscripcion susc = new Suscripcion((int)x[0], (int)x[1],tema, (DateTime)x[3], (int)x[4]);
-                    unaLista.Add(susc);
+                    foreach (DataRow x in DTabla.Rows)
+                    {
+                        string? tema = !Convert.IsDBNull(x[2]) ? (string?)x[2] : null;
+
+                        Suscripcion susc = new Suscripcion((int)x[0], (int)x[1], tema, (DateTime)x[3], (int)x[4]);
+                        unaLista.Add(susc);
+                    }
                 }
             }
             return unaLista;

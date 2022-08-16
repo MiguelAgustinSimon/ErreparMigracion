@@ -9,7 +9,7 @@ namespace CapaVista
     public class WorkerCliente
     {
         MapperCliente mprClie = new MapperCliente();
-        Endpoint endpoint = new Endpoint();// al llamar al constructor asigno sus propiedades
+        Orquestador orquestador = new Orquestador();// al llamar al constructor asigno sus propiedades
         List<Cliente> clientesIDS = new List<Cliente>();
         List<Cliente> clientesA = new List<Cliente>();
         List<Cliente> clientesB = new List<Cliente>();
@@ -65,14 +65,14 @@ namespace CapaVista
                 {
                     //Console.WriteLine(unCliente.idCliente + " - " + unCliente.mailComercial );
 
-                    //aca tengo que llamar a endpoint AltaCliente: createSubscriberCorpEntities
-                    var rta1 =  await endpoint.createSubscriberCorpEntities(unCliente);
+                    //aca tengo que llamar a endpoint AltaCliente: createCustomerUserCorpCustomer
+                    var rta1 = await orquestador.createCustomerUserCorpCustomer(unCliente);
                     if (rta1 == true)
                     {
                         var rta2 = await mprClie.AltaNuevoCliente(unCliente);
                         Console.WriteLine("La RTA ALTA DE CLIENTE ES: " + rta2.ToString());
                     }
-                    
+
                 }
             }
             catch (Exception ex)
@@ -107,12 +107,12 @@ namespace CapaVista
                 foreach (Cliente unCliente in clientesM)
                 {
                     //aca tengo que llamar a endpoint 
-                    var rta1 = await endpoint.actualizarDatosSuscriptor(unCliente);
-                    if (rta1 == true)
-                    {
-                        var rta2 = mprClie.ActualizarDatosCliente(unCliente);
-                        Console.WriteLine("La RTA ACTUALIZACION CLIENTE ES: " + rta2.Result);
-                    }
+                    //var rta1 = await endpoint.actualizarDatosSuscriptor(unCliente);
+                    //if (rta1 == true)
+                    //{
+                    var rta2 = mprClie.ActualizarDatosCliente(unCliente);
+                    Console.WriteLine("La RTA ACTUALIZACION CLIENTE ES: " + rta2.Result);
+                    //}
                 }
             }
             catch (Exception ex)

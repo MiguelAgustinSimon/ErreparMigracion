@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Serilog;
 
 namespace CapaDatos
 {
@@ -46,6 +47,25 @@ namespace CapaDatos
                 Console.WriteLine("El archivo " + ruta + " no es un .txt.");
             }
 
+        }
+
+        public async Task agregarLogSerilog(string texto)
+        {
+            try
+            {
+                string ruta = @"..\\..\\..\\Logs\\log.txt";
+
+                Log.Logger = new LoggerConfiguration()
+                    .WriteTo.File(ruta)
+                    .CreateLogger();
+
+                Log.Information(texto);
+            }
+            catch (Exception e)
+            {
+
+                Log.Error("Algo ha salido mal ", e);
+            }
         }
 
     }

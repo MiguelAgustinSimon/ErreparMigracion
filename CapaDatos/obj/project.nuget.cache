@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "oL23BXJY4QNjyW7I+6kSzKvqIabCd07SfFv5sSqQ/RntM2WE+SQV96afZOO+0uiU0nXztOPgpC0gMiG/x55LHw==",
+  "dgSpecHash": "tLRC2XgVgexnaIQxj3V89yuRuVdAEi43KagfQrpviJdWpQuAAbFe9kKWrhSkORHDMbGcZlxDJAIrdjo3ZUI4fg==",
   "success": true,
   "projectFilePath": "C:\\Users\\AgustínSimón\\Desktop\\Errepar\\Migracion\\CapaDatos\\CapaDatos.csproj",
   "expectedPackageFiles": [
@@ -41,6 +41,9 @@
     "C:\\Users\\AgustínSimón\\.nuget\\packages\\runtime.win-arm64.runtime.native.system.data.sqlclient.sni\\4.4.0\\runtime.win-arm64.runtime.native.system.data.sqlclient.sni.4.4.0.nupkg.sha512",
     "C:\\Users\\AgustínSimón\\.nuget\\packages\\runtime.win-x64.runtime.native.system.data.sqlclient.sni\\4.4.0\\runtime.win-x64.runtime.native.system.data.sqlclient.sni.4.4.0.nupkg.sha512",
     "C:\\Users\\AgustínSimón\\.nuget\\packages\\runtime.win-x86.runtime.native.system.data.sqlclient.sni\\4.4.0\\runtime.win-x86.runtime.native.system.data.sqlclient.sni.4.4.0.nupkg.sha512",
+    "C:\\Users\\AgustínSimón\\.nuget\\packages\\serilog\\2.11.0\\serilog.2.11.0.nupkg.sha512",
+    "C:\\Users\\AgustínSimón\\.nuget\\packages\\serilog.sinks.console\\4.0.1\\serilog.sinks.console.4.0.1.nupkg.sha512",
+    "C:\\Users\\AgustínSimón\\.nuget\\packages\\serilog.sinks.file\\5.0.0\\serilog.sinks.file.5.0.0.nupkg.sha512",
     "C:\\Users\\AgustínSimón\\.nuget\\packages\\system.collections.immutable\\6.0.0\\system.collections.immutable.6.0.0.nupkg.sha512",
     "C:\\Users\\AgustínSimón\\.nuget\\packages\\system.configuration.configurationmanager\\6.0.0\\system.configuration.configurationmanager.6.0.0.nupkg.sha512",
     "C:\\Users\\AgustínSimón\\.nuget\\packages\\system.data.sqlclient\\4.8.3\\system.data.sqlclient.4.8.3.nupkg.sha512",

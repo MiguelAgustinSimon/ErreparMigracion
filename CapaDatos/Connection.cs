@@ -72,44 +72,44 @@ namespace CapaDatos
             }
         }
 
-        public string[] ObtenerEndpointsSuscriptor()
-        {
-            try
-            {
-                var headerApi = ConfigurationManager.AppSettings["HeaderApiSuscriptor"];
-                var getSubscriber = ConfigurationManager.AppSettings["GetSubscriber"];
-                var postSubscriber = ConfigurationManager.AppSettings["PostSubscriber"];
-                var updateSubscriber = ConfigurationManager.AppSettings["UpdateSubscriber"];
+        //public string[] ObtenerEndpointsSuscriptor()
+        //{
+        //    try
+        //    {
+        //        var headerApi = ConfigurationManager.AppSettings["HeaderApiSuscriptor"];
+        //        var getSubscriber = ConfigurationManager.AppSettings["GetSubscriber"];
+        //        var postSubscriber = ConfigurationManager.AppSettings["PostSubscriber"];
+        //        var updateSubscriber = ConfigurationManager.AppSettings["UpdateSubscriber"];
                 
-                string[] rutas = { headerApi, getSubscriber, postSubscriber, updateSubscriber };
-                return rutas;
-            }
-            catch (Exception ex)
-            {
-                //display error message
-                Console.WriteLine("Exception: " + ex.Message);
-                return null;
-            }
-        }
-        public string[] ObtenerEndpointsSuscripcion()
-        {
-            try
-            {
-                var headerApi = ConfigurationManager.AppSettings["HeaderApiSuscripcion"];
-                var PostProduct = ConfigurationManager.AppSettings["PostProduct"];
-                var UpdateProduct = ConfigurationManager.AppSettings["UpdateProduct"];
-                var getSubscriberSuscriptionCommProduct = ConfigurationManager.AppSettings["getSubscriberSuscriptionCommProduct"];
+        //        string[] rutas = { headerApi, getSubscriber, postSubscriber, updateSubscriber };
+        //        return rutas;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        //display error message
+        //        Console.WriteLine("Exception: " + ex.Message);
+        //        return null;
+        //    }
+        //}
+        //public string[] ObtenerEndpointsSuscripcion()
+        //{
+        //    try
+        //    {
+        //        var headerApi = ConfigurationManager.AppSettings["HeaderApiSuscripcion"];
+        //        var PostProduct = ConfigurationManager.AppSettings["PostProduct"];
+        //        var UpdateProduct = ConfigurationManager.AppSettings["UpdateProduct"];
+        //        var getSubscriberSuscriptionCommProduct = ConfigurationManager.AppSettings["getSubscriberSuscriptionCommProduct"];
                 
-                string[] rutas = { headerApi, PostProduct, UpdateProduct, getSubscriberSuscriptionCommProduct };
-                return rutas;
-            }
-            catch (Exception ex)
-            {
-                //display error message
-                Console.WriteLine("Exception: " + ex.Message);
-                return null;
-            }
-        }
+        //        string[] rutas = { headerApi, PostProduct, UpdateProduct, getSubscriberSuscriptionCommProduct };
+        //        return rutas;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        //display error message
+        //        Console.WriteLine("Exception: " + ex.Message);
+        //        return null;
+        //    }
+        //}
         public string ObtenerTokenApi()
         {
             try
@@ -125,14 +125,28 @@ namespace CapaDatos
                 return null;
             }
         }
-
-        public string ObtenerTokenApiOrganizacion()
+        public string ObtenerHeaderApi()
         {
             try
             {
-                var tokenApi = ConfigurationManager.AppSettings["tokenApiOrganization"];
+                var HeaderApi = ConfigurationManager.AppSettings["HeaderApi"];
 
-                return tokenApi;
+                return HeaderApi;
+            }
+            catch (Exception ex)
+            {
+                //display error message
+                Console.WriteLine("Exception: " + ex.Message);
+                return null;
+            }
+        }
+        public string ObtenerEndpointAltaSuscriptor()
+        {
+            try
+            {
+                var createCustomerUserCorpCustomer = ConfigurationManager.AppSettings["createCustomerUserCorpCustomer"];
+
+                return createCustomerUserCorpCustomer;
             }
             catch (Exception ex)
             {
