@@ -208,6 +208,7 @@ namespace CapaDatos
             }
         }
 
+        #region Deteccion de Modificaciones
         public DataTable ObtenerSuscriptoresModificados()
         {
             try
@@ -233,6 +234,81 @@ namespace CapaDatos
                 return null;
             }
         }
+
+        public DataTable ObtenerSuscriptoresModificados(string filtro)
+        {
+            try
+            {
+                SqlConnection mConeccion = Connection.ConnectionObj();
+                mConeccion.Open();
+                SqlDataAdapter mDA = new SqlDataAdapter();
+                DataTable mDT = new DataTable();
+                string miSql = "";
+                switch (filtro)
+                {
+                    case "MailComercial":
+                        miSql = @"SELECT Cliente, MailComercial
+                                FROM " + this.mprCBD.tablaOrigenDC +
+                                @" Except
+                                SELECT Cliente, MailComercial
+                                FROM " + this.mprCBD.tablaDestinoDC +
+                                " where Activo = 1";
+                        break;
+                    case "CUIT":
+                        miSql = @"SELECT Cliente, CUIT
+                                FROM " + this.mprCBD.tablaOrigenDC +
+                                @" Except
+                                SELECT Cliente, CUIT
+                                FROM " + this.mprCBD.tablaDestinoDC +
+                                " where Activo = 1";
+                        break;
+                    case "RazonSocial":
+                        miSql = @"SELECT Cliente, RazonSocial
+                                FROM " + this.mprCBD.tablaOrigenDC +
+                                @" Except
+                                SELECT Cliente, RazonSocial
+                                FROM " + this.mprCBD.tablaDestinoDC +
+                                " where Activo = 1";
+                        break;
+                    case "SuscriptorActivo":
+                        miSql = @"SELECT Cliente, SuscriptorActivo
+                                FROM " + this.mprCBD.tablaOrigenDC +
+                                @" Except
+                                SELECT Cliente, SuscriptorActivo
+                                FROM " + this.mprCBD.tablaDestinoDC +
+                                " where Activo = 1";
+                        break;
+                    case "Suspendido":
+                        miSql = @"SELECT Cliente, Suspendido
+                                FROM " + this.mprCBD.tablaOrigenDC +
+                                @" Except
+                                SELECT Cliente, Suspendido
+                                FROM " + this.mprCBD.tablaDestinoDC +
+                                " where Activo = 1";
+                        break;
+                    default:
+                        miSql = @"SELECT Cliente, MailComercial,SuscriptorActivo,FechaAlta,FechaActualizacion,RazonSocial,Suspendido,TimeStamp,Pais,Provincia,TipoSuscriptor,PerIIBB,CUIT 
+                                FROM " + this.mprCBD.tablaOrigenDC +
+                                @" Except
+                                SELECT Cliente, MailComercial, SuscriptorActivo, FechaAlta, FechaActualizacion, RazonSocial, Suspendido, TimeStamp, Pais, Provincia, TipoSuscriptor, PerIIBB, CUIT
+                                FROM " + this.mprCBD.tablaDestinoDC +
+                                " where Activo = 1";
+                        break;
+                }
+
+                mDA.SelectCommand = Command.CommandObj(miSql, mConeccion);
+                mDA.Fill(mDT);
+                mConeccion.Close();
+                return mDT;
+            }
+            catch (Exception ex)
+            {
+                //display error message
+                Console.WriteLine("Exception: " + ex.Message);
+                return null;
+            }
+        }
+        #endregion
 
         public async Task<Boolean> AltaNuevoCliente(Cliente clie)
         {
@@ -285,6 +361,7 @@ namespace CapaDatos
             }
         }
 
+        #region Modificaciones
         public async Task<Boolean> ActualizarDatosCliente(Cliente clie)
         {
             try
@@ -337,7 +414,189 @@ namespace CapaDatos
                 return false;
             }
         }
+        
+        public async Task<Boolean> ActualizarMailCliente(Cliente clie)
+        {
+            try
+            {
+                int resultado = 0;
+                SqlConnection mConeccion = Connection.ConnectionObj();
+                mConeccion.Open();
+                string query = "UPDATE " + this.mprCBD.tablaDestinoDC +
+                    @" set MailComercial=@mailComercial where Cliente=@idCliente";
 
+                using (SqlCommand cmd = new SqlCommand(query, Connection.ConnectionObj()))
+                {
+                    cmd.Parameters.AddWithValue("@idCliente", clie.idCliente);
+                    cmd.Parameters.AddWithValue("@mailComercial", clie.mailComercial);
+                    resultado = cmd.ExecuteNonQuery(); //impacto en la BD
+                }
+                mConeccion.Close();
+
+                if (resultado > 0)
+                {
+                    await this.ActualizarNovedadesSuscriptor(clie, "Modificacion");
+
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                //display error message
+                Console.WriteLine("Exception: " + ex.Message);
+                return false;
+            }
+        }
+        public async Task<Boolean> ActualizarCuitCliente(Cliente clie)
+        {
+            try
+            {
+                int resultado = 0;
+                SqlConnection mConeccion = Connection.ConnectionObj();
+                mConeccion.Open();
+                string query = "UPDATE " + this.mprCBD.tablaDestinoDC +
+                    @" set CUIT=@cuit where Cliente=@idCliente";
+
+                using (SqlCommand cmd = new SqlCommand(query, Connection.ConnectionObj()))
+                {
+                    cmd.Parameters.AddWithValue("@idCliente", clie.idCliente);
+                    cmd.Parameters.AddWithValue("@cuit", clie.cuit);
+                    resultado = cmd.ExecuteNonQuery(); //impacto en la BD
+                }
+                mConeccion.Close();
+
+                if (resultado > 0)
+                {
+                    await this.ActualizarNovedadesSuscriptor(clie, "Modificacion");
+
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                //display error message
+                Console.WriteLine("Exception: " + ex.Message);
+                return false;
+            }
+        }
+
+        public async Task<Boolean> ActualizarRazonSocialCliente(Cliente clie)
+        {
+            try
+            {
+                int resultado = 0;
+                SqlConnection mConeccion = Connection.ConnectionObj();
+                mConeccion.Open();
+                string query = "UPDATE " + this.mprCBD.tablaDestinoDC +
+                    @" set RazonSocial=@rs where Cliente=@idCliente";
+
+                using (SqlCommand cmd = new SqlCommand(query, Connection.ConnectionObj()))
+                {
+                    cmd.Parameters.AddWithValue("@idCliente", clie.idCliente);
+                    cmd.Parameters.AddWithValue("@rs", clie.razonSocial);
+                    resultado = cmd.ExecuteNonQuery(); //impacto en la BD
+                }
+                mConeccion.Close();
+
+                if (resultado > 0)
+                {
+                    await this.ActualizarNovedadesSuscriptor(clie, "Modificacion");
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                //display error message
+                Console.WriteLine("Exception: " + ex.Message);
+                return false;
+            }
+        }
+
+        public async Task<Boolean> ActualizarActivoCliente(Cliente clie)
+        {
+            try
+            {
+                int resultado = 0;
+                SqlConnection mConeccion = Connection.ConnectionObj();
+                mConeccion.Open();
+                string query = "UPDATE " + this.mprCBD.tablaDestinoDC +
+                    @" set SuscriptorActivo=@activo where Cliente=@idCliente";
+
+                using (SqlCommand cmd = new SqlCommand(query, Connection.ConnectionObj()))
+                {
+                    cmd.Parameters.AddWithValue("@idCliente", clie.idCliente);
+                    cmd.Parameters.AddWithValue("@activo", clie.suscriptorActivo);
+                    resultado = cmd.ExecuteNonQuery(); //impacto en la BD
+                }
+                mConeccion.Close();
+
+                if (resultado > 0)
+                {
+                    await this.ActualizarNovedadesSuscriptor(clie, "Modificacion");
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                //display error message
+                Console.WriteLine("Exception: " + ex.Message);
+                return false;
+            }
+        }
+
+        public async Task<Boolean> ActualizarSuspendidoCliente(Cliente clie)
+        {
+            try
+            {
+                int resultado = 0;
+                SqlConnection mConeccion = Connection.ConnectionObj();
+                mConeccion.Open();
+                string query = "UPDATE " + this.mprCBD.tablaDestinoDC +
+                    @" set Suspendido=@susp where Cliente=@idCliente";
+
+                using (SqlCommand cmd = new SqlCommand(query, Connection.ConnectionObj()))
+                {
+                    cmd.Parameters.AddWithValue("@idCliente", clie.idCliente);
+                    cmd.Parameters.AddWithValue("@susp", clie.suspendido);
+                    resultado = cmd.ExecuteNonQuery(); //impacto en la BD
+                }
+                mConeccion.Close();
+
+                if (resultado > 0)
+                {
+                    await this.ActualizarNovedadesSuscriptor(clie, "Modificacion");
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                //display error message
+                Console.WriteLine("Exception: " + ex.Message);
+                return false;
+            }
+        }
+
+        #endregion
         public async Task<Boolean> EliminarCliente(Cliente clie)
         {
             try

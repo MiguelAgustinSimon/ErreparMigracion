@@ -14,6 +14,12 @@ namespace CapaVista
         List<Cliente> clientesA = new List<Cliente>();
         List<Cliente> clientesB = new List<Cliente>();
         List<Cliente> clientesM = new List<Cliente>();
+        List<Cliente> misClientesMail = new List<Cliente>();
+        List<Cliente> misClientesCuit = new List<Cliente>();
+        List<Cliente> misClientesRazonSocial = new List<Cliente>();
+        List<Cliente> misClientesActivos = new List<Cliente>();
+        List<Cliente> misClientesSuspendidos = new List<Cliente>();
+
         Log unLog = new Log();
 
         //-------------------------------------------------------------------  C L I E N T E S   ---------------------------------------------------
@@ -22,7 +28,7 @@ namespace CapaVista
             try
             {
                 this.ObtenerIDSClientesAltas();
-                this.VerificarClientesModificados();
+                this.VerificarModificaciones();
                 this.VerificarClientesBorrados();
             }
             catch (Exception ex)
@@ -82,15 +88,59 @@ namespace CapaVista
             }
         }
 
-        public async void VerificarClientesModificados()
+        //public async void VerificarClientesModificados()
+        //{
+        //    try
+        //    {
+        //        //Si es mayor a 0 la cantidad de modificados..
+        //        clientesM = mprClie.ConsultarSuscriptoresModificados();
+        //        if (clientesM.Count() > 0)
+        //        {
+        //            this.ActualizarDatosCliente();
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        //display error message
+        //        Console.WriteLine("Exception: " + ex.Message);
+        //    }
+        //}
+
+        public async void VerificarModificaciones()
         {
             try
             {
+                
                 //Si es mayor a 0 la cantidad de modificados..
-                clientesM = mprClie.ConsultarSuscriptoresModificados();
-                if (clientesM.Count() > 0)
+                this.misClientesMail = mprClie.ConsultarSuscriptoresModificadosMail();
+                this.misClientesCuit = mprClie.ConsultarSuscriptoresModificadosCuit();
+                this.misClientesRazonSocial = mprClie.ConsultarSuscriptoresModificadosRazonSocial();
+                this.misClientesActivos = mprClie.ConsultarSuscriptoresModificadosRazonActivo();
+                this.misClientesSuspendidos = mprClie.ConsultarSuscriptoresModificadosSuspendido();
+
+                if (this.misClientesMail.Count() > 0)
                 {
-                    this.ActualizarDatosCliente();
+                    this.ActualizarDatos(this.misClientesMail, "MailComercial");
+                }
+
+                if (this.misClientesCuit.Count() > 0)
+                {
+                    this.ActualizarDatos(this.misClientesCuit, "CUIT");
+                }
+
+                if (this.misClientesRazonSocial.Count() > 0)
+                {
+                    this.ActualizarDatos(this.misClientesRazonSocial, "RazonSocial");
+                }
+
+                if (this.misClientesActivos.Count() > 0)
+                {
+                    this.ActualizarDatos(this.misClientesActivos, "SuscriptorActivo");
+                }
+
+                if (this.misClientesSuspendidos.Count() > 0)
+                {
+                    this.ActualizarDatos(this.misClientesSuspendidos, "Suspendido");
                 }
             }
             catch (Exception ex)
@@ -100,17 +150,17 @@ namespace CapaVista
             }
         }
 
-        public async void ActualizarDatosCliente()
+        public async void ActualizarDatos(List<Cliente> unaLista, string queActualizar)
         {
             try
             {
-                foreach (Cliente unCliente in clientesM)
+                foreach (Cliente unCliente in unaLista)
                 {
                     //aca tengo que llamar a endpoint 
-                    var rta1 = await orquestador.updateCustomerUserCorpCustomer(unCliente);
+                    var rta1 = await orquestador.updateSucriberCorpCustomer(unCliente);
                     if (rta1 == true)
                     {
-                        var rta2 = mprClie.ActualizarDatosCliente(unCliente);
+                        var rta2 = mprClie.ActualizarDatosCliente(unCliente, queActualizar);
                         Console.WriteLine("La RTA ACTUALIZACION CLIENTE ES: " + rta2.Result);
                     }
                 }
@@ -121,6 +171,28 @@ namespace CapaVista
                 Console.WriteLine("Exception: " + ex.Message);
             }
         }
+
+        //public async void ActualizarDatosCliente()
+        //{
+        //    try
+        //    {
+        //        foreach (Cliente unCliente in clientesM)
+        //        {
+        //            //aca tengo que llamar a endpoint 
+        //            var rta1 = await orquestador.updateSucriberCorpCustomer(unCliente);
+        //            if (rta1 == true)
+        //            {
+        //                var rta2 = mprClie.ActualizarDatosCliente(unCliente);
+        //                Console.WriteLine("La RTA ACTUALIZACION CLIENTE ES: " + rta2.Result);
+        //            }
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        //display error message
+        //        Console.WriteLine("Exception: " + ex.Message);
+        //    }
+        //}
 
         public async void VerificarClientesBorrados()
         {

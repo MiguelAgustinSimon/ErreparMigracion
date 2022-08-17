@@ -50,35 +50,45 @@ namespace CapaDatos
 
                 request.AddHeader("authorization", this.tokenApi);
 
-                request.AddParameter("clicod", unCliente.idCliente.ToString().Trim());
-                request.AddParameter("cuit", unCliente.cuit.ToString().Trim());
-                request.AddParameter("email", unCliente.mailComercial.Trim());
-                request.AddParameter("razon_social", unCliente.razonSocial.Trim());
-                request.AddParameter("fecha_alta", unCliente.fechaAlta.ToString().Trim());
-                request.AddParameter("fecha_actualizacion_tablas_intermedias", unCliente.fechaActualizacion.ToString().Trim());
+                //request.AddParameter("clicod", unCliente.idCliente.ToString().Trim());
+                //request.AddParameter("cuit", unCliente.cuit.ToString().Trim());
+                //request.AddParameter("email", unCliente.mailComercial.Trim());
+                //request.AddParameter("razon_social", unCliente.razonSocial.Trim());
+                //request.AddParameter("fecha_alta", unCliente.fechaAlta.ToString().Trim());
+                //request.AddParameter("fecha_actualizacion_tablas_intermedias", unCliente.fechaActualizacion.ToString().Trim());
 
-                if (unCliente.suscriptorActivo == "S")
-                {
-                    request.AddParameter("activo", true);
-                }
-                else
-                {
-                    request.AddParameter("activo", false);
-                }
+                //if (unCliente.suscriptorActivo == "S")
+                //{
+                //    request.AddParameter("activo", true);
+                //}
+                //else
+                //{
+                //    request.AddParameter("activo", false);
+                //}
 
-                if (unCliente.suspendido == "S")
-                {
-                    request.AddParameter("suspendido", true);
-                }
-                else
-                {
-                    request.AddParameter("suspendido", false);
-                }
-                request.AddParameter("pais", unCliente.pais.Trim());
-                request.AddParameter("provincia", unCliente.provincia.Trim());
-                request.AddParameter("tipo_suscriptor", unCliente.tipoSuscriptor.Trim());
-                request.AddParameter("perIIBB", unCliente.perIIBB.ToString().Trim());
+                //if (unCliente.suspendido == "S")
+                //{
+                //    request.AddParameter("suspendido", true);
+                //}
+                //else
+                //{
+                //    request.AddParameter("suspendido", false);
+                //}
+                //request.AddParameter("pais", unCliente.pais.Trim());
+                //request.AddParameter("provincia", unCliente.provincia.Trim());
+                //request.AddParameter("tipo_suscriptor", unCliente.tipoSuscriptor.Trim());
+                //request.AddParameter("perIIBB", unCliente.perIIBB.ToString().Trim());
 
+
+                request.AddParameter("clicod", "444957");
+                request.AddParameter("cuit", "30693291221");
+                request.AddParameter("email", "solange.janin@samconsultt.com");
+                request.AddParameter("razon_social", "ERREPAR");
+                request.AddParameter("fecha_alta", "2022-06-22T20:10:08.087Z");
+                request.AddParameter("fecha_actualizacion_tablas_intermedias", "2022-06-22T20:10:08.087Z");
+                request.AddParameter("activo", true);
+                request.AddParameter("suspendido", false);
+        
 
                 var response = client.Execute(request);
                 if (response.StatusCode == System.Net.HttpStatusCode.Created)
@@ -104,7 +114,7 @@ namespace CapaDatos
 
 
         //UPDATE SUSCRIPTOR
-        public async Task<Boolean> updateCustomerUserCorpCustomer(Cliente unCliente)
+        public async Task<Boolean> updateSucriberCorpCustomer(Cliente unCliente)
         {
             try
             {
@@ -115,38 +125,49 @@ namespace CapaDatos
 
                 request.AddHeader("authorization", this.tokenApi);
 
+
                 request.AddParameter("clicod", unCliente.idCliente.ToString().Trim());
-                request.AddParameter("cuit", unCliente.cuit.ToString().Trim());
-                request.AddParameter("email", unCliente.mailComercial.Trim());
-                request.AddParameter("razon_social", unCliente.razonSocial.Trim());
-                request.AddParameter("fecha_alta", unCliente.fechaAlta.ToString().Trim());
-                request.AddParameter("fecha_actualizacion_tablas_intermedias", unCliente.fechaActualizacion.ToString().Trim());
-
-                if (unCliente.suscriptorActivo == "S")
+                if(unCliente.cuit!=null)
                 {
-                    request.AddParameter("activo", true);
-                }
-                else
-                {
-                    request.AddParameter("activo", false);
+                    request.AddParameter("cuit", unCliente.cuit.ToString().Trim());
                 }
 
-                if (unCliente.suspendido == "S")
+                if (unCliente.mailComercial != null)
                 {
-                    request.AddParameter("suspendido", true);
+                    request.AddParameter("email", unCliente.mailComercial.ToString().Trim());
                 }
-                else
-                {
-                    request.AddParameter("suspendido", false);
-                }
-                request.AddParameter("pais", unCliente.pais.Trim());
-                request.AddParameter("provincia", unCliente.provincia.Trim());
-                request.AddParameter("tipo_suscriptor", unCliente.tipoSuscriptor.Trim());
-                request.AddParameter("perIIBB", unCliente.perIIBB.ToString().Trim());
 
+                if (unCliente.razonSocial != null)
+                {
+                    request.AddParameter("razon_social", unCliente.razonSocial.ToString().Trim());
+                }
+
+                if (unCliente.suscriptorActivo != null)
+                {
+                    if (unCliente.suscriptorActivo == "S")
+                    {
+                        request.AddParameter("activo", true);
+                    }
+                    else
+                    {
+                        request.AddParameter("activo", false);
+                    }
+                }
+
+                if (unCliente.suspendido != null)
+                {
+                    if (unCliente.suspendido == "S")
+                    {
+                        request.AddParameter("suspendido", true);
+                    }
+                    else
+                    {
+                        request.AddParameter("suspendido", false);
+                    }
+                }
 
                 var response = client.Execute(request);
-                if (response.StatusCode == System.Net.HttpStatusCode.Created)
+                if (response.StatusCode == System.Net.HttpStatusCode.OK)
                 {
                     Console.WriteLine(response.Content);
                     await mpLog.agregarLogSerilog("createCustomerUserCorpCustomer OK - subscriber_id: " + unCliente.idCliente);
@@ -230,7 +251,7 @@ namespace CapaDatos
 
 
                 var response = client.Execute(request);
-                if (response.StatusCode == System.Net.HttpStatusCode.Created)
+                if (response.StatusCode == System.Net.HttpStatusCode.OK)
                 {
                     Console.WriteLine(response.Content);
                     await mpLog.agregarLogSerilog("updateProductCommProduct OK - Cliente: " + unaSuscripcion.idCliente + ", Producto: " + unaSuscripcion.idProducto);
@@ -271,7 +292,7 @@ namespace CapaDatos
 
 
                 var response = client.Execute(request);
-                if (response.StatusCode == System.Net.HttpStatusCode.Created)
+                if (response.StatusCode == System.Net.HttpStatusCode.OK)
                 {
                     Console.WriteLine(response.Content);
                     await mpLog.agregarLogSerilog("deleteProductCommProduct OK - Cliente: " + unaSuscripcion.idCliente + ", Producto: " + unaSuscripcion.idProducto);

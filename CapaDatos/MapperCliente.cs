@@ -84,7 +84,7 @@ namespace CapaDatos
             }
             
         }
-
+        #region Deteccion de Modificaciones
         public List<Cliente> ConsultarSuscriptoresModificados()
         {
             try
@@ -125,6 +125,152 @@ namespace CapaDatos
             
         }
 
+        public List<Cliente> ConsultarSuscriptoresModificadosMail()
+        {
+            try
+            {
+                DataTable DTabla = new DataTable();
+                DTabla = cmd.ObtenerSuscriptoresModificados("MailComercial");
+                List<Cliente> unaLista = new List<Cliente>();
+
+                if (DTabla != null)
+                {
+                    if (DTabla.Rows.Count > 0)
+                    {
+                        foreach (DataRow x in DTabla.Rows)
+                        {
+                            string? mail = !Convert.IsDBNull(x[1]) ? (string?)x[1] : null;
+                           
+                            Cliente clie = new Cliente((int)x[0]);
+                            clie.mailComercial = mail;
+                            unaLista.Add(clie);
+                        }
+                    }
+                }
+                return unaLista;
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
+        public List<Cliente> ConsultarSuscriptoresModificadosCuit()
+        {
+            try
+            {
+                DataTable DTabla = new DataTable();
+                DTabla = cmd.ObtenerSuscriptoresModificados("CUIT");
+                List<Cliente> unaLista = new List<Cliente>();
+
+                if (DTabla != null)
+                {
+                    if (DTabla.Rows.Count > 0)
+                    {
+                        foreach (DataRow x in DTabla.Rows)
+                        {
+                            string? unCuit = !Convert.IsDBNull(x[1]) ? (string?)x[12] : null;
+
+                            Cliente clie = new Cliente((int)x[0]);
+                            clie.cuit = unCuit;
+                            unaLista.Add(clie);
+                        }
+                    }
+                }
+                return unaLista;
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
+        public List<Cliente> ConsultarSuscriptoresModificadosRazonSocial()
+        {
+            try
+            {
+                DataTable DTabla = new DataTable();
+                DTabla = cmd.ObtenerSuscriptoresModificados("RazonSocial");
+                List<Cliente> unaLista = new List<Cliente>();
+
+                if (DTabla != null)
+                {
+                    if (DTabla.Rows.Count > 0)
+                    {
+                        foreach (DataRow x in DTabla.Rows)
+                        {
+                            string? razonSocial = !Convert.IsDBNull(x[1]) ? (string?)x[5] : null;
+
+                            Cliente clie = new Cliente((int)x[0]);
+                            clie.razonSocial = razonSocial;
+                            unaLista.Add(clie);
+                        }
+                    }
+                }
+                return unaLista;
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
+        public List<Cliente> ConsultarSuscriptoresModificadosRazonActivo()
+        {
+            try
+            {
+                DataTable DTabla = new DataTable();
+                DTabla = cmd.ObtenerSuscriptoresModificados("SuscriptorActivo");
+                List<Cliente> unaLista = new List<Cliente>();
+
+                if (DTabla != null)
+                {
+                    if (DTabla.Rows.Count > 0)
+                    {
+                        foreach (DataRow x in DTabla.Rows)
+                        {
+                            string? suscriptorActivo = !Convert.IsDBNull(x[1]) ? (string?)x[2] : null;
+
+                            Cliente clie = new Cliente((int)x[0]);
+                            clie.suscriptorActivo = suscriptorActivo;
+                            unaLista.Add(clie);
+                        }
+                    }
+                }
+                return unaLista;
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
+        public List<Cliente> ConsultarSuscriptoresModificadosSuspendido()
+        {
+            try
+            {
+                DataTable DTabla = new DataTable();
+                DTabla = cmd.ObtenerSuscriptoresModificados("Suspendido");
+                List<Cliente> unaLista = new List<Cliente>();
+
+                if (DTabla != null)
+                {
+                    if (DTabla.Rows.Count > 0)
+                    {
+                        foreach (DataRow x in DTabla.Rows)
+                        {
+                            string? estaSuspendido = !Convert.IsDBNull(x[1]) ? (string?)x[6] : null;
+
+                            Cliente clie = new Cliente((int)x[0]);
+                            clie.suspendido = estaSuspendido;
+                            unaLista.Add(clie);
+                        }
+                    }
+                }
+                return unaLista;
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
+        #endregion
 
         //Le paso los clientes que encontro en ConsultarClientesAlta
         public async Task<Boolean> AltaNuevoCliente(Cliente cli)
@@ -149,7 +295,41 @@ namespace CapaDatos
             {
                 bool respuesta = await cmd.ActualizarDatosCliente(cli);
                 return respuesta;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return false;
+            }
+        }
 
+        public async Task<Boolean> ActualizarDatosCliente(Cliente cli, string queActualizar)
+        {
+            try
+            {
+                bool respuesta = false;
+                switch (queActualizar)
+                {
+                    case "MailComercial":
+                         respuesta= await cmd.ActualizarMailCliente(cli);
+                        break;
+                    case "CUIT":
+                        respuesta = await cmd.ActualizarCuitCliente(cli);
+                        break;
+                    case "RazonSocial":
+                        respuesta = await cmd.ActualizarRazonSocialCliente(cli);
+                        break;
+                    case "SuscriptorActivo":
+                        respuesta = await cmd.ActualizarActivoCliente(cli);
+                        break;
+                    case "Suspendido":
+                        respuesta = await cmd.ActualizarSuspendidoCliente(cli);
+                        break;
+                    default:
+                        break;
+                }
+                
+                return respuesta;
             }
             catch (Exception ex)
             {
