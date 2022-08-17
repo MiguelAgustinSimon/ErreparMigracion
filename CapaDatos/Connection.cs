@@ -155,6 +155,66 @@ namespace CapaDatos
                 return null;
             }
         }
+        public string ObtenerEndpointUpdateSuscriptor()
+        {
+            try
+            {
+                var updateCustomerUserCorpCustomer = ConfigurationManager.AppSettings["updateCustomerUserCorpCustomer"];
+
+                return updateCustomerUserCorpCustomer;
+            }
+            catch (Exception ex)
+            {
+                //display error message
+                Console.WriteLine("Exception: " + ex.Message);
+                return null;
+            }
+        }
+        public string ObtenerEndpointCreateSuscripcion()
+        {
+            try
+            {
+                var createProduct = ConfigurationManager.AppSettings["createProduct"];
+
+                return createProduct;
+            }
+            catch (Exception ex)
+            {
+                //display error message
+                Console.WriteLine("Exception: " + ex.Message);
+                return null;
+            }
+        }
+        public string ObtenerEndpointUpdateSuscripcion()
+        {
+            try
+            {
+                var updateProduct = ConfigurationManager.AppSettings["updateProduct"];
+
+                return updateProduct;
+            }
+            catch (Exception ex)
+            {
+                //display error message
+                Console.WriteLine("Exception: " + ex.Message);
+                return null;
+            }
+        }
+        public string ObtenerEndpointDeleteSuscripcion()
+        {
+            try
+            {
+                var deleteProduct = ConfigurationManager.AppSettings["deleteProduct"];
+
+                return deleteProduct;
+            }
+            catch (Exception ex)
+            {
+                //display error message
+                Console.WriteLine("Exception: " + ex.Message);
+                return null;
+            }
+        }
 
     }
 }

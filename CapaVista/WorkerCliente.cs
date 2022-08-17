@@ -107,12 +107,12 @@ namespace CapaVista
                 foreach (Cliente unCliente in clientesM)
                 {
                     //aca tengo que llamar a endpoint 
-                    //var rta1 = await endpoint.actualizarDatosSuscriptor(unCliente);
-                    //if (rta1 == true)
-                    //{
-                    var rta2 = mprClie.ActualizarDatosCliente(unCliente);
-                    Console.WriteLine("La RTA ACTUALIZACION CLIENTE ES: " + rta2.Result);
-                    //}
+                    var rta1 = await orquestador.updateCustomerUserCorpCustomer(unCliente);
+                    if (rta1 == true)
+                    {
+                        var rta2 = mprClie.ActualizarDatosCliente(unCliente);
+                        Console.WriteLine("La RTA ACTUALIZACION CLIENTE ES: " + rta2.Result);
+                    }
                 }
             }
             catch (Exception ex)
