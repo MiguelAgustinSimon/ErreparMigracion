@@ -10,14 +10,13 @@ namespace CapaVista
     {
         Boolean bandera = false;
 
-        public async Task <bool> realizarClonadoTablas()
+        public async Task <bool> realizarClonadoTablaClientes()
         {
             try
             {
                 MapperClonadoBD mprCBD = new MapperClonadoBD();// al llamar al constructor asigno sus propiedades
 
                 var rtaClienteTest = mprCBD.PreguntarExistencia(mprCBD.tablaDestinoDC);
-                var rtaSuscripcionesTest = mprCBD.PreguntarExistencia(mprCBD.tablaDestinoSA);
 
                 if (rtaClienteTest.Result == false)
                 {
@@ -31,6 +30,23 @@ namespace CapaVista
                     Console.WriteLine("TABLA CLIENTES EXISTENTE OK ");
                     this.bandera = false;
                 }
+
+                return this.bandera;
+            }
+            catch (Exception ex)
+            {
+                //display error message
+                Console.WriteLine("Exception: " + ex.Message);
+                return false;
+            }
+        }
+
+        public async Task<bool> realizarClonadoTablaSuscripciones()
+        {
+            try
+            {
+                MapperClonadoBD mprCBD = new MapperClonadoBD();// al llamar al constructor asigno sus propiedades
+                var rtaSuscripcionesTest = mprCBD.PreguntarExistencia(mprCBD.tablaDestinoSA);
 
                 if (rtaSuscripcionesTest.Result == false)
                 {

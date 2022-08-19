@@ -11,6 +11,7 @@ namespace CapaVista
         MapperCliente mprClie = new MapperCliente();
         Orquestador orquestador = new Orquestador();// al llamar al constructor asigno sus propiedades
         List<Cliente> clientesIDS = new List<Cliente>();
+        List<Cliente> clientesAltaMasiva = new List<Cliente>();
         List<Cliente> clientesA = new List<Cliente>();
         List<Cliente> clientesB = new List<Cliente>();
         List<Cliente> clientesM = new List<Cliente>();
@@ -20,15 +21,13 @@ namespace CapaVista
         List<Cliente> misClientesActivos = new List<Cliente>();
         List<Cliente> misClientesSuspendidos = new List<Cliente>();
 
-        Log unLog = new Log();
-
         //-------------------------------------------------------------------  C L I E N T E S   ---------------------------------------------------
         public async Task verificarDatosClientes()
         {
             try
             {
                 this.ObtenerIDSClientesAltas();
-                this.VerificarModificaciones();
+                //this.VerificarModificaciones();
                 this.VerificarClientesBorrados();
             }
             catch (Exception ex)
@@ -42,6 +41,8 @@ namespace CapaVista
         {
             try
             {
+                //aca debo borrar la lista por las dudas: clientesIDS
+                clientesIDS.Clear();
                 clientesIDS = mprClie.ConsultarIDSClientesAlta();
                 if (clientesIDS.Count() > 0)
                 {
@@ -78,6 +79,8 @@ namespace CapaVista
                         var rta2 = await mprClie.AltaNuevoCliente(unCliente);
                         Console.WriteLine("La RTA ALTA DE CLIENTE ES: " + rta2.ToString());
                     }
+
+                    //Guardar en novedades cuando FALLA IGUAL
 
                 }
             }
@@ -229,5 +232,48 @@ namespace CapaVista
                 Console.WriteLine("Exception: " + ex.Message);
             }
         }
+
+
+        //Buscara todos los clientes recientemente clonados para darlos de alta
+        public async Task ObtenerTodosClientes()
+        {
+            try
+            {
+                clientesAltaMasiva = mprClie.ObtenerTodosClientes();
+                if (clientesAltaMasiva.Count() > 0)
+                {
+                    foreach (Cliente unCliente in clientesAltaMasiva)
+                    {
+                        this.AltaNuevoCliente(unCliente);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                //display error message
+                Console.WriteLine("Exception: " + ex.Message);
+            }
+        }
+        public async void AltaNuevoCliente(Cliente unCliente)
+        {
+            try
+            {
+                //aca tengo que llamar a endpoint AltaCliente: createCustomerUserCorpCustomer
+                var rta1 = await orquestador.createCustomerUserCorpCustomer(unCliente);
+                if (rta1 == true)
+                {
+                    
+                    Console.WriteLine("EL ALTA DE CLIENTE ORQUESTADOR ES CORRECTA - CLIENTE:" + unCliente.idCliente);
+                }
+                
+            }
+            catch (Exception ex)
+            {
+                //display error message
+                Console.WriteLine("Exception: " + ex.Message);
+            }
+        }
+
+
     }
 }

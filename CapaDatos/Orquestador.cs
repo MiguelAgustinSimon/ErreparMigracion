@@ -20,6 +20,7 @@ namespace CapaDatos
         public string updateSuscripcion;
         public string deleteSuscripcion;
         MapperLog mpLog = new MapperLog();
+        MapperCliente mprClie = new MapperCliente();
         public Orquestador()
         {
           
@@ -46,61 +47,97 @@ namespace CapaDatos
                 //headerApi, postSubscriber y demas estan en appConfig
                 var client = new RestClient(this.headerApi);
                 var request = new RestRequest(this.createCustomer, Method.Post);
-                request.RequestFormat = DataFormat.Json;
+                request.RequestFormat = RestSharp.DataFormat.Json;
+                request.AddHeader("Content-Type", "application/json");
 
                 request.AddHeader("authorization", this.tokenApi);
 
-                //request.AddParameter("clicod", unCliente.idCliente.ToString().Trim());
-                //request.AddParameter("cuit", unCliente.cuit.ToString().Trim());
-                //request.AddParameter("email", unCliente.mailComercial.Trim());
-                //request.AddParameter("razon_social", unCliente.razonSocial.Trim());
-                //request.AddParameter("fecha_alta", unCliente.fechaAlta.ToString().Trim());
-                //request.AddParameter("fecha_actualizacion_tablas_intermedias", unCliente.fechaActualizacion.ToString().Trim());
+                
 
-                //if (unCliente.suscriptorActivo == "S")
-                //{
-                //    request.AddParameter("activo", true);
-                //}
-                //else
-                //{
-                //    request.AddParameter("activo", false);
-                //}
+                var clicod = unCliente.idCliente.ToString().Trim();
+                var cuit = unCliente.cuit.ToString().Trim();
+                var email = unCliente.mailComercial.Trim().ToLower();
+                var razonSocial = unCliente.razonSocial.Trim();
+                var fechaAlta = unCliente.fechaAlta.ToString().Trim();
+                var fechaAct = unCliente.fechaActualizacion.ToString().Trim();
+                var estaActivo = true;
+                var suspendido = false;
+                if (unCliente.suscriptorActivo == "N")
+                {
+                    estaActivo = false;
+                }
+                if (unCliente.suspendido == "S")
+                {
+                    suspendido = true;
+                }
+                var pais = unCliente.pais.ToString().Trim();
+                var prov = unCliente.provincia.ToString().Trim();
+                var tipoSuscriptor = unCliente.tipoSuscriptor.ToString().Trim();
+                var perIIBB = unCliente.perIIBB.ToString().Trim();
 
-                //if (unCliente.suspendido == "S")
-                //{
-                //    request.AddParameter("suspendido", true);
-                //}
-                //else
-                //{
-                //    request.AddParameter("suspendido", false);
-                //}
-                //request.AddParameter("pais", unCliente.pais.Trim());
-                //request.AddParameter("provincia", unCliente.provincia.Trim());
-                //request.AddParameter("tipo_suscriptor", unCliente.tipoSuscriptor.Trim());
-                //request.AddParameter("perIIBB", unCliente.perIIBB.ToString().Trim());
+                request.AddBody(new
+                {
+                    clicod = clicod,
+                    cuit = cuit,
+                    email = email,
+                    razon_social = razonSocial,
+                    fecha_alta = fechaAlta,
+                    fecha_actualizacion_tablas_intermedias = fechaAct,
+                    activo = estaActivo,
+                    suspendido = suspendido,
+                    pais = pais,
+                    tipo_suscriptorprovincia = prov,
+                    tipo_suscriptor = tipoSuscriptor,
+                    perIIBB = perIIBB
+                });
 
+                //request.AddBody(new
+                //{
+                //    clicod = "clicodtest73",
+                //    cuit = "1123361273",
+                //    email = "hernanpappatest573@gmail.com",
+                //    razon_social = "TIENDA DE MASCOTAS73",
+                //    fecha_alta = "1/6/2022 08:58:53",
+                //    fecha_actualizacion_tablas_intermedias = "1/6/2022 08:58:53",
+                //    activo = true,
+                //    suspendido = false,
+                //    pais = pais,
+                //    tipo_suscriptorprovincia = prov,
+                //    tipo_suscriptor = tipoSuscriptor,
+                //    perIIBB = perIIBB
+                //});
 
-                request.AddParameter("clicod", "444957");
-                request.AddParameter("cuit", "30693291221");
-                request.AddParameter("email", "solange.janin@samconsultt.com");
-                request.AddParameter("razon_social", "ERREPAR");
-                request.AddParameter("fecha_alta", "2022-06-22T20:10:08.087Z");
-                request.AddParameter("fecha_actualizacion_tablas_intermedias", "2022-06-22T20:10:08.087Z");
-                request.AddParameter("activo", true);
-                request.AddParameter("suspendido", false);
-        
+                //CASO DE EXITO EJEMPLO
+                //request.AddParameter("clicod", "clicodtest73");
+                //request.AddParameter("cuit", "1123361273");
+                //request.AddParameter("email", "hernanpappatest573@gmail.com");
+                //request.AddParameter("razon_social", "TIENDA DE MASCOTAS73");
+                //request.AddParameter("fecha_alta", "2021-08-13");
+                //request.AddParameter("fecha_actualizacion_tablas_intermedias", "2021-08-13");
+                //request.AddParameter("activo", true);
+                //request.AddParameter("suspendido", false);
+                //request.AddParameter("pais", "ARGENTINA");
+                //request.AddParameter("provincia", "BSAS");
+                //request.AddParameter("tipo_suscriptor", 1);
+                //request.AddParameter("perIIBB", "xxx");
+
 
                 var response = client.Execute(request);
-                if (response.StatusCode == System.Net.HttpStatusCode.Created)
+                if (response.StatusCode == System.Net.HttpStatusCode.Created || response.StatusCode == System.Net.HttpStatusCode.OK)
                 {
-                    Console.WriteLine(response.Content);
-                    await mpLog.agregarLogSerilog("createCustomerUserCorpCustomer OK - subscriber_id: " + unCliente.idCliente);
+                    //Console.WriteLine(response.Content);
+                    await mpLog.agregarLogSerilog("createCustomerUserCorpCustomer OK - subscriber_id: " + unCliente.idCliente + " Respuesta: " + response.Content);
+                    //Guardar en tabla Novedades!!!
+                    await mprClie.ActualizarNovedadesSuscriptor(unCliente, "Alta", "Realizado", null);
+
                     return true;
                 }
                 else
                 {
-                    Console.WriteLine(response.StatusDescription);
-                    await mpLog.agregarLogSerilog("Falló createCustomerUserCorpCustomer: ERROR - subscriber_id: " + unCliente.idCliente + " / " + response.StatusDescription);
+                    //Console.WriteLine(response.StatusDescription);
+                    await mpLog.agregarLogSerilog("Falló createCustomerUserCorpCustomer: ERROR - subscriber_id: " + unCliente.idCliente + " / " + response.StatusDescription + " - Respuesta: " + response.Content);
+                    //Guardar en tabla Novedades!!!
+                    await mprClie.ActualizarNovedadesSuscriptor(unCliente, "Alta", "Error", response.Content);
                     return false;
                 }
             }
@@ -170,13 +207,17 @@ namespace CapaDatos
                 if (response.StatusCode == System.Net.HttpStatusCode.OK)
                 {
                     Console.WriteLine(response.Content);
-                    await mpLog.agregarLogSerilog("createCustomerUserCorpCustomer OK - subscriber_id: " + unCliente.idCliente);
+                    await mpLog.agregarLogSerilog("updateSucriberCorpCustomer OK - subscriber_id: " + unCliente.idCliente + " Respuesta: " + response.Content);
+                    //Guardar en tabla Novedades!!!
+                    await mprClie.ActualizarNovedadesSuscriptor(unCliente, "Modificacion", "Realizado", null);
                     return true;
                 }
                 else
                 {
                     Console.WriteLine(response.StatusDescription);
-                    await mpLog.agregarLogSerilog("Falló createCustomerUserCorpCustomer: ERROR - subscriber_id: " + unCliente.idCliente + " / " + response.StatusDescription);
+                    await mpLog.agregarLogSerilog("Falló updateSucriberCorpCustomer: ERROR - subscriber_id: " + unCliente.idCliente + " / " + response.StatusDescription);
+                    //Guardar en tabla Novedades!!!
+                    await mprClie.ActualizarNovedadesSuscriptor(unCliente, "Modificacion", "Error", response.Content);
                     return false;
                 }
             }

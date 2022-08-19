@@ -64,12 +64,12 @@ namespace CapaVista
                 foreach (Suscripcion unaSuscipcion in suscripcionesA)
                 {
                     //aca tengo que llamar a endpoint 
-                    var rta1 = await orquestador.createProductCommProduct(unaSuscipcion);
-                    if (rta1 == true)
-                    {
-                        var rta2 = await mprSuscipcion.AltaNuevaSuscripcion(unaSuscipcion);
-                        Console.WriteLine("La RTA ALTA DE SUSCRIPCION ES: " + rta2.ToString());
-                    }
+                    //var rta1 = await orquestador.createProductCommProduct(unaSuscipcion);
+                    //if (rta1 == true)
+                    //{
+                    var rta2 = await mprSuscipcion.AltaNuevaSuscripcion(unaSuscipcion);
+                    Console.WriteLine("La RTA ALTA DE SUSCRIPCION ES: " + rta2.ToString());
+                    //}
                 }
             }
             catch (Exception ex)
@@ -103,12 +103,12 @@ namespace CapaVista
             {
                 foreach (Suscripcion susc in suscripcionesM)
                 {
-                    var rta1 = await orquestador.updateProductCommProduct(susc);
-                    if (rta1 == true)
-                    {
-                        var rta = await mprSuscipcion.ActualizarDatosSuscripcion(susc);
-                        Console.WriteLine("La RTA ACTUALIZACION DE LA SUSCRIPCION ES: " + rta.ToString());
-                    }
+                    //var rta1 = await orquestador.updateProductCommProduct(susc);
+                    //if (rta1 == true)
+                    //{
+                    var rta = await mprSuscipcion.ActualizarDatosSuscripcion(susc);
+                    Console.WriteLine("La RTA ACTUALIZACION DE LA SUSCRIPCION ES: " + rta.ToString());
+                    //}
                 }
             }
             catch (Exception ex)
@@ -142,12 +142,12 @@ namespace CapaVista
             {
                 foreach (Suscripcion susc in suscripcionesB)
                 {
-                    var rta1 = await orquestador.deleteProductCommProduct(susc);
-                    if (rta1 == true)
-                    {
-                        var rta2 = await mprSuscipcion.EliminarSuscripcion(susc);
-                        Console.WriteLine("La RTA ALTA DE SUSCRIPCION ES: " + rta2.ToString());
-                    }
+                    //var rta1 = await orquestador.deleteProductCommProduct(susc);
+                    //if (rta1 == true)
+                    //{
+                    var rta2 = await mprSuscipcion.EliminarSuscripcion(susc);
+                    Console.WriteLine("La RTA ALTA DE SUSCRIPCION ES: " + rta2.ToString());
+                    //}
                 }
             }
             catch (Exception ex)

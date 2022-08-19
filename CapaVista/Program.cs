@@ -10,7 +10,8 @@ namespace CapaVista // Note: actual namespace depends on the project name.
 {
     public class Program 
     {
-        Boolean bandera = false;
+        Boolean banderaClientes = false;
+        Boolean banderaSuscripciones = false;
 
         //LOAD
         static void Main(string[] args)
@@ -23,14 +24,23 @@ namespace CapaVista // Note: actual namespace depends on the project name.
         {
             try
             {
-                await this.realizarClonadoTablas();
+                await this.realizarClonadoClientes();
+                await this.realizarClonadoSuscripciones();
 
-                if (this.bandera == false) //ya hay una copia previa asi que verificaremos caso por caso
-                {
-                    Console.WriteLine("Aguarde mientras se ejecutan las operaciones...");
+                Console.WriteLine("Aguarde mientras se ejecutan las operaciones...");
+
+                if (this.banderaClientes == true){
+                    //hizo una copia asi que procedemos a impactar en Orquestador a todos los clientes
+                    await this.generarAltaMasivaClientes();
+                }else{
                     await this.verificarClientes();
+                }
+
+                if (this.banderaSuscripciones == false)
+                {
                     await this.verificarSuscripciones();
                 }
+                
             }
             catch (Exception ex)
             {
@@ -47,12 +57,12 @@ namespace CapaVista // Note: actual namespace depends on the project name.
 
 
         //-------------------------------------------------------------------  CLONADO BD   ---------------------------------------------------
-        public async Task realizarClonadoTablas()
+        public async Task realizarClonadoClientes()
         {
             try
             {
                 WorkerClonadoBD wcbd = new WorkerClonadoBD();
-                this.bandera = await wcbd.realizarClonadoTablas();
+                this.banderaClientes = await wcbd.realizarClonadoTablaClientes();
 
             }
             catch (Exception ex)
@@ -61,7 +71,34 @@ namespace CapaVista // Note: actual namespace depends on the project name.
                 Console.WriteLine("Exception: " + ex.Message);
             }
         }
+        public async Task realizarClonadoSuscripciones()
+        {
+            try
+            {
+                WorkerClonadoBD wcbd = new WorkerClonadoBD();
+                this.banderaSuscripciones = await wcbd.realizarClonadoTablaSuscripciones();
 
+            }
+            catch (Exception ex)
+            {
+                //display error message
+                Console.WriteLine("Exception: " + ex.Message);
+            }
+        }
+        public async Task generarAltaMasivaClientes()
+        {
+            try
+            {
+                WorkerCliente wc = new WorkerCliente();
+                await wc.ObtenerTodosClientes();
+
+            }
+            catch (Exception ex)
+            {
+                //display error message
+                Console.WriteLine("Exception: " + ex.Message);
+            }
+        }
 
         //-------------------------------------------------------------------  C L I E N T E S   ---------------------------------------------------
         public async Task verificarClientes()

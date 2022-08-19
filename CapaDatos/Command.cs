@@ -122,6 +122,35 @@ namespace CapaDatos
         }
 
         //---------------------------------------------------------- PARTE DE SUSCRIPTOR--------------------------------------------------------------------------
+        public DataTable ObtenerTodosClientes()
+        {
+            try
+            {
+                SqlConnection mConeccion = Connection.ConnectionObj();
+                mConeccion.Open();
+
+                DataTable mDT = new DataTable();
+                string query = "SELECT TOP (10) * " +
+                               "FROM " + this.mprCBD.tablaDestinoDC  +
+                               " order by Cliente ASC ";
+
+                using (SqlCommand cmd = new SqlCommand(query, Connection.ConnectionObj()))
+                {
+                    SqlDataAdapter mDA = new SqlDataAdapter(cmd);
+                    mDA.Fill(mDT);
+                    mConeccion.Close();
+                }
+                return mDT;
+            }
+            catch (Exception ex)
+            {
+                //display error message
+                Console.WriteLine("Exception: " + ex.Message);
+                return null;
+            }
+        }
+
+
         public DataTable ObtenerIDSClientesAlta()
         {
             try
@@ -345,7 +374,7 @@ namespace CapaDatos
 
                 if (resultado > 0)
                 {
-                    await this.ActualizarNovedadesSuscriptor(clie, "Alta");
+                    await this.ActualizarNovedadesSuscriptor(clie, "Alta","Realizado",null);
                     return true;
                 }
                 else
@@ -398,8 +427,6 @@ namespace CapaDatos
                
                 if (resultado > 0)
                 {
-                    await this.ActualizarNovedadesSuscriptor(clie,"Modificacion");
-
                     return true;
                 }
                 else
@@ -435,7 +462,6 @@ namespace CapaDatos
 
                 if (resultado > 0)
                 {
-                    await this.ActualizarNovedadesSuscriptor(clie, "Modificacion");
 
                     return true;
                 }
@@ -471,7 +497,7 @@ namespace CapaDatos
 
                 if (resultado > 0)
                 {
-                    await this.ActualizarNovedadesSuscriptor(clie, "Modificacion");
+                     await this.ActualizarNovedadesSuscriptor(clie, "Modificacion", "Realizado", null);
 
                     return true;
                 }
@@ -508,7 +534,7 @@ namespace CapaDatos
 
                 if (resultado > 0)
                 {
-                    await this.ActualizarNovedadesSuscriptor(clie, "Modificacion");
+                     await this.ActualizarNovedadesSuscriptor(clie, "Modificacion", "Realizado", null);
                     return true;
                 }
                 else
@@ -544,7 +570,7 @@ namespace CapaDatos
 
                 if (resultado > 0)
                 {
-                    await this.ActualizarNovedadesSuscriptor(clie, "Modificacion");
+                     await this.ActualizarNovedadesSuscriptor(clie, "Modificacion", "Realizado", null);
                     return true;
                 }
                 else
@@ -580,7 +606,7 @@ namespace CapaDatos
 
                 if (resultado > 0)
                 {
-                    await this.ActualizarNovedadesSuscriptor(clie, "Modificacion");
+                     await this.ActualizarNovedadesSuscriptor(clie, "Modificacion", "Realizado", null);
                     return true;
                 }
                 else
@@ -619,7 +645,7 @@ namespace CapaDatos
 
                 if (resultado > 0)
                 {
-                    await this.ActualizarNovedadesSuscriptor(clie, "Eliminacion");
+                    await this.ActualizarNovedadesSuscriptor(clie, "Eliminacion", "Realizado", null);
                     return true;
                 }
                 else
@@ -635,7 +661,7 @@ namespace CapaDatos
             }
         }
 
-        public async Task<Boolean> ActualizarNovedadesSuscriptor(Cliente clie, string tipo)
+        public async Task<Boolean> ActualizarNovedadesSuscriptor(Cliente clie, string tipo, string estado, string response)
         {
             try
             {
@@ -651,7 +677,8 @@ namespace CapaDatos
                     cmd.Parameters.AddWithValue("@fechaHora", DateTime.Now);
                     cmd.Parameters.AddWithValue("@tipo", tipo);
                     cmd.Parameters.AddWithValue("@tablaOrigen", this.mprCBD.tablaOrigenDC);
-                    cmd.Parameters.AddWithValue("@estado", "Pendiente");
+                    cmd.Parameters.AddWithValue("@estado", estado);
+                    cmd.Parameters.AddWithValue("@response", response);
                    cmd.ExecuteNonQuery(); //impacto en la BD
                 }
                 mConeccion.Close();

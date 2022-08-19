@@ -53,13 +53,18 @@ namespace CapaDatos
         {
             try
             {
-                string ruta = @"..\\..\\..\\Logs\\log.txt";
+                string ruta = @"..\\..\\..\\Logs\\log.txt"; //PASARLO A APP.CONFIG
+
+                //GUARDARLO CON MES
 
                 Log.Logger = new LoggerConfiguration()
                     .WriteTo.File(ruta)
                     .CreateLogger();
 
-                Log.Information(texto);
+              
+            Log.Information(texto);
+                
+              
             }
             catch (Exception e)
             {
