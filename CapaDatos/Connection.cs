@@ -215,6 +215,21 @@ namespace CapaDatos
                 return null;
             }
         }
+        public string ObtenerRutaSerilog()
+        {
+            try
+            {
+                var rutaSerilog = ConfigurationManager.AppSettings["rutaSerilog"];
+
+                return rutaSerilog;
+            }
+            catch (Exception ex)
+            {
+                //display error message
+                Console.WriteLine("Exception: " + ex.Message);
+                return null;
+            }
+        }
 
     }
 }

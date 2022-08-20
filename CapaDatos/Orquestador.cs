@@ -107,37 +107,23 @@ namespace CapaDatos
                 //    perIIBB = perIIBB
                 //});
 
-                //CASO DE EXITO EJEMPLO
-                //request.AddParameter("clicod", "clicodtest73");
-                //request.AddParameter("cuit", "1123361273");
-                //request.AddParameter("email", "hernanpappatest573@gmail.com");
-                //request.AddParameter("razon_social", "TIENDA DE MASCOTAS73");
-                //request.AddParameter("fecha_alta", "2021-08-13");
-                //request.AddParameter("fecha_actualizacion_tablas_intermedias", "2021-08-13");
-                //request.AddParameter("activo", true);
-                //request.AddParameter("suspendido", false);
-                //request.AddParameter("pais", "ARGENTINA");
-                //request.AddParameter("provincia", "BSAS");
-                //request.AddParameter("tipo_suscriptor", 1);
-                //request.AddParameter("perIIBB", "xxx");
-
 
                 var response = client.Execute(request);
                 if (response.StatusCode == System.Net.HttpStatusCode.Created || response.StatusCode == System.Net.HttpStatusCode.OK)
                 {
                     //Console.WriteLine(response.Content);
-                    await mpLog.agregarLogSerilog("createCustomerUserCorpCustomer OK - subscriber_id: " + unCliente.idCliente + " Respuesta: " + response.Content);
+                    await mpLog.agregarLogSerilog("createCustomerUserCorpCustomer OK - subscriber_id: " + unCliente.idCliente,true);
                     //Guardar en tabla Novedades!!!
-                    await mprClie.ActualizarNovedadesSuscriptor(unCliente, "Alta", "Realizado", null);
+                    await mprClie.ActualizarNovedadesSuscriptor(unCliente, "Alta", "Realizado", response.Content);
 
                     return true;
                 }
                 else
                 {
                     //Console.WriteLine(response.StatusDescription);
-                    await mpLog.agregarLogSerilog("Falló createCustomerUserCorpCustomer: ERROR - subscriber_id: " + unCliente.idCliente + " / " + response.StatusDescription + " - Respuesta: " + response.Content);
+                    await mpLog.agregarLogSerilog("Falló createCustomerUserCorpCustomer: ERROR - subscriber_id: " + unCliente.idCliente + " / " + response.StatusDescription + " - Respuesta: " + response.Content,false);
                     //Guardar en tabla Novedades!!!
-                    await mprClie.ActualizarNovedadesSuscriptor(unCliente, "Alta", "Error", response.Content);
+                    await mprClie.ActualizarNovedadesSuscriptor(unCliente, "Alta", "Pendiente", response.Content);
                     return false;
                 }
             }
@@ -207,17 +193,17 @@ namespace CapaDatos
                 if (response.StatusCode == System.Net.HttpStatusCode.OK)
                 {
                     Console.WriteLine(response.Content);
-                    await mpLog.agregarLogSerilog("updateSucriberCorpCustomer OK - subscriber_id: " + unCliente.idCliente + " Respuesta: " + response.Content);
+                    await mpLog.agregarLogSerilog("updateSucriberCorpCustomer OK - subscriber_id: " + unCliente.idCliente + " Respuesta: " + response.Content,true);
                     //Guardar en tabla Novedades!!!
-                    await mprClie.ActualizarNovedadesSuscriptor(unCliente, "Modificacion", "Realizado", null);
+                    await mprClie.ActualizarNovedadesSuscriptor(unCliente, "Modificacion", "Realizado", response.Content);
                     return true;
                 }
                 else
                 {
                     Console.WriteLine(response.StatusDescription);
-                    await mpLog.agregarLogSerilog("Falló updateSucriberCorpCustomer: ERROR - subscriber_id: " + unCliente.idCliente + " / " + response.StatusDescription);
+                    await mpLog.agregarLogSerilog("Falló updateSucriberCorpCustomer: ERROR - subscriber_id: " + unCliente.idCliente + " / " + response.StatusDescription, false);
                     //Guardar en tabla Novedades!!!
-                    await mprClie.ActualizarNovedadesSuscriptor(unCliente, "Modificacion", "Error", response.Content);
+                    await mprClie.ActualizarNovedadesSuscriptor(unCliente, "Modificacion", "Pendiente", response.Content);
                     return false;
                 }
             }
@@ -253,13 +239,13 @@ namespace CapaDatos
                 if (response.StatusCode == System.Net.HttpStatusCode.Created)
                 {
                     Console.WriteLine(response.Content);
-                    await mpLog.agregarLogSerilog("createProductCommProduct OK - Cliente: " + unaSuscripcion.idCliente + ", Producto: " + unaSuscripcion.idProducto);
+                    await mpLog.agregarLogSerilog("createProductCommProduct OK - Cliente: " + unaSuscripcion.idCliente + ", Producto: " + unaSuscripcion.idProducto, true);
                     return true;
                 }
                 else
                 {
                     Console.WriteLine(response.StatusDescription);
-                    await mpLog.agregarLogSerilog("Falló createProductCommProduct - Cliente: " + unaSuscripcion.idCliente + ", Producto: " + unaSuscripcion.idProducto + " / " + response.StatusDescription);
+                    await mpLog.agregarLogSerilog("Falló createProductCommProduct - Cliente: " + unaSuscripcion.idCliente + ", Producto: " + unaSuscripcion.idProducto + " / " + response.StatusDescription, false);
                     return false;
                 }
             }
@@ -295,13 +281,13 @@ namespace CapaDatos
                 if (response.StatusCode == System.Net.HttpStatusCode.OK)
                 {
                     Console.WriteLine(response.Content);
-                    await mpLog.agregarLogSerilog("updateProductCommProduct OK - Cliente: " + unaSuscripcion.idCliente + ", Producto: " + unaSuscripcion.idProducto);
+                    await mpLog.agregarLogSerilog("updateProductCommProduct OK - Cliente: " + unaSuscripcion.idCliente + ", Producto: " + unaSuscripcion.idProducto, true);
                     return true;
                 }
                 else
                 {
                     Console.WriteLine(response.StatusDescription);
-                    await mpLog.agregarLogSerilog("Falló updateProductCommProduct - Cliente: " + unaSuscripcion.idCliente + ", Producto: " + unaSuscripcion.idProducto + " / " + response.StatusDescription);
+                    await mpLog.agregarLogSerilog("Falló updateProductCommProduct - Cliente: " + unaSuscripcion.idCliente + ", Producto: " + unaSuscripcion.idProducto + " / " + response.StatusDescription, false);
                     return false;
                 }
             }
@@ -336,13 +322,13 @@ namespace CapaDatos
                 if (response.StatusCode == System.Net.HttpStatusCode.OK)
                 {
                     Console.WriteLine(response.Content);
-                    await mpLog.agregarLogSerilog("deleteProductCommProduct OK - Cliente: " + unaSuscripcion.idCliente + ", Producto: " + unaSuscripcion.idProducto);
+                    await mpLog.agregarLogSerilog("deleteProductCommProduct OK - Cliente: " + unaSuscripcion.idCliente + ", Producto: " + unaSuscripcion.idProducto, true);
                     return true;
                 }
                 else
                 {
                     Console.WriteLine(response.StatusDescription);
-                    await mpLog.agregarLogSerilog("Falló deleteProductCommProduct - Cliente: " + unaSuscripcion.idCliente + ", Producto: " + unaSuscripcion.idProducto + " / " + response.StatusDescription);
+                    await mpLog.agregarLogSerilog("Falló deleteProductCommProduct - Cliente: " + unaSuscripcion.idCliente + ", Producto: " + unaSuscripcion.idProducto + " / " + response.StatusDescription, false);
                     return false;
                 }
             }

@@ -1,0 +1,2 @@
+2022-08-19 19:36:37.914 -03:00 [INF] createCustomerUserCorpCustomer OK - subscriber_id: 90006
+2022-08-19 19:39:29.623 -03:00 [INF] createCustomerUserCorpCustomer OK - subscriber_id: 90006

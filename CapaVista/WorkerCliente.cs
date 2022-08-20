@@ -262,7 +262,6 @@ namespace CapaVista
                 var rta1 = await orquestador.createCustomerUserCorpCustomer(unCliente);
                 if (rta1 == true)
                 {
-                    
                     Console.WriteLine("EL ALTA DE CLIENTE ORQUESTADOR ES CORRECTA - CLIENTE:" + unCliente.idCliente);
                 }
                 

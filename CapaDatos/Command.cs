@@ -374,7 +374,6 @@ namespace CapaDatos
 
                 if (resultado > 0)
                 {
-                    await this.ActualizarNovedadesSuscriptor(clie, "Alta","Realizado",null);
                     return true;
                 }
                 else
@@ -667,9 +666,9 @@ namespace CapaDatos
             {
                 SqlConnection mConeccion = Connection.ConnectionObj();
                 mConeccion.Open();
-                string query = "INSERT INTO " + this.mprCBD.tablaNovedadesSuscriptor + 
-                                @"(IDCliente, FechaHora, Tipo, TablaOrigen, Estado)
-                                VALUES (@idCliente, @fechaHora, @tipo, @tablaOrigen, @estado);";
+                string query = "INSERT INTO " + this.mprCBD.tablaNovedadesSuscriptor +
+                                @"(IDCliente, FechaHora, Tipo, TablaOrigen, Estado, Response)
+                                VALUES (@idCliente, @fechaHora, @tipo, @tablaOrigen, @estado, @response);";
 
                 using (SqlCommand cmd = new SqlCommand(query, Connection.ConnectionObj()))
                 {

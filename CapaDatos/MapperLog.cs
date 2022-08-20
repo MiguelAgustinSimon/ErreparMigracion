@@ -9,6 +9,7 @@ namespace CapaDatos
 {
     public class MapperLog
     {
+        Connection mConeccion = new Connection();
         public async Task agregarLog(string texto)
         {
 
@@ -49,29 +50,57 @@ namespace CapaDatos
 
         }
 
-        public async Task agregarLogSerilog(string texto)
+        public async Task agregarLogSerilog(string texto, bool resultado)
         {
             try
             {
-                string ruta = @"..\\..\\..\\Logs\\log.txt"; //PASARLO A APP.CONFIG
+                string ruta = mConeccion.ObtenerRutaSerilog();
+                string sLogCompruebaMesActual = ruta + DateTime.Today.ToString("yyyy-MM") + ".txt";
+                //string sLogCompruebaMesActual = ruta + DateTime.Today.AddMonths(+1).ToString("yyyy-MM") + ".txt";
 
-                //GUARDARLO CON MES
-
-                Log.Logger = new LoggerConfiguration()
-                    .WriteTo.File(ruta)
+                if (File.Exists(sLogCompruebaMesActual))
+                {
+                    Log.Logger = new LoggerConfiguration()
+                    .WriteTo.File(sLogCompruebaMesActual)
+                    .MinimumLevel.Verbose()
                     .CreateLogger();
+                    if (resultado == true)
+                    {
+                        Log.Information(texto);
+                    }
+                    else
+                    {
+                        Log.Error(texto);
+                    }
+                }
+                else
+                {
+                    string archivo = ruta + DateTime.Today.ToString("yyyy-MM") + ".txt";
+                    Log.Logger = new LoggerConfiguration()
+                    .WriteTo.File(archivo)
+                    .MinimumLevel.Verbose()
+                    .CreateLogger();
+                    if (resultado == true)
+                    {
+                        Log.Information(texto);
+                    }
+                    else
+                    {
+                        Log.Error(texto);
+                    }
+                }
 
-              
-            Log.Information(texto);
-                
-              
             }
             catch (Exception e)
             {
 
                 Log.Error("Algo ha salido mal ", e);
             }
+            Log.CloseAndFlush();
         }
 
+
     }
+
+ 
 }

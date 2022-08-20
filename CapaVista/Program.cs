@@ -1,11 +1,4 @@
-﻿using System;
-using System.Data;
-using System.Data.SqlClient;
-using System.Timers;
-using CapaDatos;
-using CapaNegocio;
-using static System.Net.Mime.MediaTypeNames;
-
+﻿
 namespace CapaVista // Note: actual namespace depends on the project name.
 {
     public class Program 
