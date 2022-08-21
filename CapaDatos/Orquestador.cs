@@ -137,71 +137,69 @@ namespace CapaDatos
 
 
         //UPDATE SUSCRIPTOR
-        public async Task<Boolean> updateSucriberCorpCustomer(Cliente unCliente)
+        public async Task<Boolean> updateSubscriberCorpCustomer(Cliente unCliente)
         {
             try
             {
                 //headerApi, postSubscriber y demas estan en appConfig
                 var client = new RestClient(this.headerApi);
                 var request = new RestRequest(this.updateCustomer, Method.Put);
-                request.RequestFormat = DataFormat.Json;
+                request.RequestFormat = RestSharp.DataFormat.Json;
+                request.AddHeader("Content-Type", "application/json");
 
                 request.AddHeader("authorization", this.tokenApi);
 
-
-                request.AddParameter("clicod", unCliente.idCliente.ToString().Trim());
-                if(unCliente.cuit!=null)
+                var clicod = unCliente.idCliente.ToString().Trim();
+                var cuit = unCliente.cuit.ToString().Trim();
+                var email = unCliente.mailComercial.Trim().ToLower();
+                var razonSocial = unCliente.razonSocial.Trim();
+                var fechaAlta = unCliente.fechaAlta.ToString().Trim();
+                var fechaAct = unCliente.fechaActualizacion.ToString().Trim();
+                var estaActivo = true;
+                var suspendido = false;
+                if (unCliente.suscriptorActivo == "N")
                 {
-                    request.AddParameter("cuit", unCliente.cuit.ToString().Trim());
+                    estaActivo = false;
                 }
-
-                if (unCliente.mailComercial != null)
+                if (unCliente.suspendido == "S")
                 {
-                    request.AddParameter("email", unCliente.mailComercial.ToString().Trim());
+                    suspendido = true;
                 }
+                var pais = unCliente.pais.ToString().Trim();
+                var prov = unCliente.provincia.ToString().Trim();
+                var tipoSuscriptor = unCliente.tipoSuscriptor.ToString().Trim();
+                var perIIBB = unCliente.perIIBB.ToString().Trim();
 
-                if (unCliente.razonSocial != null)
+                request.AddBody(new
                 {
-                    request.AddParameter("razon_social", unCliente.razonSocial.ToString().Trim());
-                }
-
-                if (unCliente.suscriptorActivo != null)
-                {
-                    if (unCliente.suscriptorActivo == "S")
-                    {
-                        request.AddParameter("activo", true);
-                    }
-                    else
-                    {
-                        request.AddParameter("activo", false);
-                    }
-                }
-
-                if (unCliente.suspendido != null)
-                {
-                    if (unCliente.suspendido == "S")
-                    {
-                        request.AddParameter("suspendido", true);
-                    }
-                    else
-                    {
-                        request.AddParameter("suspendido", false);
-                    }
-                }
+                    clicod = clicod,
+                    cuit = cuit,
+                    email = email,
+                    razon_social = razonSocial,
+                    fecha_alta = fechaAlta,
+                    fecha_actualizacion_tablas_intermedias = fechaAct,
+                    activo = estaActivo,
+                    suspendido = suspendido,
+                    pais = pais,
+                    tipo_suscriptorprovincia = prov,
+                    tipo_suscriptor = tipoSuscriptor,
+                    perIIBB = perIIBB
+                });
 
                 var response = client.Execute(request);
-                if (response.StatusCode == System.Net.HttpStatusCode.OK)
+                if (response.StatusCode == System.Net.HttpStatusCode.Created || response.StatusCode == System.Net.HttpStatusCode.OK)
                 {
-                    Console.WriteLine(response.Content);
-                    await mpLog.agregarLogSerilog("updateSucriberCorpCustomer OK - subscriber_id: " + unCliente.idCliente + " Respuesta: " + response.Content,true);
+                    //Console.WriteLine(response.Content);
+                    await mpLog.agregarLogSerilog("updateSubscriberCorpCustomer OK - subscriber_id: " + unCliente.idCliente, true);
                     //Guardar en tabla Novedades!!!
                     await mprClie.ActualizarNovedadesSuscriptor(unCliente, "Modificacion", "Realizado", response.Content);
+
                     return true;
                 }
                 else
                 {
-                    Console.WriteLine(response.StatusDescription);
-                    await mpLog.agregarLogSerilog("Falló updateSucriberCorpCustomer: ERROR - subscriber_id: " + unCliente.idCliente + " / " + response.StatusDescription, false);
+                    //Console.WriteLine(response.StatusDescription);
+                    await mpLog.agregarLogSerilog("Falló updateSubscriberCorpCustomer: ERROR - subscriber_id: " + unCliente.idCliente + " / " + response.StatusDescription + " - Respuesta: " + response.Content, false);
                     //Guardar en tabla Novedades!!!
                     await mprClie.ActualizarNovedadesSuscriptor(unCliente, "Modificacion", "Pendiente", response.Content);
                     return false;
@@ -258,7 +256,7 @@ namespace CapaDatos
         }
 
 
-        //UPDATE SUSCRIPTOR
+        //UPDATE SUSCRIPCION
         public async Task<Boolean> updateProductCommProduct(Suscripcion unaSuscripcion)
         {
             try

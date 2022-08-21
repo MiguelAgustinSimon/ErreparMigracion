@@ -27,7 +27,7 @@ namespace CapaVista
             try
             {
                 this.ObtenerIDSClientesAltas();
-                //this.VerificarModificaciones();
+                this.VerificarClientesModificados();
                 this.VerificarClientesBorrados();
             }
             catch (Exception ex)
@@ -79,9 +79,6 @@ namespace CapaVista
                         var rta2 = await mprClie.AltaNuevoCliente(unCliente);
                         Console.WriteLine("La RTA ALTA DE CLIENTE ES: " + rta2.ToString());
                     }
-
-                    //Guardar en novedades cuando FALLA IGUAL
-
                 }
             }
             catch (Exception ex)
@@ -91,80 +88,17 @@ namespace CapaVista
             }
         }
 
-        //public async void VerificarClientesModificados()
-        //{
-        //    try
-        //    {
-        //        //Si es mayor a 0 la cantidad de modificados..
-        //        clientesM = mprClie.ConsultarSuscriptoresModificados();
-        //        if (clientesM.Count() > 0)
-        //        {
-        //            this.ActualizarDatosCliente();
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        //display error message
-        //        Console.WriteLine("Exception: " + ex.Message);
-        //    }
-        //}
-
-        public async void VerificarModificaciones()
+        public async void VerificarClientesModificados()
         {
             try
             {
-                
                 //Si es mayor a 0 la cantidad de modificados..
-                this.misClientesMail = mprClie.ConsultarSuscriptoresModificadosMail();
-                this.misClientesCuit = mprClie.ConsultarSuscriptoresModificadosCuit();
-                this.misClientesRazonSocial = mprClie.ConsultarSuscriptoresModificadosRazonSocial();
-                this.misClientesActivos = mprClie.ConsultarSuscriptoresModificadosRazonActivo();
-                this.misClientesSuspendidos = mprClie.ConsultarSuscriptoresModificadosSuspendido();
-
-                if (this.misClientesMail.Count() > 0)
+                clientesM = mprClie.ConsultarSuscriptoresModificados();
+                if (clientesM.Count() > 0)
                 {
-                    this.ActualizarDatos(this.misClientesMail, "MailComercial");
-                }
-
-                if (this.misClientesCuit.Count() > 0)
-                {
-                    this.ActualizarDatos(this.misClientesCuit, "CUIT");
-                }
-
-                if (this.misClientesRazonSocial.Count() > 0)
-                {
-                    this.ActualizarDatos(this.misClientesRazonSocial, "RazonSocial");
-                }
-
-                if (this.misClientesActivos.Count() > 0)
-                {
-                    this.ActualizarDatos(this.misClientesActivos, "SuscriptorActivo");
-                }
-
-                if (this.misClientesSuspendidos.Count() > 0)
-                {
-                    this.ActualizarDatos(this.misClientesSuspendidos, "Suspendido");
-                }
-            }
-            catch (Exception ex)
-            {
-                //display error message
-                Console.WriteLine("Exception: " + ex.Message);
-            }
-        }
-
-        public async void ActualizarDatos(List<Cliente> unaLista, string queActualizar)
-        {
-            try
-            {
-                foreach (Cliente unCliente in unaLista)
-                {
-                    //aca tengo que llamar a endpoint 
-                    var rta1 = await orquestador.updateSucriberCorpCustomer(unCliente);
-                    if (rta1 == true)
+                    foreach (Cliente unCliente in clientesM)
                     {
-                        var rta2 = mprClie.ActualizarDatosCliente(unCliente, queActualizar);
-                        Console.WriteLine("La RTA ACTUALIZACION CLIENTE ES: " + rta2.Result);
+                        this.ActualizarDatosCliente(unCliente);
                     }
                 }
             }
@@ -174,18 +108,81 @@ namespace CapaVista
                 Console.WriteLine("Exception: " + ex.Message);
             }
         }
+        public async void ActualizarDatosCliente(Cliente unCliente)
+        {
+            try
+            {
+                //aca tengo que llamar a endpoint 
+                var rta1 = await orquestador.updateSubscriberCorpCustomer(unCliente);
+                if (rta1 == true)
+                {
+                    var rta2 = mprClie.ActualizarDatosCliente(unCliente);
+                    Console.WriteLine("La RTA ACTUALIZACION CLIENTE ES: " + rta2.Result);
+                }
+            }
+            catch (Exception ex)
+            {
+                //display error message
+                Console.WriteLine("Exception: " + ex.Message);
+            }
+        }
 
-        //public async void ActualizarDatosCliente()
+        #region Modificaciones nuevas (mail,cuit, etc)
+        //public async void VerificarModificaciones()
         //{
         //    try
         //    {
-        //        foreach (Cliente unCliente in clientesM)
+
+        //        //Si es mayor a 0 la cantidad de modificados..
+        //        this.misClientesMail = mprClie.ConsultarSuscriptoresModificadosMail();
+        //        this.misClientesCuit = mprClie.ConsultarSuscriptoresModificadosCuit();
+        //        this.misClientesRazonSocial = mprClie.ConsultarSuscriptoresModificadosRazonSocial();
+        //        this.misClientesActivos = mprClie.ConsultarSuscriptoresModificadosRazonActivo();
+        //        this.misClientesSuspendidos = mprClie.ConsultarSuscriptoresModificadosSuspendido();
+
+        //        if (this.misClientesMail.Count() > 0)
+        //        {
+        //            this.ActualizarDatos(this.misClientesMail, "MailComercial");
+        //        }
+
+        //        if (this.misClientesCuit.Count() > 0)
+        //        {
+        //            this.ActualizarDatos(this.misClientesCuit, "CUIT");
+        //        }
+
+        //        if (this.misClientesRazonSocial.Count() > 0)
+        //        {
+        //            this.ActualizarDatos(this.misClientesRazonSocial, "RazonSocial");
+        //        }
+
+        //        if (this.misClientesActivos.Count() > 0)
+        //        {
+        //            this.ActualizarDatos(this.misClientesActivos, "SuscriptorActivo");
+        //        }
+
+        //        if (this.misClientesSuspendidos.Count() > 0)
+        //        {
+        //            this.ActualizarDatos(this.misClientesSuspendidos, "Suspendido");
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        //display error message
+        //        Console.WriteLine("Exception: " + ex.Message);
+        //    }
+        //}
+
+        //public async void ActualizarDatos(List<Cliente> unaLista, string queActualizar)
+        //{
+        //    try
+        //    {
+        //        foreach (Cliente unCliente in unaLista)
         //        {
         //            //aca tengo que llamar a endpoint 
-        //            var rta1 = await orquestador.updateSucriberCorpCustomer(unCliente);
+        //            var rta1 = await orquestador.updateSubscriberCorpCustomer(unCliente);
         //            if (rta1 == true)
         //            {
-        //                var rta2 = mprClie.ActualizarDatosCliente(unCliente);
+        //                var rta2 = mprClie.ActualizarDatosCliente(unCliente, queActualizar);
         //                Console.WriteLine("La RTA ACTUALIZACION CLIENTE ES: " + rta2.Result);
         //            }
         //        }
@@ -196,6 +193,10 @@ namespace CapaVista
         //        Console.WriteLine("Exception: " + ex.Message);
         //    }
         //}
+
+        #endregion
+
+
 
         public async void VerificarClientesBorrados()
         {

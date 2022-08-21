@@ -159,9 +159,9 @@ namespace CapaDatos
         {
             try
             {
-                var updateSucriberCorpCustomer = ConfigurationManager.AppSettings["updateSucriberCorpCustomer"];
+                var updateSubscriberCorpCustomer = ConfigurationManager.AppSettings["updateSubscriberCorpCustomer"];
 
-                return updateSucriberCorpCustomer;
+                return updateSubscriberCorpCustomer;
             }
             catch (Exception ex)
             {
