@@ -14,6 +14,7 @@ namespace CapaVista
         List<Suscripcion> suscripcionesA = new List<Suscripcion>();
         List<Suscripcion> suscripcionesB = new List<Suscripcion>();
         List<Suscripcion> suscripcionesM = new List<Suscripcion>();
+        List<Suscripcion> listaSuscripciones = new List<Suscripcion>();
         // ------------------------------------------------------S U S C R I P C I O N E S-------------------------------------------------------------------
         public async Task verificarDatosSuscripciones()
         {
@@ -64,12 +65,12 @@ namespace CapaVista
                 foreach (Suscripcion unaSuscipcion in suscripcionesA)
                 {
                     //aca tengo que llamar a endpoint 
-                    //var rta1 = await orquestador.createProductCommProduct(unaSuscipcion);
-                    //if (rta1 == true)
-                    //{
-                    var rta2 = await mprSuscipcion.AltaNuevaSuscripcion(unaSuscipcion);
-                    Console.WriteLine("La RTA ALTA DE SUSCRIPCION ES: " + rta2.ToString());
-                    //}
+                    var rta1 = await orquestador.createProduct(unaSuscipcion);
+                    if (rta1 == true)
+                    {
+                        var rta2 = await mprSuscipcion.AltaNuevaSuscripcion(unaSuscipcion);
+                        Console.WriteLine("La RTA ALTA DE SUSCRIPCION ES: " + rta2.ToString());
+                    }
                 }
             }
             catch (Exception ex)
@@ -156,6 +157,46 @@ namespace CapaVista
                 Console.WriteLine("Exception: " + ex.Message);
             }
         }
-       
+
+
+        //Buscara todos los clientes recientemente clonados para darlos de alta
+        public async Task ObtenerTodasSuscripciones()
+        {
+            try
+            {
+                listaSuscripciones = mprSuscipcion.ObtenerTodasSuscripciones();
+                if (listaSuscripciones.Count() > 0)
+                {
+                    foreach (Suscripcion susc in listaSuscripciones)
+                    {
+                        this.AltaNuevaSuscripcion(susc);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                //display error message
+                Console.WriteLine("Exception: " + ex.Message);
+            }
+        }
+        public async void AltaNuevaSuscripcion(Suscripcion unaSuscripcion)
+        {
+            try
+            {
+                //aca tengo que llamar a endpoint AltaCliente: createCustomerUserCorpCustomer
+                var rta1 = await orquestador.createProduct(unaSuscripcion);
+                if (rta1 == true)
+                {
+                    Console.WriteLine($"EL ALTA DE SUSCRIPCION EN ORQUESTADOR ES CORRECTA - CLIENTE: {unaSuscripcion.idCliente}, PRODUCTO: {unaSuscripcion.idProducto}");
+                }
+
+            }
+            catch (Exception ex)
+            {
+                //display error message
+                Console.WriteLine("Exception: " + ex.Message);
+            }
+        }
+
     }
 }

@@ -23,25 +23,6 @@ namespace CapaDatos
             mCom.Connection = pCon;
             return mCom;
         }
-        public static DataTable ObtenerDataTable(string pTablaNombre)
-        {
-            try { 
-                SqlConnection mConeccion = Connection.ConnectionObj();
-                mConeccion.Open();
-                SqlDataAdapter mDA = new SqlDataAdapter();
-                DataTable mDT = new DataTable();
-                mDA.SelectCommand = Command.CommandObj("Select TOP(10) * From " + pTablaNombre + " order by Cliente desc", mConeccion);
-                mDA.Fill(mDT);
-                mConeccion.Close();
-                return mDT;
-            }
-            catch (Exception ex)
-            {
-                //display error message
-                Console.WriteLine("Exception: " + ex.Message);
-                return null;
-            }
-        }
 
         public async Task<Boolean> PreguntarExistencia(string pTabla)
         {
@@ -696,6 +677,38 @@ namespace CapaDatos
 
 
         //----------------------------------------------------------- SECCION DE SUSCRIPCIONES ----------------------------------------------------------------------
+
+        public DataTable ObtenerTodasSuscripciones()
+        {
+            try
+            {
+                SqlConnection mConeccion = Connection.ConnectionObj();
+                if (mConeccion.State != ConnectionState.Open && mConeccion.State != ConnectionState.Connecting)
+                {
+                    mConeccion.Open();
+                }
+
+                DataTable mDT = new DataTable();
+                string query = "SELECT TOP (10) * " +
+                               "FROM " + this.mprCBD.tablaDestinoSA +
+                               " order by Cliente ASC ";
+
+                using (SqlCommand cmd = new SqlCommand(query, Connection.ConnectionObj()))
+                {
+                    SqlDataAdapter mDA = new SqlDataAdapter(cmd);
+                    mDA.Fill(mDT);
+                }
+                mConeccion.Close();
+                return mDT;
+            }
+            catch (Exception ex)
+            {
+                //display error message
+                Console.WriteLine("Exception: " + ex.Message);
+                return null;
+            }
+        }
+
         public DataTable ObtenerIDSSuscripcionesAlta()
         {
             try
@@ -832,7 +845,6 @@ namespace CapaDatos
 
                 if (resultado > 0)
                 {
-                    await this.ActualizarNovedadesSuscripcion(unaSuscripcion, "Alta");
                     return true;
                 }
                 else
@@ -874,7 +886,6 @@ namespace CapaDatos
 
                 if (resultado > 0)
                 {
-                    await this.ActualizarNovedadesSuscripcion(unaSuscripcion, "Modificacion");
                     return true;
                 }
                 else
@@ -913,7 +924,6 @@ namespace CapaDatos
 
                 if (resultado > 0)
                 {
-                    await this.ActualizarNovedadesSuscripcion(susc, "Eliminacion");
                     return true;
                 }
                 else
@@ -929,15 +939,15 @@ namespace CapaDatos
             }
         }
 
-        public async Task<Boolean> ActualizarNovedadesSuscripcion(Suscripcion susc, string tipo)
+        public async Task<Boolean> ActualizarNovedadesSuscripcion(Suscripcion susc, string tipo, string estado, string response)
         {
             try
             {
                 SqlConnection mConeccion = Connection.ConnectionObj();
                 mConeccion.Open();
-                string query = @"INSERT INTO " + this.mprCBD.tablaNovedadesSuscripcion + 
-                                @"(IDCliente, IDProducto, FechaHora, Tipo, TablaOrigen, Estado)
-                                VALUES (@idCliente, @idProducto, @fechaHora, @tipo, @tablaOrigen, @estado);";
+                string query = @"INSERT INTO " + this.mprCBD.tablaNovedadesSuscripcion +
+                                @"(IDCliente, IDProducto, FechaHora, Tipo, TablaOrigen, Estado, Response)
+                                VALUES (@idCliente, @idProducto, @fechaHora, @tipo, @tablaOrigen, @estado, @response);";
 
                 using (SqlCommand cmd = new SqlCommand(query, Connection.ConnectionObj()))
                 {
@@ -946,7 +956,8 @@ namespace CapaDatos
                     cmd.Parameters.AddWithValue("@fechaHora", DateTime.Now);
                     cmd.Parameters.AddWithValue("@tipo", tipo);
                     cmd.Parameters.AddWithValue("@tablaOrigen", this.mprCBD.tablaOrigenSA);
-                    cmd.Parameters.AddWithValue("@estado", "Pendiente");
+                    cmd.Parameters.AddWithValue("@estado", estado);
+                    cmd.Parameters.AddWithValue("@response", response);
                     cmd.ExecuteNonQuery(); //impacto en la BD
                 }
                 mConeccion.Close();

@@ -29,11 +29,17 @@ namespace CapaVista // Note: actual namespace depends on the project name.
                     await this.verificarClientes();
                 }
 
-                if (this.banderaSuscripciones == false)
+                if (this.banderaSuscripciones == true)
+                {
+                    //hizo una copia asi que procedemos a impactar en Orquestador a todos las suscripciones
+                    await this.generarAltaMasivaSuscripciones();
+                }
+                else
                 {
                     await this.verificarSuscripciones();
                 }
-                
+
+
             }
             catch (Exception ex)
             {
@@ -84,6 +90,21 @@ namespace CapaVista // Note: actual namespace depends on the project name.
             {
                 WorkerCliente wc = new WorkerCliente();
                 await wc.ObtenerTodosClientes();
+
+            }
+            catch (Exception ex)
+            {
+                //display error message
+                Console.WriteLine("Exception: " + ex.Message);
+            }
+        }
+
+        public async Task generarAltaMasivaSuscripciones()
+        {
+            try
+            {
+                WorkerSuscripcion ws = new WorkerSuscripcion();
+                await ws.ObtenerTodasSuscripciones();
 
             }
             catch (Exception ex)

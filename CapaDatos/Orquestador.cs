@@ -21,6 +21,7 @@ namespace CapaDatos
         public string deleteSuscripcion;
         MapperLog mpLog = new MapperLog();
         MapperCliente mprClie = new MapperCliente();
+        MapperSuscripcion mprSuscripcion = new MapperSuscripcion();
         public Orquestador()
         {
           
@@ -215,35 +216,50 @@ namespace CapaDatos
 
 
         //ALTA DE SUSCRIPCION
-        public async Task<Boolean> createProductCommProduct(Suscripcion unaSuscripcion)
+        public async Task<Boolean> createProduct(Suscripcion susc)
         {
             try
             {
                 //headerApi, postSubscriber y demas estan en appConfig
                 var client = new RestClient(this.headerApi);
                 var request = new RestRequest(this.createSuscripcion, Method.Post);
-                request.RequestFormat = DataFormat.Json;
+                request.RequestFormat = RestSharp.DataFormat.Json;
+                request.AddHeader("Content-Type", "application/json");
 
                 request.AddHeader("authorization", this.tokenApi);
 
-                request.AddParameter("clicod", unaSuscripcion.idCliente.ToString());
-                request.AddParameter("idProducto", unaSuscripcion.idProducto.ToString());
-                request.AddParameter("tema", unaSuscripcion.tema);
-                request.AddParameter("vencimiento", unaSuscripcion.vencimiento.ToString());
-                request.AddParameter("idEjecutivo", unaSuscripcion.idEjecutivo.ToString());
+                var clicod = susc.idCliente.ToString().Trim();
+                var producto = susc.idProducto.ToString().Trim();
+                var tema = susc.tema.ToString().Trim();
+                var vencimiento = susc.vencimiento.ToString().Trim();
+                var ejecutivo = susc.idEjecutivo.ToString().Trim();
 
+
+                request.AddBody(new
+                {
+                    clicod = clicod,
+                    producto = producto,
+                    tema = tema,
+                    vencimiento = vencimiento,
+                    ejecutivo = ejecutivo
+                });
 
                 var response = client.Execute(request);
-                if (response.StatusCode == System.Net.HttpStatusCode.Created)
+                if (response.StatusCode == System.Net.HttpStatusCode.Created || response.StatusCode == System.Net.HttpStatusCode.OK)
                 {
-                    Console.WriteLine(response.Content);
-                    await mpLog.agregarLogSerilog("createProductCommProduct OK - Cliente: " + unaSuscripcion.idCliente + ", Producto: " + unaSuscripcion.idProducto, true);
+                    await mpLog.agregarLogSerilog("createProduct OK - Cliente: " + susc.idCliente + "- Producto: " + susc.idProducto, true);
+                    
+                    //Guardar en tabla Novedades!!!
+                    await mprSuscripcion.ActualizarNovedadesSuscripcion(susc, "Alta", "Realizado", response.Content);
+
                     return true;
                 }
                 else
                 {
-                    Console.WriteLine(response.StatusDescription);
-                    await mpLog.agregarLogSerilog("Falló createProductCommProduct - Cliente: " + unaSuscripcion.idCliente + ", Producto: " + unaSuscripcion.idProducto + " / " + response.StatusDescription, false);
+                    await mpLog.agregarLogSerilog("Falló createProduct: ERROR - Cliente: " + susc.idCliente + "- Producto: " + susc.idProducto + " / " + response.StatusDescription + " - Respuesta: " + response.Content, false);
+                 
+                    //Guardar en tabla Novedades!!!
+                    await mprSuscripcion.ActualizarNovedadesSuscripcion(susc, "Alta", "Pendiente", response.Content);
                     return false;
                 }
             }

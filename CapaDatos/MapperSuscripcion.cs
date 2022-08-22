@@ -97,6 +97,28 @@ namespace CapaDatos
         }//FinFuncion ConsultarSuscripcionesModificadas 
 
 
+        public List<Suscripcion> ObtenerTodasSuscripciones()
+        {
+            DataTable DTabla = cmd.ObtenerTodasSuscripciones();
+            List<Suscripcion> unaLista = new List<Suscripcion>();
+            if (DTabla != null)
+            {
+                if (DTabla.Rows.Count > 0)
+                {
+                    foreach (DataRow x in DTabla.Rows)
+                    {
+                        int? idClie = !Convert.IsDBNull(x[0]) ? (int?)x[0] : null;
+                        int? idProd = !Convert.IsDBNull(x[1]) ? (int?)x[1] : null;
+                        string? tema = !Convert.IsDBNull(x[2]) ? (string?)x[2] : null;
+
+                        Suscripcion susc = new Suscripcion(idClie, idProd,tema, (DateTime)x[3],(int)x[4]);
+                        unaLista.Add(susc);
+                    }
+                }
+            }
+            return unaLista;
+        }//FinFuncion ObtenerTodasSuscripciones 
+
 
         //Le paso los clientes que encontro en ConsultarClientesAlta
         public async Task<Boolean> AltaNuevaSuscripcion(Suscripcion suscripcion)
@@ -137,6 +159,21 @@ namespace CapaDatos
             {
                 Command cmd = new Command();
                 bool respuesta = await cmd.EliminarSuscripcion(susc);
+                return respuesta;
+
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return false;
+            }
+        }
+
+        public async Task<Boolean> ActualizarNovedadesSuscripcion(Suscripcion susc, string tipo, string estado, string response)
+        {
+            try
+            {
+                bool respuesta = await cmd.ActualizarNovedadesSuscripcion(susc, tipo, estado, response);
                 return respuesta;
 
             }

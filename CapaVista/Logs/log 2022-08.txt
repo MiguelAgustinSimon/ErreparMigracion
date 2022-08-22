@@ -17,3 +17,5 @@
 2022-08-21 11:32:55.449 -03:00 [DBG] ----------------------------------------------------------------------------------------------
 2022-08-21 11:32:58.020 -03:00 [ERR] Falló updateSubscriberCorpCustomer: ERROR - subscriber_id: 457811 / Bad Request - Respuesta: {"message":"No existe ningun subscriptor con el numero informado."}
 2022-08-21 11:32:58.020 -03:00 [DBG] ----------------------------------------------------------------------------------------------
+2022-08-22 15:55:23.066 -03:00 [ERR] Falló createProduct: ERROR - Cliente: 90006- Producto: 17140015 / Bad Gateway - Respuesta: {"message":"Se necesito crear la organizacion y no se realizo correctamente."}
+2022-08-22 15:55:23.089 -03:00 [DBG] ----------------------------------------------------------------------------------------------
