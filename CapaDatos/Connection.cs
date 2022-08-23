@@ -72,44 +72,6 @@ namespace CapaDatos
             }
         }
 
-        //public string[] ObtenerEndpointsSuscriptor()
-        //{
-        //    try
-        //    {
-        //        var headerApi = ConfigurationManager.AppSettings["HeaderApiSuscriptor"];
-        //        var getSubscriber = ConfigurationManager.AppSettings["GetSubscriber"];
-        //        var postSubscriber = ConfigurationManager.AppSettings["PostSubscriber"];
-        //        var updateSubscriber = ConfigurationManager.AppSettings["UpdateSubscriber"];
-                
-        //        string[] rutas = { headerApi, getSubscriber, postSubscriber, updateSubscriber };
-        //        return rutas;
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        //display error message
-        //        Console.WriteLine("Exception: " + ex.Message);
-        //        return null;
-        //    }
-        //}
-        //public string[] ObtenerEndpointsSuscripcion()
-        //{
-        //    try
-        //    {
-        //        var headerApi = ConfigurationManager.AppSettings["HeaderApiSuscripcion"];
-        //        var PostProduct = ConfigurationManager.AppSettings["PostProduct"];
-        //        var UpdateProduct = ConfigurationManager.AppSettings["UpdateProduct"];
-        //        var getSubscriberSuscriptionCommProduct = ConfigurationManager.AppSettings["getSubscriberSuscriptionCommProduct"];
-                
-        //        string[] rutas = { headerApi, PostProduct, UpdateProduct, getSubscriberSuscriptionCommProduct };
-        //        return rutas;
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        //display error message
-        //        Console.WriteLine("Exception: " + ex.Message);
-        //        return null;
-        //    }
-        //}
         public string ObtenerTokenApi()
         {
             try
@@ -132,6 +94,51 @@ namespace CapaDatos
                 var HeaderApi = ConfigurationManager.AppSettings["HeaderApi"];
 
                 return HeaderApi;
+            }
+            catch (Exception ex)
+            {
+                //display error message
+                Console.WriteLine("Exception: " + ex.Message);
+                return null;
+            }
+        }
+        public string ObtenerHeaderApiJwt()
+        {
+            try
+            {
+                var HeaderApiJwt = ConfigurationManager.AppSettings["HeaderApiJwt"];
+
+                return HeaderApiJwt;
+            }
+            catch (Exception ex)
+            {
+                //display error message
+                Console.WriteLine("Exception: " + ex.Message);
+                return null;
+            }
+        }
+        public string ObtenerApiKey()
+        {
+            try
+            {
+                var apikey = ConfigurationManager.AppSettings["apikey"];
+
+                return apikey;
+            }
+            catch (Exception ex)
+            {
+                //display error message
+                Console.WriteLine("Exception: " + ex.Message);
+                return null;
+            }
+        }
+        public string ObtenerGetJobCredentialsEAuth()
+        {
+            try
+            {
+                var getJobCredentialsEAuth = ConfigurationManager.AppSettings["getJobCredentialsEAuth"];
+
+                return getJobCredentialsEAuth;
             }
             catch (Exception ex)
             {

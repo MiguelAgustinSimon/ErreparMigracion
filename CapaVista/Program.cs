@@ -22,10 +22,13 @@ namespace CapaVista // Note: actual namespace depends on the project name.
 
                 Console.WriteLine("Aguarde mientras se ejecutan las operaciones...");
 
-                if (this.banderaClientes == true){
+                if (this.banderaClientes == true)
+                {
                     //hizo una copia asi que procedemos a impactar en Orquestador a todos los clientes
                     await this.generarAltaMasivaClientes();
-                }else{
+                }
+                else
+                {
                     await this.verificarClientes();
                 }
 
@@ -38,8 +41,6 @@ namespace CapaVista // Note: actual namespace depends on the project name.
                 {
                     await this.verificarSuscripciones();
                 }
-
-
             }
             catch (Exception ex)
             {
