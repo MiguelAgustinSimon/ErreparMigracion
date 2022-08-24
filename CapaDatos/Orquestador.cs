@@ -44,7 +44,7 @@ namespace CapaDatos
             this.createSuscripcion = mConeccion.ObtenerEndpointCreateSuscripcion();
             this.updateSuscripcion = mConeccion.ObtenerEndpointUpdateSuscripcion();
             this.deleteSuscripcion = mConeccion.ObtenerEndpointDeleteSuscripcion();
-            //this.tokenApi = this.getJobCredentialsEAuth().ToString();
+            //this.tokenApi = this.getJobCredentialsEAuth().GetAwaiter().GetResult();
         }
 
         //OBTENER JWT
@@ -63,7 +63,7 @@ namespace CapaDatos
 
                 request.AddBody(new
                 {
-                    url = apiKey
+                    key = apiKey
                 });
 
                 var response = client.Execute(request);
@@ -95,7 +95,7 @@ namespace CapaDatos
                 bool respuesta = false;
 
                 this.tokenApi = await getJobCredentialsEAuth();
-                if (tokenApi != null)
+                if (this.tokenApi != null)
                 {
                     //headerApi, postSubscriber y demas estan en appConfig
                     var client = new RestClient(this.headerApi);
@@ -196,7 +196,7 @@ namespace CapaDatos
                 bool respuesta = false;
 
                 this.tokenApi = await getJobCredentialsEAuth();
-                if (tokenApi != null)
+                if (this.tokenApi != null)
                 {
                     //headerApi, postSubscriber y demas estan en appConfig
                     var client = new RestClient(this.headerApi);
@@ -279,7 +279,7 @@ namespace CapaDatos
             {
                 bool respuesta = false;
                 this.tokenApi = await getJobCredentialsEAuth();
-                if (tokenApi != null)
+                if (this.tokenApi != null)
                 {
                     //headerApi, postSubscriber y demas estan en appConfig
                     var client = new RestClient(this.headerApi);
@@ -340,7 +340,7 @@ namespace CapaDatos
             {
                 bool respuesta = false;
                 this.tokenApi = await this.getJobCredentialsEAuth();
-                if (tokenApi != null)
+                if (this.tokenApi != null)
                 {
                     //headerApi, postSubscriber y demas estan en appConfig
                     var client = new RestClient(this.headerApi);
@@ -400,7 +400,7 @@ namespace CapaDatos
             {
                 bool respuesta = false;
                 this.tokenApi = await getJobCredentialsEAuth();
-                if (tokenApi != null)
+                if (this.tokenApi != null)
                 {
                     //headerApi, postSubscriber y demas estan en appConfig
                     var client = new RestClient(this.headerApi);

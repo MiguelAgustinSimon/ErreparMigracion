@@ -13,6 +13,7 @@ namespace CapaDatos
     public class Command
     {
         MapperClonadoBD mprCBD = new MapperClonadoBD();// al llamar al constructor asigno sus propiedades
+        MapperLog mapperLog = new MapperLog();
 
         private static SqlCommand mCom;
         public static SqlCommand CommandObj(string pConsulta, SqlConnection pCon)
@@ -43,6 +44,8 @@ namespace CapaDatos
             catch (Exception ex)
             {
                 //display error message
+                await mapperLog.agregarLogSerilog($"No se pudo conectar a la BD: {ex.Message}",false);
+
                 Console.WriteLine("Exception: " + ex.Message);
                 return false;
             }
