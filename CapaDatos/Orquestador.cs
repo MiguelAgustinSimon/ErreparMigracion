@@ -273,7 +273,7 @@ namespace CapaDatos
 
 
         //ALTA DE SUSCRIPCION
-        public async Task<Boolean> createProduct(Suscripcion susc)
+        public async Task<Boolean> startSubscriptionSubscriberCorpCustomer(Suscripcion susc)
         {
             try
             {
@@ -292,6 +292,7 @@ namespace CapaDatos
                     var clicod = susc.idCliente.ToString().Trim();
                     var producto = susc.idProducto.ToString().Trim();
                     var tema = susc.tema.ToString().Trim();
+                    var fecha_vigencia = DateTime.Now.ToString("yyyy-MM-dd");
                     var vencimiento = susc.vencimiento.ToString().Trim();
                     var ejecutivo = susc.idEjecutivo.ToString().Trim();
 
@@ -299,9 +300,10 @@ namespace CapaDatos
                     request.AddBody(new
                     {
                         clicod = clicod,
-                        producto = producto,
+                        id_producto = producto,
                         tema = tema,
-                        vencimiento = vencimiento,
+                        fecha_vigencia= fecha_vigencia,
+                        fecha_vencimiento = vencimiento,
                         ejecutivo = ejecutivo
                     });
 

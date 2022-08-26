@@ -17,7 +17,7 @@ namespace CapaVista // Note: actual namespace depends on the project name.
         {
             try
             {
-                await this.realizarClonadoClientes();
+                //await this.realizarClonadoClientes();
                 await this.realizarClonadoSuscripciones();
 
                 Console.WriteLine("Aguarde mientras se ejecutan las operaciones...");

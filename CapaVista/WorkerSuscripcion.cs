@@ -65,7 +65,7 @@ namespace CapaVista
                 foreach (Suscripcion unaSuscipcion in suscripcionesA)
                 {
                     //aca tengo que llamar a endpoint 
-                    var rta1 = await orquestador.createProduct(unaSuscipcion);
+                    var rta1 = await orquestador.startSubscriptionSubscriberCorpCustomer(unaSuscipcion);
                     if (rta1 == true)
                     {
                         var rta2 = await mprSuscipcion.AltaNuevaSuscripcion(unaSuscipcion);
@@ -184,7 +184,7 @@ namespace CapaVista
             try
             {
                 //aca tengo que llamar a endpoint AltaCliente: createCustomerUserCorpCustomer
-                var rta1 = await orquestador.createProduct(unaSuscripcion);
+                var rta1 = await orquestador.startSubscriptionSubscriberCorpCustomer(unaSuscripcion);
                 if (rta1 == true)
                 {
                     Console.WriteLine($"EL ALTA DE SUSCRIPCION EN ORQUESTADOR ES CORRECTA - CLIENTE: {unaSuscripcion.idCliente}, PRODUCTO: {unaSuscripcion.idProducto}");
