@@ -105,7 +105,7 @@ namespace CapaDatos
 
                     request.AddHeader("authorization", "Bearer "+this.tokenApi);
 
-                    var clicod = unCliente.idCliente.ToString().Trim();
+                    var clicod = unCliente.idCliente;
                     var cuit = unCliente.cuit.ToString().Trim();
                     var email = unCliente.mailComercial.Trim().ToLower();
                     var razonSocial = unCliente.razonSocial.Trim();
@@ -206,7 +206,7 @@ namespace CapaDatos
 
                     request.AddHeader("authorization", "Bearer " + this.tokenApi);
 
-                    var clicod = unCliente.idCliente.ToString().Trim();
+                      var clicod = unCliente.idCliente;
                     var cuit = unCliente.cuit.ToString().Trim();
                     var email = unCliente.mailComercial.Trim().ToLower();
                     var razonSocial = unCliente.razonSocial.Trim();
@@ -289,7 +289,7 @@ namespace CapaDatos
 
                     request.AddHeader("authorization", "Bearer " + this.tokenApi);
 
-                    var clicod = susc.idCliente.ToString().Trim();
+                    var clicod = susc.idCliente;
                     var producto = susc.idProducto.ToString().Trim();
                     var tema = susc.tema.ToString().Trim();
                     var fecha_vigencia = DateTime.Now.ToString("yyyy-MM-dd");
@@ -352,7 +352,8 @@ namespace CapaDatos
 
                     request.AddHeader("authorization", "Bearer " + this.tokenApi);
 
-                    var clicod = susc.idCliente.ToString().Trim();
+
+                    var clicod = susc.idCliente;
                     var producto = susc.idProducto.ToString().Trim();
                     var tema = susc.tema.ToString().Trim();
                     var vencimiento = susc.vencimiento.ToString().Trim();
@@ -412,7 +413,7 @@ namespace CapaDatos
 
                     request.AddHeader("authorization", "Bearer " + this.tokenApi);
 
-                    var clicod = susc.idCliente.ToString().Trim();
+                    var clicod = susc.idCliente;
                     var producto = susc.idProducto.ToString().Trim();
                     var tema = susc.tema.ToString().Trim();
                     var vencimiento = susc.vencimiento.ToString().Trim();

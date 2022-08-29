@@ -114,7 +114,7 @@ namespace CapaDatos
                 mConeccion.Open();
 
                 DataTable mDT = new DataTable();
-                string query = "SELECT TOP (10) * " +
+                string query = "SELECT * " +
                                "FROM " + this.mprCBD.tablaDestinoDC  +
                                " order by Cliente ASC ";
 
@@ -173,10 +173,10 @@ namespace CapaDatos
                 mConeccion.Open();
 
                 DataTable mDT = new DataTable();
-                string query = @"SELECT Cliente, MailComercial,SuscriptorActivo,FechaAlta,FechaActualizacion,RazonSocial,Suspendido,
+                string query = @$"SELECT Cliente, MailComercial,SuscriptorActivo,FechaAlta,FechaActualizacion,RazonSocial,Suspendido,
                                                         TimeStamp,Pais,Provincia,TipoSuscriptor,PerIIBB,CUIT 
-                                                        FROM " + this.mprCBD.tablaOrigenDC +
-                                                        " where Cliente=@unId";
+                                                        FROM {this.mprCBD.tablaOrigenDC}
+                                                        where Cliente=@unId";
 
                 using (SqlCommand cmd = new SqlCommand(query, Connection.ConnectionObj()))
                 {
@@ -203,12 +203,12 @@ namespace CapaDatos
                 mConeccion.Open();
                 SqlDataAdapter mDA = new SqlDataAdapter();
                 DataTable mDT = new DataTable();
-                mDA.SelectCommand = Command.CommandObj(@"SELECT Cliente
-                                                        FROM " + this.mprCBD.tablaDestinoDC + 
-                                                        @" where Activo=1
+                mDA.SelectCommand = Command.CommandObj(@$"SELECT Cliente
+                                                        FROM  {this.mprCBD.tablaDestinoDC}  
+                                                        where Activo=1
                                                         EXCEPT
                                                         SELECT Cliente
-                                                        FROM " + this.mprCBD.tablaOrigenDC + "", mConeccion);
+                                                        FROM {this.mprCBD.tablaOrigenDC}", mConeccion);
                 mDA.Fill(mDT);
                 mConeccion.Close();
                 return mDT;
@@ -692,7 +692,7 @@ namespace CapaDatos
                 }
 
                 DataTable mDT = new DataTable();
-                string query = "SELECT TOP (10) * " +
+                string query = "SELECT * " +
                                "FROM " + this.mprCBD.tablaDestinoSA +
                                " order by Cliente ASC ";
 
