@@ -10,25 +10,22 @@ namespace CapaVista
     {
         MapperCliente mprClie = new MapperCliente();
         Orquestador orquestador = new Orquestador();// al llamar al constructor asigno sus propiedades
-        List<Cliente> clientesIDS = new List<Cliente>();
+
         List<Cliente> clientesAltaMasiva = new List<Cliente>();
         List<Cliente> clientesA = new List<Cliente>();
+        List<Cliente> clientesA2 = new List<Cliente>();
         List<Cliente> clientesB = new List<Cliente>();
         List<Cliente> clientesM = new List<Cliente>();
-        List<Cliente> misClientesMail = new List<Cliente>();
-        List<Cliente> misClientesCuit = new List<Cliente>();
-        List<Cliente> misClientesRazonSocial = new List<Cliente>();
-        List<Cliente> misClientesActivos = new List<Cliente>();
-        List<Cliente> misClientesSuspendidos = new List<Cliente>();
+
 
         //-------------------------------------------------------------------  C L I E N T E S   ---------------------------------------------------
         public async Task verificarDatosClientes()
         {
             try
             {
-                this.ObtenerIDSClientesAltas();
+                this.ObtenerClientesAltas();
                 this.VerificarClientesModificados();
-                this.VerificarClientesBorrados();
+                //this.VerificarClientesBorrados();
             }
             catch (Exception ex)
             {
@@ -37,23 +34,31 @@ namespace CapaVista
             }
         }
 
-        public async void ObtenerIDSClientesAltas()
+        public async void ObtenerClientesAltas()
         {
             try
             {
                 //aca debo borrar la lista por las dudas: clientesIDS
-                clientesIDS.Clear();
-                clientesIDS = mprClie.ConsultarIDSClientesAlta();
-                if (clientesIDS.Count() > 0)
+                clientesA.Clear();
+                clientesA2.Clear();
+
+                clientesA = mprClie.ConsultarIDSClientesAlta();
+            
+                if (clientesA.Count() > 0)
                 {
-                    foreach (Cliente unCliente in clientesIDS)
+                    foreach (Cliente unCliente in clientesA)
                     {
-                        clientesA = mprClie.ConsultarDatosCliente((int)unCliente.idCliente);
-                        //Si es mayor a 0 la cantidad de la lista..
-                        if (clientesA.Count() > 0)
+                        //lleno la lista con todos los datos del cliente
+                        clientesA2.Add(mprClie.ConsultarDatosCliente((int)unCliente.idCliente));
+                    }
+                    
+                    if (clientesA2.Count()>0)
+                    {
+                        foreach (Cliente unCliente in clientesA2)
                         {
-                            this.AltaNuevoCliente();
+                            this.AltaNuevoCliente(unCliente);
                         }
+                        
                     }
                 }
             }
@@ -64,22 +69,18 @@ namespace CapaVista
             }
         }
 
-        public async void AltaNuevoCliente()
+        public async void AltaNuevoCliente(Cliente unCliente)
         {
             try
             {
-                foreach (Cliente unCliente in clientesA)
+                //aca tengo que llamar a endpoint AltaCliente: createCustomerUserCorpCustomer
+                var rta1 = await orquestador.createCustomerUserCorpCustomer(unCliente);
+                if (rta1 == true)
                 {
-                    //Console.WriteLine(unCliente.idCliente + " - " + unCliente.mailComercial );
-
-                    //aca tengo que llamar a endpoint AltaCliente: createCustomerUserCorpCustomer
-                    var rta1 = await orquestador.createCustomerUserCorpCustomer(unCliente);
-                    if (rta1 == true)
-                    {
-                        var rta2 = await mprClie.AltaNuevoCliente(unCliente);
-                        Console.WriteLine("La RTA ALTA DE CLIENTE ES: " + rta2.ToString());
-                    }
+                    var rta2 = await mprClie.AltaNuevoCliente(unCliente);
+                    Console.WriteLine("La RTA ALTA DE CLIENTE ES: " + rta2.ToString());
                 }
+
             }
             catch (Exception ex)
             {
@@ -255,24 +256,7 @@ namespace CapaVista
                 Console.WriteLine("Exception: " + ex.Message);
             }
         }
-        public async void AltaNuevoCliente(Cliente unCliente)
-        {
-            try
-            {
-                //aca tengo que llamar a endpoint AltaCliente: createCustomerUserCorpCustomer
-                var rta1 = await orquestador.createCustomerUserCorpCustomer(unCliente);
-                if (rta1 == true)
-                {
-                    Console.WriteLine("EL ALTA DE CLIENTE ORQUESTADOR ES CORRECTA - CLIENTE:" + unCliente.idCliente);
-                }
-                
-            }
-            catch (Exception ex)
-            {
-                //display error message
-                Console.WriteLine("Exception: " + ex.Message);
-            }
-        }
+       
 
 
     }

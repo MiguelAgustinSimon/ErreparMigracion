@@ -435,7 +435,7 @@ namespace CapaDatos
                         await mpLog.agregarLogSerilog($"createProduct OK - Cliente: {susc.idCliente} Producto: {susc.idProducto}", true);
 
                         //Guardar en tabla Novedades!!!
-                        await mprSuscripcion.ActualizarNovedadesSuscripcion(susc, "Alta", "Realizado", response.Content);
+                        await mprSuscripcion.ActualizarNovedadesSuscripcion(susc, "Eliminacion", "Realizado", response.Content);
 
                         respuesta = true;
                     }
@@ -443,7 +443,7 @@ namespace CapaDatos
                     {
                         await mpLog.agregarLogSerilog($"Falló createProduct: ERROR - Cliente: {susc.idCliente}  / Producto: {susc.idProducto} / {response.StatusDescription} - Respuesta: {response.Content}", false);
                         //Guardar en tabla Novedades!!!
-                        await mprSuscripcion.ActualizarNovedadesSuscripcion(susc, "Alta", "Pendiente", response.Content);
+                        await mprSuscripcion.ActualizarNovedadesSuscripcion(susc, "Eliminacion", "Pendiente", response.Content);
                     }
                 }
                 return respuesta;

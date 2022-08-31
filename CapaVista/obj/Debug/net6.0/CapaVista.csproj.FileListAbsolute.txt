@@ -31,6 +31,10 @@ C:\Users\AgustínSimón\Desktop\Errepar\Migracion\CapaVista\bin\Debug\net6.0\Mic
 C:\Users\AgustínSimón\Desktop\Errepar\Migracion\CapaVista\bin\Debug\net6.0\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
 C:\Users\AgustínSimón\Desktop\Errepar\Migracion\CapaVista\bin\Debug\net6.0\Microsoft.IdentityModel.Tokens.dll
 C:\Users\AgustínSimón\Desktop\Errepar\Migracion\CapaVista\bin\Debug\net6.0\Microsoft.Win32.SystemEvents.dll
+C:\Users\AgustínSimón\Desktop\Errepar\Migracion\CapaVista\bin\Debug\net6.0\RestSharp.dll
+C:\Users\AgustínSimón\Desktop\Errepar\Migracion\CapaVista\bin\Debug\net6.0\Serilog.dll
+C:\Users\AgustínSimón\Desktop\Errepar\Migracion\CapaVista\bin\Debug\net6.0\Serilog.Sinks.Console.dll
+C:\Users\AgustínSimón\Desktop\Errepar\Migracion\CapaVista\bin\Debug\net6.0\Serilog.Sinks.File.dll
 C:\Users\AgustínSimón\Desktop\Errepar\Migracion\CapaVista\bin\Debug\net6.0\System.Configuration.ConfigurationManager.dll
 C:\Users\AgustínSimón\Desktop\Errepar\Migracion\CapaVista\bin\Debug\net6.0\System.Data.SqlClient.dll
 C:\Users\AgustínSimón\Desktop\Errepar\Migracion\CapaVista\bin\Debug\net6.0\System.Drawing.Common.dll
@@ -71,7 +75,3 @@ C:\Users\AgustínSimón\Desktop\Errepar\Migracion\CapaVista\obj\Debug\net6.0\ref
 C:\Users\AgustínSimón\Desktop\Errepar\Migracion\CapaVista\obj\Debug\net6.0\CapaVista.pdb
 C:\Users\AgustínSimón\Desktop\Errepar\Migracion\CapaVista\obj\Debug\net6.0\CapaVista.genruntimeconfig.cache
 C:\Users\AgustínSimón\Desktop\Errepar\Migracion\CapaVista\obj\Debug\net6.0\ref\CapaVista.dll
-C:\Users\AgustínSimón\Desktop\Errepar\Migracion\CapaVista\bin\Debug\net6.0\RestSharp.dll
-C:\Users\AgustínSimón\Desktop\Errepar\Migracion\CapaVista\bin\Debug\net6.0\Serilog.dll
-C:\Users\AgustínSimón\Desktop\Errepar\Migracion\CapaVista\bin\Debug\net6.0\Serilog.Sinks.Console.dll
-C:\Users\AgustínSimón\Desktop\Errepar\Migracion\CapaVista\bin\Debug\net6.0\Serilog.Sinks.File.dll

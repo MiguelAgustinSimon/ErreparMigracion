@@ -47,42 +47,47 @@ namespace CapaDatos
         {
             DataTable DTabla = cmd.ObtenerIDSClientesAlta();
             List<Cliente> unaLista = new List<Cliente>();
-
-            if (DTabla.Rows.Count > 0)
+            if (DTabla != null)
             {
-                foreach (DataRow x in DTabla.Rows)
+                if (DTabla.Rows.Count > 0)
                 {
-                    Cliente clie = new Cliente((int)x[0]);
-                    unaLista.Add(clie);
+                    foreach (DataRow x in DTabla.Rows)
+                    {
+                        Cliente clie = new Cliente((int)x[0]);
+                        unaLista.Add(clie);
+                    }
                 }
             }
             return unaLista;
         }
 
-        public List<Cliente> ConsultarDatosCliente(int unId)
+
+        public Cliente ConsultarDatosCliente(int unId)
         {
             DataTable DTabla = cmd.ConsultarDatosCliente(unId);
-            List<Cliente> unaLista = new List<Cliente>();
-
-            if (DTabla.Rows.Count > 0)
+            Cliente miCliente = new Cliente();
+            if (DTabla != null)
             {
-                foreach (DataRow x in DTabla.Rows)
+                if (DTabla.Rows.Count > 0)
                 {
-                    string? mail = !Convert.IsDBNull(x[1]) ? (string?)x[1] : null;
-                    string? suscriptorActivo = !Convert.IsDBNull(x[1]) ? (string?)x[2] : null;
-                    string? razonSocial = !Convert.IsDBNull(x[1]) ? (string?)x[5] : null;
-                    string? estaSuspendido = !Convert.IsDBNull(x[1]) ? (string?)x[6] : null;
-                    string? unPais = !Convert.IsDBNull(x[1]) ? (string?)x[8] : null;
-                    string? unaProvincia = !Convert.IsDBNull(x[1]) ? (string?)x[9] : null;
-                    string? unTipoSuscriptor = !Convert.IsDBNull(x[1]) ? (string?)x[10] : null;
-                    decimal? unPerIIBB = !Convert.IsDBNull(x[11]) ? (decimal?)x[11] : null;
-                    string? unCuit = !Convert.IsDBNull(x[1]) ? (string?)x[12] : null;
-                    Cliente clie = new Cliente((int)x[0], mail, suscriptorActivo, (DateTime)x[3], (DateTime)x[4], razonSocial, estaSuspendido,
-                        (DateTime)x[7], unPais, unaProvincia, unTipoSuscriptor, unPerIIBB, unCuit);
-                    unaLista.Add(clie);
+                    foreach (DataRow x in DTabla.Rows)
+                    {
+                        string? mail = !Convert.IsDBNull(x[1]) ? (string?)x[1] : null;
+                        string? suscriptorActivo = !Convert.IsDBNull(x[1]) ? (string?)x[2] : null;
+                        string? razonSocial = !Convert.IsDBNull(x[1]) ? (string?)x[5] : null;
+                        string? estaSuspendido = !Convert.IsDBNull(x[1]) ? (string?)x[6] : null;
+                        string? unPais = !Convert.IsDBNull(x[1]) ? (string?)x[8] : null;
+                        string? unaProvincia = !Convert.IsDBNull(x[1]) ? (string?)x[9] : null;
+                        string? unTipoSuscriptor = !Convert.IsDBNull(x[1]) ? (string?)x[10] : null;
+                        decimal? unPerIIBB = !Convert.IsDBNull(x[11]) ? (decimal?)x[11] : null;
+                        string? unCuit = !Convert.IsDBNull(x[1]) ? (string?)x[12] : null;
+                        Cliente clie = new Cliente((int)x[0], mail, suscriptorActivo, (DateTime)x[3], (DateTime)x[4], razonSocial, estaSuspendido,
+                            (DateTime)x[7], unPais, unaProvincia, unTipoSuscriptor, unPerIIBB, unCuit);
+                        miCliente = clie;
+                    }
                 }
             }
-            return unaLista;
+            return miCliente;
         }
 
         public List<Cliente> ConsultarSuscriptoresBorrados()

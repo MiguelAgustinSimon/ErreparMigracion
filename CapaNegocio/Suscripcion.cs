@@ -20,6 +20,11 @@ namespace CapaNegocio
 
         public DateTime? vencimiento { get; set; }
 
+
+        public Suscripcion()
+        {
+        }
+        
         public Suscripcion(int? cliente, int? idProd)
         {
             idCliente = cliente;

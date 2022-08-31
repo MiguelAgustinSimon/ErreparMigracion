@@ -12,6 +12,7 @@ namespace CapaDatos
     public class MapperSuscripcion
     {
         Command cmd = new Command();
+
         public List<Suscripcion> ConsultarIDSSuscripcionesAlta()
         {
             DataTable DTabla = cmd.ObtenerIDSSuscripcionesAlta();
@@ -33,11 +34,10 @@ namespace CapaDatos
             return unaLista;
         }
 
-
-        public List<Suscripcion> ConsultarDatosSuscripcion(int idClie, int idProd)
+        public Suscripcion ConsultarDatosSuscripcion(int idClie, int idProd)
         {
             DataTable DTabla = cmd.ConsultarDatosSuscripcion(idClie, idProd);
-            List<Suscripcion> unaLista = new List<Suscripcion>();
+            Suscripcion unaSuscripcion = new Suscripcion();
             if (DTabla != null)
             {
                 if (DTabla.Rows.Count > 0)
@@ -48,33 +48,12 @@ namespace CapaDatos
                         int? ejecutivo = !Convert.IsDBNull(x[4]) ? (int?)x[4] : null;
 
                         Suscripcion susc = new Suscripcion((int)x[0], (int)x[1], tema, (DateTime)x[3], ejecutivo);
-                        unaLista.Add(susc);
+                        unaSuscripcion = susc;
                     }
                 }
             }
-            return unaLista;
-        } 
-
-        public List<Suscripcion> ConsultarSuscripcionesBorradas()
-        {
-            DataTable DTabla = cmd.ObtenerSuscripcionesBorradas();
-            List<Suscripcion> unaLista = new List<Suscripcion>();
-            if (DTabla != null)
-            {
-                if (DTabla.Rows.Count > 0)
-                {
-                    foreach (DataRow x in DTabla.Rows)
-                    {
-                        int? idClie = !Convert.IsDBNull(x[0]) ? (int?)x[0] : null;
-                        int? idProd = !Convert.IsDBNull(x[1]) ? (int?)x[1] : null;
-
-                        Suscripcion susc = new Suscripcion(idClie, idProd);
-                        unaLista.Add(susc);
-                    }
-                }
-            }
-            return unaLista;
-        }//FinFuncion ConsultarSuscriptoresBorrados 
+            return unaSuscripcion;
+        }
 
         public List<Suscripcion> ConsultarSuscripcionesModificadas()
         {
@@ -95,6 +74,28 @@ namespace CapaDatos
             }
             return unaLista;
         }//FinFuncion ConsultarSuscripcionesModificadas 
+
+        public List<Suscripcion> ConsultarSuscripcionesBorradas()
+        {
+            DataTable DTabla = cmd.ObtenerSuscripcionesBorradas();
+            List<Suscripcion> unaLista = new List<Suscripcion>();
+            if (DTabla != null)
+            {
+                if (DTabla.Rows.Count > 0)
+                {
+                    foreach (DataRow x in DTabla.Rows)
+                    {
+                        int? idClie = !Convert.IsDBNull(x[0]) ? (int?)x[0] : null;
+                        int? idProd = !Convert.IsDBNull(x[1]) ? (int?)x[1] : null;
+                        string? tema = !Convert.IsDBNull(x[2]) ? (string?)x[2] : null;
+
+                        Suscripcion susc = new Suscripcion(idClie, idProd, tema, (DateTime)x[3], (int)x[4]);
+                        unaLista.Add(susc);
+                    }
+                }
+            }
+            return unaLista;
+        }//FinFuncion ConsultarSuscriptoresBorrados 
 
 
         public List<Suscripcion> ObtenerTodasSuscripciones()

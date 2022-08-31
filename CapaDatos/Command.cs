@@ -65,7 +65,7 @@ namespace CapaDatos
                 
                 if (resultado > 0)
                 {
-                    await this.AgregarCamposTabla(nuevaTabla);
+                    //await this.AgregarCamposTabla(nuevaTabla);
                     return true;
                 }
                 else
@@ -143,11 +143,11 @@ namespace CapaDatos
                 mConeccion.Open();
 
                 DataTable mDT = new DataTable();
-                string query = "SELECT o.Cliente " +
-                               "FROM " + this.mprCBD.tablaOrigenDC + " o " +
-                                "Except "+
-                                "SELECT t.Cliente "+
-                                "FROM " + this.mprCBD.tablaDestinoDC + " t";
+                string query = @$"SELECT o.Cliente 
+                                FROM {this.mprCBD.tablaOrigenDC} o 
+                                Except 
+                                SELECT t.Cliente 
+                                FROM {this.mprCBD.tablaDestinoDC} t";
 
                 using (SqlCommand cmd = new SqlCommand(query, Connection.ConnectionObj()))
                 {
@@ -164,6 +164,7 @@ namespace CapaDatos
                 return null;
             }
         }
+
 
         public DataTable ConsultarDatosCliente(int unId)
         {
@@ -205,7 +206,6 @@ namespace CapaDatos
                 DataTable mDT = new DataTable();
                 mDA.SelectCommand = Command.CommandObj(@$"SELECT Cliente
                                                         FROM  {this.mprCBD.tablaDestinoDC}  
-                                                        where Activo=1
                                                         EXCEPT
                                                         SELECT Cliente
                                                         FROM {this.mprCBD.tablaOrigenDC}", mConeccion);
@@ -230,12 +230,11 @@ namespace CapaDatos
                 mConeccion.Open();
                 SqlDataAdapter mDA = new SqlDataAdapter();
                 DataTable mDT = new DataTable();
-                mDA.SelectCommand = Command.CommandObj(@"SELECT Cliente, MailComercial,SuscriptorActivo,FechaAlta,FechaActualizacion,RazonSocial,Suspendido,TimeStamp,Pais,Provincia,TipoSuscriptor,PerIIBB,CUIT 
-                                                        FROM " + this.mprCBD.tablaOrigenDC + 
-                                                        @" Except
+                mDA.SelectCommand = Command.CommandObj(@$"SELECT Cliente, MailComercial,SuscriptorActivo,FechaAlta,FechaActualizacion,RazonSocial,Suspendido,TimeStamp,Pais,Provincia,TipoSuscriptor,PerIIBB,CUIT 
+                                                        FROM {this.mprCBD.tablaOrigenDC} 
+                                                        Except
                                                         SELECT Cliente, MailComercial, SuscriptorActivo, FechaAlta, FechaActualizacion, RazonSocial, Suspendido, TimeStamp, Pais, Provincia, TipoSuscriptor, PerIIBB, CUIT
-                                                        FROM " + this.mprCBD.tablaDestinoDC + 
-                                                        " where Activo = 1", mConeccion);
+                                                        FROM {this.mprCBD.tablaDestinoDC} ", mConeccion);
                 mDA.Fill(mDT);
                 mConeccion.Close();
                 return mDT;
@@ -264,48 +263,42 @@ namespace CapaDatos
                                 FROM " + this.mprCBD.tablaOrigenDC +
                                 @" Except
                                 SELECT Cliente, MailComercial
-                                FROM " + this.mprCBD.tablaDestinoDC +
-                                " where Activo = 1";
+                                FROM " + this.mprCBD.tablaDestinoDC +" ";
                         break;
                     case "CUIT":
                         miSql = @"SELECT Cliente, CUIT
                                 FROM " + this.mprCBD.tablaOrigenDC +
                                 @" Except
                                 SELECT Cliente, CUIT
-                                FROM " + this.mprCBD.tablaDestinoDC +
-                                " where Activo = 1";
+                                FROM " + this.mprCBD.tablaDestinoDC +" ";
                         break;
                     case "RazonSocial":
                         miSql = @"SELECT Cliente, RazonSocial
                                 FROM " + this.mprCBD.tablaOrigenDC +
                                 @" Except
                                 SELECT Cliente, RazonSocial
-                                FROM " + this.mprCBD.tablaDestinoDC +
-                                " where Activo = 1";
+                                FROM " + this.mprCBD.tablaDestinoDC +"";
                         break;
                     case "SuscriptorActivo":
                         miSql = @"SELECT Cliente, SuscriptorActivo
                                 FROM " + this.mprCBD.tablaOrigenDC +
                                 @" Except
                                 SELECT Cliente, SuscriptorActivo
-                                FROM " + this.mprCBD.tablaDestinoDC +
-                                " where Activo = 1";
+                                FROM " + this.mprCBD.tablaDestinoDC +"";
                         break;
                     case "Suspendido":
                         miSql = @"SELECT Cliente, Suspendido
                                 FROM " + this.mprCBD.tablaOrigenDC +
                                 @" Except
                                 SELECT Cliente, Suspendido
-                                FROM " + this.mprCBD.tablaDestinoDC +
-                                " where Activo = 1";
+                                FROM " + this.mprCBD.tablaDestinoDC +"";
                         break;
                     default:
                         miSql = @"SELECT Cliente, MailComercial,SuscriptorActivo,FechaAlta,FechaActualizacion,RazonSocial,Suspendido,TimeStamp,Pais,Provincia,TipoSuscriptor,PerIIBB,CUIT 
                                 FROM " + this.mprCBD.tablaOrigenDC +
                                 @" Except
                                 SELECT Cliente, MailComercial, SuscriptorActivo, FechaAlta, FechaActualizacion, RazonSocial, Suspendido, TimeStamp, Pais, Provincia, TipoSuscriptor, PerIIBB, CUIT
-                                FROM " + this.mprCBD.tablaDestinoDC +
-                                " where Activo = 1";
+                                FROM " + this.mprCBD.tablaDestinoDC +"";
                         break;
                 }
 
@@ -330,10 +323,9 @@ namespace CapaDatos
                 int resultado = 0;
                 SqlConnection mConeccion = Connection.ConnectionObj();
                 mConeccion.Open();
-                string query = "INSERT INTO " + this.mprCBD.tablaDestinoDC + " (Cliente,MailComercial, SuscriptorActivo, FechaAlta, FechaActualizacion, RazonSocial ,Suspendido,"+
-                                        @"TimeStamp, Pais, Provincia, TipoSuscriptor,PerIIBB, CUIT)
-                                VALUES(@idCliente,@mailComercial,@suscriptorActivo,@fechaAlta,@fechaActualizacion,@razonSocial,@suspendido,@timeStamp,@pais,
-                                        @provincia,@tipoSuscriptor,@perIIBB,@cuit)";
+                string query = @$"INSERT INTO {this.mprCBD.tablaDestinoDC} (Cliente,MailComercial, SuscriptorActivo, FechaAlta, FechaActualizacion, RazonSocial ,Suspendido,
+                                  TimeStamp, Pais, Provincia, TipoSuscriptor,PerIIBB, CUIT)
+                                  VALUES(@idCliente,@mailComercial,@suscriptorActivo,@fechaAlta,@fechaActualizacion,@razonSocial,@suspendido,@timeStamp,@pais,@provincia,@tipoSuscriptor,@perIIBB,@cuit)";
 
                 using (SqlCommand cmd = new SqlCommand(query, Connection.ConnectionObj()))
                 {
@@ -613,14 +605,14 @@ namespace CapaDatos
                 int resultado = 0;
                 SqlConnection mConeccion = Connection.ConnectionObj();
                 mConeccion.Open();
-                string query = "UPDATE " + this.mprCBD.tablaDestinoDC + 
-                                @" set Activo=@activo
+                string query = "UPDATE " + this.mprCBD.tablaDestinoDC +
+                                @" set SuscriptorActivo=@activo
                                 where Cliente=@idCliente";
 
                 using (SqlCommand cmd = new SqlCommand(query, Connection.ConnectionObj()))
                 {
                     cmd.Parameters.AddWithValue("@idCliente", clie.idCliente);
-                    cmd.Parameters.AddWithValue("@activo", 0);
+                    cmd.Parameters.AddWithValue("@activo", 'N');
 
                     resultado = cmd.ExecuteNonQuery(); //impacto en la BD
                 }
@@ -650,8 +642,7 @@ namespace CapaDatos
             {
                 SqlConnection mConeccion = Connection.ConnectionObj();
                 mConeccion.Open();
-                string query = "INSERT INTO " + this.mprCBD.tablaNovedadesSuscriptor +
-                                @"(IDCliente, FechaHora, Tipo, TablaOrigen, Estado, Response)
+                string query = @$"INSERT INTO {this.mprCBD.tablaNovedadesSuscriptor} (IDCliente, FechaHora, Tipo, TablaOrigen, Estado, Response)
                                 VALUES (@idCliente, @fechaHora, @tipo, @tablaOrigen, @estado, @response);";
 
                 using (SqlCommand cmd = new SqlCommand(query, Connection.ConnectionObj()))
@@ -720,13 +711,38 @@ namespace CapaDatos
                 mConeccion.Open();
                 SqlDataAdapter mDA = new SqlDataAdapter();
                 DataTable mDT = new DataTable();
-                mDA.SelectCommand = Command.CommandObj(@"SELECT o.Cliente,o.Producto
-                                                        FROM " + this.mprCBD.tablaOrigenSA + " o "+
-                                                        @" Except
+                mDA.SelectCommand = Command.CommandObj(@$"SELECT o.Cliente,o.Producto
+                                                        FROM {this.mprCBD.tablaOrigenSA}  o 
+                                                        Except
                                                         SELECT t.Cliente,t.Producto
-                                                         FROM " + this.mprCBD.tablaDestinoSA + " t " +
-                                                        @" where t.Activo = 1", mConeccion);
+                                                        FROM {this.mprCBD.tablaDestinoSA} t", mConeccion);
                 mDA.Fill(mDT);
+                mConeccion.Close();
+                return mDT;
+            }
+            catch (Exception ex)
+            {
+                //display error message" 
+                Console.WriteLine("Exception: " + ex.Message);
+                return null;
+            }
+        }
+
+
+
+        public DataTable ObtenerSuscripcionesAlta()
+        {
+            try
+            {
+                SqlConnection mConeccion = Connection.ConnectionObj();
+                mConeccion.Open();
+                SqlDataAdapter mDA = new SqlDataAdapter();
+                DataTable mDT = new DataTable();
+                mDA.SelectCommand = Command.CommandObj(@$"SELECT *
+                                                        FROM {this.mprCBD.tablaOrigenSA}
+                                                        Except
+                                                        SELECT *
+                                                        FROM {this.mprCBD.tablaDestinoSA}", mConeccion);
                 mConeccion.Close();
                 return mDT;
             }
@@ -769,7 +785,7 @@ namespace CapaDatos
         }
 
 
-        public DataTable ObtenerSuscripcionesBorradas()
+        public DataTable ObtenerSuscripcionesModificadas()
         {
             try
             {
@@ -777,12 +793,12 @@ namespace CapaDatos
                 mConeccion.Open();
                 SqlDataAdapter mDA = new SqlDataAdapter();
                 DataTable mDT = new DataTable();
-                mDA.SelectCommand = Command.CommandObj(@"SELECT Cliente,Producto
-                                                        FROM " + this.mprCBD.tablaDestinoSA + 
-                                                        @" where Activo=1
-                                                        EXCEPT
-                                                        SELECT Cliente,Producto
-                                                        FROM " + this.mprCBD.tablaOrigenSA +" ", mConeccion);
+                mDA.SelectCommand = Command.CommandObj(@$"SELECT Cliente,Producto,Tema,Vencimiento,Ejecutivo
+                                                        FROM {this.mprCBD.tablaOrigenSA}
+                                                        Except
+                                                        SELECT Cliente,Producto,Tema,Vencimiento,Ejecutivo
+                                                        FROM {this.mprCBD.tablaDestinoSA}", mConeccion);
+
                 mDA.Fill(mDT);
                 mConeccion.Close();
                 return mDT;
@@ -795,7 +811,7 @@ namespace CapaDatos
             }
         }
 
-        public DataTable ObtenerSuscripcionesModificadas()
+        public DataTable ObtenerSuscripcionesBorradas()
         {
             try
             {
@@ -803,12 +819,11 @@ namespace CapaDatos
                 mConeccion.Open();
                 SqlDataAdapter mDA = new SqlDataAdapter();
                 DataTable mDT = new DataTable();
-                mDA.SelectCommand = Command.CommandObj(@"SELECT Cliente,Producto,Tema,Vencimiento,Ejecutivo
-                                                        FROM " + this.mprCBD.tablaOrigenSA + 
-                                                        @" Except
-                                                        SELECT Cliente,Producto,Tema,Vencimiento,Ejecutivo
-                                                        FROM " + this.mprCBD.tablaDestinoSA +  
-                                                        @" where Activo = 1", mConeccion);
+                mDA.SelectCommand = Command.CommandObj(@$"SELECT *
+                                                        FROM {this.mprCBD.tablaDestinoSA} 
+                                                        EXCEPT
+                                                        SELECT *
+                                                        FROM {this.mprCBD.tablaOrigenSA}", mConeccion);
                 mDA.Fill(mDT);
                 mConeccion.Close();
                 return mDT;
@@ -820,6 +835,8 @@ namespace CapaDatos
                 return null;
             }
         }
+
+        
 
 
         public async Task<Boolean> RegistrarNuevaSuscripcion(Suscripcion unaSuscripcion)
@@ -870,8 +887,8 @@ namespace CapaDatos
                 int resultado = 0;
                 SqlConnection mConeccion = Connection.ConnectionObj();
                 mConeccion.Open();
-                string query = @"UPDATE " + this.mprCBD.tablaDestinoSA +  
-                                @" set Tema=@tema, Vencimiento=@unVencimiento, Ejecutivo=@ejecutivo 
+                string query = @$"UPDATE {this.mprCBD.tablaDestinoSA}
+                                set Tema=@tema, Vencimiento=@unVencimiento, Ejecutivo=@ejecutivo 
                                 where Cliente=@idCliente and Producto=@idProducto";
 
                 using (SqlCommand cmd = new SqlCommand(query, Connection.ConnectionObj()))
@@ -911,15 +928,13 @@ namespace CapaDatos
                 int resultado = 0;
                 SqlConnection mConeccion = Connection.ConnectionObj();
                 mConeccion.Open();
-                string query = @"UPDATE " + this.mprCBD.tablaDestinoSA +  
-                                @" set Activo=@activo
-                                where Cliente=@idCliente and Producto=@idProducto";
+                string query = @$"DELETE FROM {this.mprCBD.tablaDestinoSA}
+                                    WHERE Cliente=@idCliente and Producto=@idProducto";
 
                 using (SqlCommand cmd = new SqlCommand(query, Connection.ConnectionObj()))
                 {
                     cmd.Parameters.AddWithValue("@idCliente", susc.idCliente);
                     cmd.Parameters.AddWithValue("@idProducto", susc.idProducto);
-                    cmd.Parameters.AddWithValue("@activo", 0);
 
                     resultado = cmd.ExecuteNonQuery(); //impacto en la BD
                 }

@@ -10,8 +10,8 @@ namespace CapaVista
     {
         Orquestador orquestador = new Orquestador();// al llamar al constructor asigno sus propiedades
         MapperSuscripcion mprSuscipcion = new MapperSuscripcion();
-        List<Suscripcion> suscripcionesIDS = new List<Suscripcion>();
         List<Suscripcion> suscripcionesA = new List<Suscripcion>();
+        List<Suscripcion> suscripcionesA2 = new List<Suscripcion>();
         List<Suscripcion> suscripcionesB = new List<Suscripcion>();
         List<Suscripcion> suscripcionesM = new List<Suscripcion>();
         List<Suscripcion> listaSuscripciones = new List<Suscripcion>();
@@ -20,7 +20,7 @@ namespace CapaVista
         {
             try
             {
-                this.ObtenerIDSSuscripcionesAltas();
+                this.ObtenerSuscripcionesAltas();
                 this.VerificarSuscripcionesModificadas();
                 this.VerificarSuscripcionesEliminadas();
             }
@@ -32,24 +32,33 @@ namespace CapaVista
         }
 
 
-        public async void ObtenerIDSSuscripcionesAltas()
+        public async void ObtenerSuscripcionesAltas()
         {
             try
             {
-                suscripcionesIDS = mprSuscipcion.ConsultarIDSSuscripcionesAlta();
-                if (suscripcionesIDS.Count() > 0)
+                //aca debo borrar la lista por las dudas: clientesIDS
+                suscripcionesA.Clear();
+                suscripcionesA2.Clear();
+
+                suscripcionesA = mprSuscipcion.ConsultarIDSSuscripcionesAlta();
+
+                if (suscripcionesA.Count() > 0)
                 {
-                    foreach (Suscripcion unaSusc in suscripcionesIDS)
+                    foreach (Suscripcion unaSusc in suscripcionesA)
                     {
-                        suscripcionesA = mprSuscipcion.ConsultarDatosSuscripcion((int)unaSusc.idCliente, (int)unaSusc.idProducto);
-                        //Si es mayor a 0 la cantidad de altas..
-                        if (suscripcionesA.Count() > 0)
+                        //lleno la lista con todos los datos de la suscripcion
+                        suscripcionesA2.Add(mprSuscipcion.ConsultarDatosSuscripcion((int)unaSusc.idCliente, (int)unaSusc.idProducto));
+                    }
+
+                    if (suscripcionesA2.Count() > 0)
+                    {
+                        foreach (Suscripcion unaSusc in suscripcionesA2)
                         {
-                            this.AltaNuevaSuscripcion();
+                            this.AltaNuevaSuscripcion(unaSusc);
                         }
+
                     }
                 }
-
             }
             catch (Exception ex)
             {
@@ -58,20 +67,19 @@ namespace CapaVista
             }
         }
 
-        public async void AltaNuevaSuscripcion()
+
+        public async void AltaNuevaSuscripcion(Suscripcion unaSuscipcion)
         {
             try
             {
-                foreach (Suscripcion unaSuscipcion in suscripcionesA)
+                //aca tengo que llamar a endpoint 
+                var rta1 = await orquestador.startSubscriptionSubscriberCorpCustomer(unaSuscipcion);
+                if (rta1 == true)
                 {
-                    //aca tengo que llamar a endpoint 
-                    var rta1 = await orquestador.startSubscriptionSubscriberCorpCustomer(unaSuscipcion);
-                    if (rta1 == true)
-                    {
-                        var rta2 = await mprSuscipcion.AltaNuevaSuscripcion(unaSuscipcion);
-                        Console.WriteLine("La RTA ALTA DE SUSCRIPCION ES: " + rta2.ToString());
-                    }
+                    var rta2 = await mprSuscipcion.AltaNuevaSuscripcion(unaSuscipcion);
+                    Console.WriteLine("La RTA ALTA DE SUSCRIPCION ES: " + rta2.ToString());
                 }
+
             }
             catch (Exception ex)
             {
@@ -89,7 +97,11 @@ namespace CapaVista
                 //Si es mayor a 0 la cantidad de modificados..
                 if (suscripcionesM.Count() > 0)
                 {
-                    this.ActualizarDatosSuscripciones();
+                    foreach (Suscripcion susc in suscripcionesM)
+                    {
+                        this.ActualizarDatosSuscripciones(susc);
+                    }
+                        
                 }
             }
             catch (Exception ex)
@@ -98,19 +110,17 @@ namespace CapaVista
                 Console.WriteLine("Exception: " + ex.Message);
             }
         }
-        public async void ActualizarDatosSuscripciones()
+
+        public async void ActualizarDatosSuscripciones(Suscripcion susc)
         {
             try
             {
-                foreach (Suscripcion susc in suscripcionesM)
-                {
-                    //var rta1 = await orquestador.updateProductCommProduct(susc);
-                    //if (rta1 == true)
-                    //{
-                    var rta = await mprSuscipcion.ActualizarDatosSuscripcion(susc);
-                    Console.WriteLine("La RTA ACTUALIZACION DE LA SUSCRIPCION ES: " + rta.ToString());
-                    //}
-                }
+                //var rta1 = await orquestador.updateProductCommProduct(susc);
+                //if (rta1 == true)
+                //{
+                var rta = await mprSuscipcion.ActualizarDatosSuscripcion(susc);
+                Console.WriteLine("La RTA ACTUALIZACION DE LA SUSCRIPCION ES: " + rta.ToString());
+                //}
             }
             catch (Exception ex)
             {
@@ -127,7 +137,10 @@ namespace CapaVista
                 //Si es mayor a 0 la cantidad de eliminados..
                 if (suscripcionesB.Count() > 0)
                 {
-                    this.EliminarSuscripcion();
+                    foreach (Suscripcion susc in suscripcionesB)
+                    {
+                        this.EliminarSuscripcion(susc);
+                    }
                 }
             }
             catch (Exception ex)
@@ -137,19 +150,17 @@ namespace CapaVista
             }
         }
 
-        public async void EliminarSuscripcion()
+        public async void EliminarSuscripcion(Suscripcion susc)
         {
             try
             {
-                foreach (Suscripcion susc in suscripcionesB)
-                {
-                    //var rta1 = await orquestador.deleteProductCommProduct(susc);
-                    //if (rta1 == true)
-                    //{
-                    var rta2 = await mprSuscipcion.EliminarSuscripcion(susc);
+
+                //var rta1 = await orquestador.deleteProductCommProduct(susc);
+                //if (rta1 == true)
+                //{
+                var rta2 = await mprSuscipcion.EliminarSuscripcion(susc);
                     Console.WriteLine("La RTA ALTA DE SUSCRIPCION ES: " + rta2.ToString());
-                    //}
-                }
+                //}
             }
             catch (Exception ex)
             {
@@ -179,24 +190,7 @@ namespace CapaVista
                 Console.WriteLine("Exception: " + ex.Message);
             }
         }
-        public async void AltaNuevaSuscripcion(Suscripcion unaSuscripcion)
-        {
-            try
-            {
-                //aca tengo que llamar a endpoint AltaCliente: createCustomerUserCorpCustomer
-                var rta1 = await orquestador.startSubscriptionSubscriberCorpCustomer(unaSuscripcion);
-                if (rta1 == true)
-                {
-                    Console.WriteLine($"EL ALTA DE SUSCRIPCION EN ORQUESTADOR ES CORRECTA - CLIENTE: {unaSuscripcion.idCliente}, PRODUCTO: {unaSuscripcion.idProducto}");
-                }
-
-            }
-            catch (Exception ex)
-            {
-                //display error message
-                Console.WriteLine("Exception: " + ex.Message);
-            }
-        }
+        
 
     }
 }

@@ -1,11 +1,7 @@
-2022-08-24 16:02:32.389 -03:00 [ERR] No se pudo conectar a la BD: Login failed for user 'nicolas.laugas'.
-2022-08-24 16:02:32.405 -03:00 [ERR] No se pudo conectar a la BD: Login failed for user 'nicolas.laugas'.
-2022-08-24 16:02:32.405 -03:00 [DBG] ________________________________________________________________________________________________________
-2022-08-25 15:38:18.367 -03:00 [ERR] Falló createProduct: ERROR - Cliente: 90006  / Producto: 17140015 / Internal Server Error - Respuesta: {}
-2022-08-25 15:38:18.375 -03:00 [DBG] ________________________________________________________________________________________________________
-2022-08-25 15:58:24.816 -03:00 [ERR] Falló createProduct: ERROR - Cliente: 90006  / Producto: 17140015 / Internal Server Error - Respuesta: {}
-2022-08-25 15:58:24.835 -03:00 [DBG] ________________________________________________________________________________________________________
-2022-08-25 15:58:49.617 -03:00 [ERR] Falló createProduct: ERROR - Cliente: 90006  / Producto: 13090004 / Internal Server Error - Respuesta: {}
-2022-08-25 15:58:49.618 -03:00 [DBG] ________________________________________________________________________________________________________
-2022-08-29 14:19:38.669 -03:00 [ERR] Falló createCustomerUserCorpCustomer: ERROR - subscriber_id: 975715  / Bad Gateway - Respuesta: {"message":"Se necesito crear subscriptor y no se realizo correctamente."}
-2022-08-29 14:19:38.696 -03:00 [DBG] ________________________________________________________________________________________________________
+2022-08-31 14:29:09.414 -03:00 [INF] createCustomerUserCorpCustomer OK - subscriber_id: 444393
+2022-08-31 14:32:56.254 -03:00 [ERR] Falló updateSubscriberCorpCustomer: ERROR - subscriber_id: 453943  / Bad Gateway - Respuesta: {"message":"Se necesito crear la organizacion y no se realizo correctamente."}
+2022-08-31 14:32:56.268 -03:00 [DBG] ________________________________________________________________________________________________________
+2022-08-31 14:34:53.874 -03:00 [ERR] Falló updateSubscriberCorpCustomer: ERROR - subscriber_id: 453943  / Bad Gateway - Respuesta: {"message":"Se necesito crear la organizacion y no se realizo correctamente."}
+2022-08-31 14:34:53.892 -03:00 [DBG] ________________________________________________________________________________________________________
+2022-08-31 14:43:23.331 -03:00 [INF] createProduct OK - Cliente: 90088 Producto: 17180009
+2022-08-31 14:43:23.341 -03:00 [DBG] ________________________________________________________________________________________________________

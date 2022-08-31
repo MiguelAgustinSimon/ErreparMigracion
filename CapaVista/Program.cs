@@ -17,27 +17,17 @@ namespace CapaVista // Note: actual namespace depends on the project name.
         {
             try
             {
-                //await this.realizarClonadoClientes();
+                await this.realizarClonadoClientes();
                 await this.realizarClonadoSuscripciones();
 
                 Console.WriteLine("Aguarde mientras se ejecutan las operaciones...");
 
-                if (this.banderaClientes == true)
-                {
-                    //hizo una copia asi que procedemos a impactar en Orquestador a todos los clientes
-                    await this.generarAltaMasivaClientes();
-                }
-                else
+                if (this.banderaClientes == false)
                 {
                     await this.verificarClientes();
                 }
 
-                if (this.banderaSuscripciones == true)
-                {
-                    //hizo una copia asi que procedemos a impactar en Orquestador a todos las suscripciones
-                    await this.generarAltaMasivaSuscripciones();
-                }
-                else
+                if (this.banderaSuscripciones == false)
                 {
                     await this.verificarSuscripciones();
                 }
