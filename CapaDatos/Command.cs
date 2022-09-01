@@ -144,7 +144,8 @@ namespace CapaDatos
 
                 DataTable mDT = new DataTable();
                 string query = @$"SELECT o.Cliente 
-                                FROM {this.mprCBD.tablaOrigenDC} o 
+                                FROM {this.mprCBD.tablaOrigenDC} o
+                                where (o.MailComercial!='' AND o.CUIT!='') OR (o.MailComercial!=NULL AND o.CUIT!=NULL) 
                                 Except 
                                 SELECT t.Cliente 
                                 FROM {this.mprCBD.tablaDestinoDC} t";
@@ -231,7 +232,8 @@ namespace CapaDatos
                 SqlDataAdapter mDA = new SqlDataAdapter();
                 DataTable mDT = new DataTable();
                 mDA.SelectCommand = Command.CommandObj(@$"SELECT Cliente, MailComercial,SuscriptorActivo,FechaAlta,FechaActualizacion,RazonSocial,Suspendido,TimeStamp,Pais,Provincia,TipoSuscriptor,PerIIBB,CUIT 
-                                                        FROM {this.mprCBD.tablaOrigenDC} 
+                                                        FROM {this.mprCBD.tablaOrigenDC}
+                                                        where (MailComercial!='' AND CUIT!='') OR (MailComercial!=NULL AND CUIT!=NULL) 
                                                         Except
                                                         SELECT Cliente, MailComercial, SuscriptorActivo, FechaAlta, FechaActualizacion, RazonSocial, Suspendido, TimeStamp, Pais, Provincia, TipoSuscriptor, PerIIBB, CUIT
                                                         FROM {this.mprCBD.tablaDestinoDC} ", mConeccion);

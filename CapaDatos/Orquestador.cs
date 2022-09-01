@@ -7,6 +7,7 @@ using RestSharp;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using CapaNegocio;
+using System.Net;
 
 namespace CapaDatos
 {
@@ -105,7 +106,7 @@ namespace CapaDatos
 
                     request.AddHeader("authorization", "Bearer "+this.tokenApi);
 
-                    var clicod = unCliente.idCliente;
+                    var clicod = unCliente.idCliente.ToString();
                     var cuit = unCliente.cuit.ToString().Trim();
                     var email = unCliente.mailComercial.Trim().ToLower();
                     var razonSocial = unCliente.razonSocial.Trim();
@@ -160,10 +161,13 @@ namespace CapaDatos
 
 
                     var response = client.Execute(request);
+                    HttpStatusCode statusCode = response.StatusCode;
+                    int numericStatusCode = (int)statusCode;
+
                     if (response.StatusCode == System.Net.HttpStatusCode.Created || response.StatusCode == System.Net.HttpStatusCode.OK)
                     {
                         //Console.WriteLine(response.Content);
-                        await mpLog.agregarLogSerilog("createCustomerUserCorpCustomer OK - subscriber_id: " + unCliente.idCliente, true);
+                        await mpLog.agregarLogSerilog($"createCustomerUserCorpCustomer OK - Código: {numericStatusCode} - subscriber_id: {unCliente.idCliente}", true);
                         //Guardar en tabla Novedades!!!
                         await mprClie.ActualizarNovedadesSuscriptor(unCliente, "Alta", "Realizado", response.Content);
 
@@ -171,7 +175,7 @@ namespace CapaDatos
                     }
                     else
                     {
-                        await mpLog.agregarLogSerilog($"Falló createCustomerUserCorpCustomer: ERROR - subscriber_id: {unCliente.idCliente}  / {response.StatusDescription} - Respuesta: {response.Content}", false);
+                        await mpLog.agregarLogSerilog($"Falló createCustomerUserCorpCustomer: ERROR- Código: {numericStatusCode} - subscriber_id: {unCliente.idCliente}  / {response.StatusDescription} - Respuesta: {response.Content}", false);
                         //Guardar en tabla Novedades!!!
                         await mprClie.ActualizarNovedadesSuscriptor(unCliente, "Alta", "Pendiente", response.Content);
                     }
@@ -244,10 +248,13 @@ namespace CapaDatos
                     });
 
                     var response = client.Execute(request);
+                    HttpStatusCode statusCode = response.StatusCode;
+                    int numericStatusCode = (int)statusCode;
+
                     if (response.StatusCode == System.Net.HttpStatusCode.Created || response.StatusCode == System.Net.HttpStatusCode.OK)
                     {
                         //Console.WriteLine(response.Content);
-                        await mpLog.agregarLogSerilog("updateSubscriberCorpCustomer OK - subscriber_id: " + unCliente.idCliente, true);
+                        await mpLog.agregarLogSerilog($"updateSubscriberCorpCustomer OK - Código: {numericStatusCode} - subscriber_id: {unCliente.idCliente}", true);
                         //Guardar en tabla Novedades!!!
                         await mprClie.ActualizarNovedadesSuscriptor(unCliente, "Modificacion", "Realizado", response.Content);
 
@@ -256,7 +263,7 @@ namespace CapaDatos
                     else
                     {
                         //Console.WriteLine(response.StatusDescription);
-                        await mpLog.agregarLogSerilog($"Falló updateSubscriberCorpCustomer: ERROR - subscriber_id: {unCliente.idCliente}  / {response.StatusDescription} - Respuesta: {response.Content}", false);
+                        await mpLog.agregarLogSerilog($"Falló updateSubscriberCorpCustomer: ERROR - Código: {numericStatusCode} - subscriber_id: {unCliente.idCliente}  / {response.StatusDescription} - Respuesta: {response.Content}", false);
                         //Guardar en tabla Novedades!!!
                         await mprClie.ActualizarNovedadesSuscriptor(unCliente, "Modificacion", "Pendiente", response.Content);
                     }
@@ -308,9 +315,12 @@ namespace CapaDatos
                     });
 
                     var response = client.Execute(request);
+
+                    HttpStatusCode statusCode = response.StatusCode;
+                    int numericStatusCode = (int)statusCode;
                     if (response.StatusCode == System.Net.HttpStatusCode.Created || response.StatusCode == System.Net.HttpStatusCode.OK)
                     {
-                        await mpLog.agregarLogSerilog($"createProduct OK - Cliente: {susc.idCliente} Producto: {susc.idProducto}", true);
+                        await mpLog.agregarLogSerilog($"createProduct OK - Código: {numericStatusCode} - Cliente: {susc.idCliente} Producto: {susc.idProducto}", true);
 
                         //Guardar en tabla Novedades!!!
                         await mprSuscripcion.ActualizarNovedadesSuscripcion(susc, "Alta", "Realizado", response.Content);
@@ -319,7 +329,7 @@ namespace CapaDatos
                     }
                     else
                     {
-                        await mpLog.agregarLogSerilog($"Falló createProduct: ERROR - Cliente: {susc.idCliente}  / Producto: {susc.idProducto} / {response.StatusDescription} - Respuesta: {response.Content}", false);
+                        await mpLog.agregarLogSerilog($"Falló createProduct: ERROR - Código: {numericStatusCode} - Cliente: {susc.idCliente}  / Producto: {susc.idProducto} / {response.StatusDescription} - Respuesta: {response.Content}", false);
                         //Guardar en tabla Novedades!!!
                         await mprSuscripcion.ActualizarNovedadesSuscripcion(susc, "Alta", "Pendiente", response.Content);
                     }
@@ -370,9 +380,12 @@ namespace CapaDatos
                     });
 
                     var response = client.Execute(request);
+
+                    HttpStatusCode statusCode = response.StatusCode;
+                    int numericStatusCode = (int)statusCode;
                     if (response.StatusCode == System.Net.HttpStatusCode.Created || response.StatusCode == System.Net.HttpStatusCode.OK)
                     {
-                        await mpLog.agregarLogSerilog($"createProduct OK - Cliente: {susc.idCliente} Producto: {susc.idProducto}", true);
+                        await mpLog.agregarLogSerilog($"createProduct OK - Código: {numericStatusCode} - Cliente: {susc.idCliente} Producto: {susc.idProducto}", true);
 
                         //Guardar en tabla Novedades!!!
                         await mprSuscripcion.ActualizarNovedadesSuscripcion(susc, "Alta", "Realizado", response.Content);
@@ -381,7 +394,7 @@ namespace CapaDatos
                     }
                     else
                     {
-                        await mpLog.agregarLogSerilog($"Falló createProduct: ERROR - Cliente: {susc.idCliente}  / Producto: {susc.idProducto} / {response.StatusDescription} - Respuesta: {response.Content}", false);
+                        await mpLog.agregarLogSerilog($"Falló createProduct: ERROR - Código: {numericStatusCode} - Cliente: {susc.idCliente}  / Producto: {susc.idProducto} / {response.StatusDescription} - Respuesta: {response.Content}", false);
                         //Guardar en tabla Novedades!!!
                         await mprSuscripcion.ActualizarNovedadesSuscripcion(susc, "Alta", "Pendiente", response.Content);
                     }
@@ -430,9 +443,12 @@ namespace CapaDatos
                     });
 
                     var response = client.Execute(request);
+
+                    HttpStatusCode statusCode = response.StatusCode;
+                    int numericStatusCode = (int)statusCode;
                     if (response.StatusCode == System.Net.HttpStatusCode.Created || response.StatusCode == System.Net.HttpStatusCode.OK)
                     {
-                        await mpLog.agregarLogSerilog($"createProduct OK - Cliente: {susc.idCliente} Producto: {susc.idProducto}", true);
+                        await mpLog.agregarLogSerilog($"deleteProductCommProduct OK - Código: {numericStatusCode} - Cliente: {susc.idCliente} Producto: {susc.idProducto}", true);
 
                         //Guardar en tabla Novedades!!!
                         await mprSuscripcion.ActualizarNovedadesSuscripcion(susc, "Eliminacion", "Realizado", response.Content);
@@ -441,7 +457,7 @@ namespace CapaDatos
                     }
                     else
                     {
-                        await mpLog.agregarLogSerilog($"Falló createProduct: ERROR - Cliente: {susc.idCliente}  / Producto: {susc.idProducto} / {response.StatusDescription} - Respuesta: {response.Content}", false);
+                        await mpLog.agregarLogSerilog($"Falló deleteProductCommProduct: ERROR - Código: {numericStatusCode} - Cliente: {susc.idCliente}  / Producto: {susc.idProducto} / {response.StatusDescription} - Respuesta: {response.Content}", false);
                         //Guardar en tabla Novedades!!!
                         await mprSuscripcion.ActualizarNovedadesSuscripcion(susc, "Eliminacion", "Pendiente", response.Content);
                     }

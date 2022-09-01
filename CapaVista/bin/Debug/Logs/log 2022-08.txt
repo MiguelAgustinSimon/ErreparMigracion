@@ -1,7 +1,0 @@
-2022-08-31 14:29:09.414 -03:00 [INF] createCustomerUserCorpCustomer OK - subscriber_id: 444393
-2022-08-31 14:32:56.254 -03:00 [ERR] Falló updateSubscriberCorpCustomer: ERROR - subscriber_id: 453943  / Bad Gateway - Respuesta: {"message":"Se necesito crear la organizacion y no se realizo correctamente."}
-2022-08-31 14:32:56.268 -03:00 [DBG] ________________________________________________________________________________________________________
-2022-08-31 14:34:53.874 -03:00 [ERR] Falló updateSubscriberCorpCustomer: ERROR - subscriber_id: 453943  / Bad Gateway - Respuesta: {"message":"Se necesito crear la organizacion y no se realizo correctamente."}
-2022-08-31 14:34:53.892 -03:00 [DBG] ________________________________________________________________________________________________________
-2022-08-31 14:43:23.331 -03:00 [INF] createProduct OK - Cliente: 90088 Producto: 17180009
-2022-08-31 14:43:23.341 -03:00 [DBG] ________________________________________________________________________________________________________

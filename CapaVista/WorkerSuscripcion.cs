@@ -155,12 +155,12 @@ namespace CapaVista
             try
             {
 
-                //var rta1 = await orquestador.deleteProductCommProduct(susc);
-                //if (rta1 == true)
-                //{
-                var rta2 = await mprSuscipcion.EliminarSuscripcion(susc);
+                var rta1 = await orquestador.deleteProductCommProduct(susc);
+                if (rta1 == true)
+                {
+                    var rta2 = await mprSuscipcion.EliminarSuscripcion(susc);
                     Console.WriteLine("La RTA ALTA DE SUSCRIPCION ES: " + rta2.ToString());
-                //}
+                }
             }
             catch (Exception ex)
             {
