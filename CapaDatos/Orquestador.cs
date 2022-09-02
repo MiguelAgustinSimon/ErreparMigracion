@@ -299,7 +299,7 @@ namespace CapaDatos
 
                     request.AddHeader("authorization", "Bearer " + this.tokenApi);
 
-                    var clicod = susc.idCliente;
+                    var clicod = susc.idCliente.ToString();
                     var producto = susc.idProducto.ToString().Trim();
                     var tema = susc.tema.ToString().Trim();
                     var fecha_vigencia = DateTime.Now.ToString("yyyy-MM-dd");
@@ -429,7 +429,7 @@ namespace CapaDatos
 
                     request.AddHeader("authorization", "Bearer " + this.tokenApi);
 
-                    var clicod = susc.idCliente;
+                    var clicod = susc.idCliente.ToString();
                     var producto = susc.idProducto.ToString().Trim();
                     var tema = susc.tema.ToString().Trim();
                     var vencimiento = susc.vencimiento.ToString().Trim();
