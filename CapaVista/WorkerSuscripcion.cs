@@ -155,7 +155,7 @@ namespace CapaVista
             try
             {
 
-                var rta1 = await orquestador.deleteProductCommProduct(susc);
+                var rta1 = await orquestador.finishSubscriptionSubscriberCorpCustomer(susc);
                 if (rta1 == true)
                 {
                     var rta2 = await mprSuscipcion.EliminarSuscripcion(susc);

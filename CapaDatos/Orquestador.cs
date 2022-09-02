@@ -68,6 +68,9 @@ namespace CapaDatos
                 });
 
                 var response = client.Execute(request);
+                HttpStatusCode statusCode = response.StatusCode;
+                int numericStatusCode = (int)statusCode;
+
                 if (response.StatusCode == System.Net.HttpStatusCode.Created || response.StatusCode == System.Net.HttpStatusCode.OK || response.StatusCode == System.Net.HttpStatusCode.Found)
                 {
                     Orquestador? unJson= JsonSerializer.Deserialize<Orquestador>(response.Content);
@@ -75,7 +78,7 @@ namespace CapaDatos
                 }
                 else
                 {
-                    await mpLog.agregarLogSerilog($"Falló getJobCredentialsEAuth: ERROR {response.StatusDescription}  - Respuesta: {response.Content}", false);
+                    await mpLog.agregarLogSerilog($"Falló getJobCredentialsEAuth: Código: {numericStatusCode} - ERROR {response.StatusDescription}  - Respuesta: {response.Content}", false);
                 }
                 return jwtOriginal;
             }
@@ -410,7 +413,7 @@ namespace CapaDatos
         }
 
         //DELETE SUSCRIPTOR
-        public async Task<Boolean> deleteProductCommProduct(Suscripcion susc)
+        public async Task<Boolean> finishSubscriptionSubscriberCorpCustomer(Suscripcion susc)
         {
             try
             {
@@ -420,7 +423,7 @@ namespace CapaDatos
                 {
                     //headerApi, postSubscriber y demas estan en appConfig
                     var client = new RestClient(this.headerApi);
-                    var request = new RestRequest(this.updateSuscripcion, Method.Delete);
+                    var request = new RestRequest(this.deleteSuscripcion, Method.Delete);
                     request.RequestFormat = RestSharp.DataFormat.Json;
                     request.AddHeader("Content-Type", "application/json");
 
@@ -448,7 +451,7 @@ namespace CapaDatos
                     int numericStatusCode = (int)statusCode;
                     if (response.StatusCode == System.Net.HttpStatusCode.Created || response.StatusCode == System.Net.HttpStatusCode.OK)
                     {
-                        await mpLog.agregarLogSerilog($"deleteProductCommProduct OK - Código: {numericStatusCode} - Cliente: {susc.idCliente} Producto: {susc.idProducto}", true);
+                        await mpLog.agregarLogSerilog($"finishSubscriptionSubscriberCorpCustomer OK - Código: {numericStatusCode} - Cliente: {susc.idCliente} Producto: {susc.idProducto}", true);
 
                         //Guardar en tabla Novedades!!!
                         await mprSuscripcion.ActualizarNovedadesSuscripcion(susc, "Eliminacion", "Realizado", response.Content);
@@ -457,7 +460,7 @@ namespace CapaDatos
                     }
                     else
                     {
-                        await mpLog.agregarLogSerilog($"Falló deleteProductCommProduct: ERROR - Código: {numericStatusCode} - Cliente: {susc.idCliente}  / Producto: {susc.idProducto} / {response.StatusDescription} - Respuesta: {response.Content}", false);
+                        await mpLog.agregarLogSerilog($"Falló finishSubscriptionSubscriberCorpCustomer: ERROR - Código: {numericStatusCode} - Cliente: {susc.idCliente}  / Producto: {susc.idProducto} / {response.StatusDescription} - Respuesta: {response.Content}", false);
                         //Guardar en tabla Novedades!!!
                         await mprSuscripcion.ActualizarNovedadesSuscripcion(susc, "Eliminacion", "Pendiente", response.Content);
                     }
