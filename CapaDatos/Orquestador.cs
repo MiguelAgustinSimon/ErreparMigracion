@@ -213,7 +213,7 @@ namespace CapaDatos
 
                     request.AddHeader("authorization", "Bearer " + this.tokenApi);
 
-                      var clicod = unCliente.idCliente;
+                    var clicod = unCliente.idCliente.ToString();
                     var cuit = unCliente.cuit.ToString().Trim();
                     var email = unCliente.mailComercial.Trim().ToLower();
                     var razonSocial = unCliente.razonSocial.Trim();

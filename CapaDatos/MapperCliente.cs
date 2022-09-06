@@ -135,16 +135,16 @@ namespace CapaDatos
                         foreach (DataRow x in DTabla.Rows)
                         {
                             string? mail = !Convert.IsDBNull(x[1]) ? (string?)x[1] : null;
-                            string? suscriptorActivo = !Convert.IsDBNull(x[1]) ? (string?)x[2] : null;
-                            string? razonSocial = !Convert.IsDBNull(x[1]) ? (string?)x[5] : null;
-                            string? estaSuspendido = !Convert.IsDBNull(x[1]) ? (string?)x[6] : null;
-                            string? unPais = !Convert.IsDBNull(x[1]) ? (string?)x[8] : null;
-                            string? unaProvincia = !Convert.IsDBNull(x[1]) ? (string?)x[9] : null;
-                            string? unTipoSuscriptor = !Convert.IsDBNull(x[1]) ? (string?)x[10] : null;
-                            decimal? unPerIIBB = !Convert.IsDBNull(x[11]) ? (decimal?)x[11] : null;
-                            string? unCuit = !Convert.IsDBNull(x[1]) ? (string?)x[12] : null;
-                            Cliente clie = new Cliente((int)x[0], mail, suscriptorActivo, (DateTime)x[3], (DateTime)x[4], razonSocial, estaSuspendido,
-                                (DateTime)x[7], unPais, unaProvincia, unTipoSuscriptor, unPerIIBB, unCuit);
+                            string? suscriptorActivo = !Convert.IsDBNull(x[2]) ? (string?)x[2] : null;
+                            string? razonSocial = !Convert.IsDBNull(x[4]) ? (string?)x[4] : null;
+                            string? estaSuspendido = !Convert.IsDBNull(x[5]) ? (string?)x[5] : null;
+                            string? unPais = !Convert.IsDBNull(x[6]) ? (string?)x[6] : null;
+                            string? unaProvincia = !Convert.IsDBNull(x[7]) ? (string?)x[7] : null;
+                            string? unTipoSuscriptor = !Convert.IsDBNull(x[8]) ? (string?)x[8] : null;
+                            decimal? unPerIIBB = !Convert.IsDBNull(x[9]) ? (decimal?)x[9] : null;
+                            string? unCuit = !Convert.IsDBNull(x[10]) ? (string?)x[10] : null;
+                            Cliente clie = new Cliente((int)x[0], mail, suscriptorActivo, (DateTime)x[3], DateTime.Now, razonSocial, estaSuspendido,
+                               DateTime.Now, unPais, unaProvincia, unTipoSuscriptor, unPerIIBB, unCuit);
                             unaLista.Add(clie);
                         }
                     }

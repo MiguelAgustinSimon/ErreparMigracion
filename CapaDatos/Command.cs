@@ -231,11 +231,11 @@ namespace CapaDatos
                 mConeccion.Open();
                 SqlDataAdapter mDA = new SqlDataAdapter();
                 DataTable mDT = new DataTable();
-                mDA.SelectCommand = Command.CommandObj(@$"SELECT Cliente, MailComercial,SuscriptorActivo,FechaAlta,FechaActualizacion,RazonSocial,Suspendido,TimeStamp,Pais,Provincia,TipoSuscriptor,PerIIBB,CUIT 
+                mDA.SelectCommand = Command.CommandObj(@$"SELECT Cliente, MailComercial,SuscriptorActivo,FechaAlta,RazonSocial,Suspendido,Pais,Provincia,TipoSuscriptor,PerIIBB,CUIT 
                                                         FROM {this.mprCBD.tablaOrigenDC}
                                                         where (MailComercial!='' AND CUIT!='') OR (MailComercial!=NULL AND CUIT!=NULL) 
                                                         Except
-                                                        SELECT Cliente, MailComercial, SuscriptorActivo, FechaAlta, FechaActualizacion, RazonSocial, Suspendido, TimeStamp, Pais, Provincia, TipoSuscriptor, PerIIBB, CUIT
+                                                        SELECT Cliente, MailComercial, SuscriptorActivo, FechaAlta, RazonSocial, Suspendido, Pais, Provincia, TipoSuscriptor, PerIIBB, CUIT
                                                         FROM {this.mprCBD.tablaDestinoDC} ", mConeccion);
                 mDA.Fill(mDT);
                 mConeccion.Close();
