@@ -233,10 +233,16 @@ namespace CapaDatos
                 DataTable mDT = new DataTable();
                 mDA.SelectCommand = Command.CommandObj(@$"SELECT Cliente, MailComercial,SuscriptorActivo,FechaAlta,RazonSocial,Suspendido,Pais,Provincia,TipoSuscriptor,PerIIBB,CUIT 
                                                         FROM {this.mprCBD.tablaOrigenDC}
-                                                        where (MailComercial!='' AND CUIT!='') OR (MailComercial!=NULL AND CUIT!=NULL) 
+                                                        where Cliente NOT IN(SELECT o.Cliente 
+                                                            FROM {this.mprCBD.tablaOrigenDC} o
+                                                            where (o.MailComercial!='' AND o.CUIT!='') OR (o.MailComercial!=NULL AND o.CUIT!=NULL) 
+                                                            Except 
+                                                            SELECT t.Cliente 
+                                                            FROM {this.mprCBD.tablaDestinoDC} t) 
+                                                        AND ((MailComercial!='' AND CUIT!='') OR (MailComercial!=NULL AND CUIT!=NULL)) 
                                                         Except
-                                                        SELECT Cliente, MailComercial, SuscriptorActivo, FechaAlta, RazonSocial, Suspendido, Pais, Provincia, TipoSuscriptor, PerIIBB, CUIT
-                                                        FROM {this.mprCBD.tablaDestinoDC} ", mConeccion);
+                                                        SELECT Cliente, MailComercial,SuscriptorActivo,FechaAlta,RazonSocial,Suspendido,Pais,Provincia,TipoSuscriptor,PerIIBB,CUIT 
+                                                        FROM {this.mprCBD.tablaDestinoDC}", mConeccion);
                 mDA.Fill(mDT);
                 mConeccion.Close();
                 return mDT;
@@ -764,9 +770,9 @@ namespace CapaDatos
                 mConeccion.Open();
 
                 DataTable mDT = new DataTable();
-                string query = @"SELECT Cliente,Producto,Tema,Vencimiento,Ejecutivo 
-                                FROM " + this.mprCBD.tablaOrigenSA + 
-                                @" where Cliente=@idClie and Producto=@idProd";
+                string query = @$"SELECT Cliente,Producto,Tema,Desde,Vencimiento,Ejecutivo 
+                                FROM {this.mprCBD.tablaOrigenSA} 
+                                where Cliente=@idClie and Producto=@idProd";
 
                 using (SqlCommand cmd = new SqlCommand(query, Connection.ConnectionObj()))
                 {
@@ -795,10 +801,10 @@ namespace CapaDatos
                 mConeccion.Open();
                 SqlDataAdapter mDA = new SqlDataAdapter();
                 DataTable mDT = new DataTable();
-                mDA.SelectCommand = Command.CommandObj(@$"SELECT Cliente,Producto,Tema,Vencimiento,Ejecutivo
+                mDA.SelectCommand = Command.CommandObj(@$"SELECT Cliente,Producto,Tema,Desde,Vencimiento,Ejecutivo
                                                         FROM {this.mprCBD.tablaOrigenSA}
                                                         Except
-                                                        SELECT Cliente,Producto,Tema,Vencimiento,Ejecutivo
+                                                        SELECT Cliente,Producto,Tema,Desde,Vencimiento,Ejecutivo
                                                         FROM {this.mprCBD.tablaDestinoSA}", mConeccion);
 
                 mDA.Fill(mDT);
@@ -848,15 +854,16 @@ namespace CapaDatos
                 int resultado = 0;
                 SqlConnection mConeccion = Connection.ConnectionObj();
                 mConeccion.Open();
-                string query = @"INSERT INTO " + this.mprCBD.tablaDestinoSA + 
-                                @" (Cliente,Producto,Tema, Vencimiento, Ejecutivo) 
-                                Values(@idCliente,@idProducto,@tema,@unVencimiento,@ejecutivo)";
+                string query = @$"INSERT INTO {this.mprCBD.tablaDestinoSA} 
+                                (Cliente,Producto,Tema,Desde,Vencimiento, Ejecutivo) 
+                                Values(@idCliente,@idProducto,@tema,@desde,@unVencimiento,@ejecutivo)";
 
                 using (SqlCommand cmd = new SqlCommand(query, Connection.ConnectionObj()))
                 {
                     cmd.Parameters.AddWithValue("@idCliente", unaSuscripcion.idCliente);
                     cmd.Parameters.AddWithValue("@idProducto", unaSuscripcion.idProducto);
                     cmd.Parameters.AddWithValue("@tema", unaSuscripcion.tema);
+                    cmd.Parameters.AddWithValue("@desde", unaSuscripcion.desde);
                     cmd.Parameters.AddWithValue("@unVencimiento", unaSuscripcion.vencimiento);
                     cmd.Parameters.AddWithValue("@ejecutivo", unaSuscripcion.idEjecutivo);
 
@@ -890,7 +897,7 @@ namespace CapaDatos
                 SqlConnection mConeccion = Connection.ConnectionObj();
                 mConeccion.Open();
                 string query = @$"UPDATE {this.mprCBD.tablaDestinoSA}
-                                set Tema=@tema, Vencimiento=@unVencimiento, Ejecutivo=@ejecutivo 
+                                set Tema=@tema, Desde=@desde, Vencimiento=@unVencimiento, Ejecutivo=@ejecutivo 
                                 where Cliente=@idCliente and Producto=@idProducto";
 
                 using (SqlCommand cmd = new SqlCommand(query, Connection.ConnectionObj()))
@@ -898,6 +905,7 @@ namespace CapaDatos
                     cmd.Parameters.AddWithValue("@idCliente", unaSuscripcion.idCliente);
                     cmd.Parameters.AddWithValue("@idProducto", unaSuscripcion.idProducto);
                     cmd.Parameters.AddWithValue("@tema", unaSuscripcion.tema);
+                    cmd.Parameters.AddWithValue("@desde", unaSuscripcion.desde);
                     cmd.Parameters.AddWithValue("@unVencimiento", unaSuscripcion.vencimiento);
                     cmd.Parameters.AddWithValue("@ejecutivo", unaSuscripcion.idEjecutivo);
 
@@ -965,9 +973,9 @@ namespace CapaDatos
             {
                 SqlConnection mConeccion = Connection.ConnectionObj();
                 mConeccion.Open();
-                string query = @"INSERT INTO " + this.mprCBD.tablaNovedadesSuscripcion +
-                                @"(IDCliente, IDProducto, FechaHora, Tipo, TablaOrigen, Estado, Response)
-                                VALUES (@idCliente, @idProducto, @fechaHora, @tipo, @tablaOrigen, @estado, @response);";
+                string query = @$"INSERT INTO {this.mprCBD.tablaNovedadesSuscripcion}
+                                (IDCliente, IDProducto, FechaHora, Tipo, TablaOrigen, Estado, Response)
+                                VALUES (@idCliente, @idProducto, @fechaHora, @tipo, @tablaOrigen, @estado, @response)";
 
                 using (SqlCommand cmd = new SqlCommand(query, Connection.ConnectionObj()))
                 {

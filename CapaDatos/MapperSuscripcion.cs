@@ -45,9 +45,9 @@ namespace CapaDatos
                     foreach (DataRow x in DTabla.Rows)
                     {
                         string? tema = !Convert.IsDBNull(x[2]) ? (string?)x[2] : null;
-                        int? ejecutivo = !Convert.IsDBNull(x[4]) ? (int?)x[4] : null;
+                        int? ejecutivo = !Convert.IsDBNull(x[5]) ? (int?)x[5] : null;
 
-                        Suscripcion susc = new Suscripcion((int)x[0], (int)x[1], tema, (DateTime)x[3], ejecutivo);
+                        Suscripcion susc = new Suscripcion((int)x[0], (int)x[1], tema, (DateTime)x[3],(DateTime)x[4], ejecutivo);
                         unaSuscripcion = susc;
                     }
                 }
@@ -66,9 +66,10 @@ namespace CapaDatos
                     foreach (DataRow x in DTabla.Rows)
                     {
                         string? tema = !Convert.IsDBNull(x[2]) ? (string?)x[2] : null;
+                        int? ejecutivo = !Convert.IsDBNull(x[5]) ? (int?)x[5] : null;
 
-                        Suscripcion susc = new Suscripcion((int)x[0], (int)x[1], tema, (DateTime)x[3], (int)x[4]);
-                        unaLista.Add(susc);
+                        Suscripcion susc = new Suscripcion((int)x[0], (int)x[1], tema, (DateTime)x[3], (DateTime)x[4], ejecutivo);
+                        unaLista.Add(susc); 
                     }
                 }
             }
@@ -89,7 +90,7 @@ namespace CapaDatos
                         int? idProd = !Convert.IsDBNull(x[1]) ? (int?)x[1] : null;
                         string? tema = !Convert.IsDBNull(x[2]) ? (string?)x[2] : null;
 
-                        Suscripcion susc = new Suscripcion(idClie, idProd, tema, (DateTime)x[3], (int)x[4]);
+                        Suscripcion susc = new Suscripcion(idClie, idProd, tema, (DateTime)x[3],(DateTime)x[4], (int)x[5]);
                         unaLista.Add(susc);
                     }
                 }
@@ -112,7 +113,7 @@ namespace CapaDatos
                         int? idProd = !Convert.IsDBNull(x[1]) ? (int?)x[1] : null;
                         string? tema = !Convert.IsDBNull(x[2]) ? (string?)x[2] : null;
 
-                        Suscripcion susc = new Suscripcion(idClie, idProd,tema, (DateTime)x[3],(int)x[4]);
+                        Suscripcion susc = new Suscripcion(idClie, idProd,tema, (DateTime)x[3],(DateTime)x[4],(int)x[5]);
                         unaLista.Add(susc);
                     }
                 }

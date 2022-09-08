@@ -18,6 +18,7 @@ namespace CapaNegocio
         public string? apply_eol;
         public string? apply_ius;
 
+        public DateTime? desde { get; set; }
         public DateTime? vencimiento { get; set; }
 
 
@@ -31,14 +32,14 @@ namespace CapaNegocio
             idProducto = idProd;
         }
 
-        public Suscripcion(int? idClie, int? idProd, string? unTema, DateTime? unVencimiento, int? idEjec)
+        public Suscripcion(int? idClie, int? idProd, string? unTema, DateTime? pDesde,DateTime? unVencimiento, int? idEjec)
         {
             idCliente = idClie;
             idProducto = idProd;
             tema = unTema;
+            desde = pDesde;
             vencimiento = unVencimiento;
             idEjecutivo = idEjec;
-            
         }
     }
 }

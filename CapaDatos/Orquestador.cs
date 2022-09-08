@@ -303,6 +303,7 @@ namespace CapaDatos
                     var producto = susc.idProducto.ToString().Trim();
                     var tema = susc.tema.ToString().Trim();
                     var fecha_vigencia = DateTime.Now.ToString("yyyy-MM-dd");
+                    var desde = susc.desde.ToString().Trim();
                     var vencimiento = susc.vencimiento.ToString().Trim();
                     var ejecutivo = susc.idEjecutivo.ToString().Trim();
 
@@ -312,6 +313,7 @@ namespace CapaDatos
                         clicod = clicod,
                         id_producto = producto,
                         tema = tema,
+                        desde = desde,
                         fecha_vigencia= fecha_vigencia,
                         fecha_vencimiento = vencimiento,
                         ejecutivo = ejecutivo
@@ -369,6 +371,7 @@ namespace CapaDatos
                     var clicod = susc.idCliente;
                     var producto = susc.idProducto.ToString().Trim();
                     var tema = susc.tema.ToString().Trim();
+                    var desde = susc.desde.ToString().Trim();
                     var vencimiento = susc.vencimiento.ToString().Trim();
                     var ejecutivo = susc.idEjecutivo.ToString().Trim();
 
@@ -378,6 +381,7 @@ namespace CapaDatos
                         clicod = clicod,
                         producto = producto,
                         tema = tema,
+                        desde=desde,
                         vencimiento = vencimiento,
                         ejecutivo = ejecutivo
                     });
@@ -432,6 +436,7 @@ namespace CapaDatos
                     var clicod = susc.idCliente.ToString();
                     var producto = susc.idProducto.ToString().Trim();
                     var tema = susc.tema.ToString().Trim();
+                    var desde = susc.desde.ToString().Trim();
                     var vencimiento = susc.vencimiento.ToString().Trim();
                     var ejecutivo = susc.idEjecutivo.ToString().Trim();
 
@@ -441,6 +446,7 @@ namespace CapaDatos
                         clicod = clicod,
                         producto = producto,
                         tema = tema,
+                        desde = desde,
                         vencimiento = vencimiento,
                         ejecutivo = ejecutivo
                     });
