@@ -313,8 +313,7 @@ namespace CapaDatos
                         clicod = clicod,
                         id_producto = producto,
                         tema = tema,
-                        desde = desde,
-                        fecha_vigencia= fecha_vigencia,
+                        fecha_vigencia= desde,
                         fecha_vencimiento = vencimiento,
                         ejecutivo = ejecutivo
                     });

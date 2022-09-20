@@ -145,7 +145,7 @@ namespace CapaDatos
                 DataTable mDT = new DataTable();
                 string query = @$"SELECT o.Cliente 
                                 FROM {this.mprCBD.tablaOrigenDC} o
-                                where (o.MailComercial!='' AND o.CUIT!='') OR (o.MailComercial!=NULL AND o.CUIT!=NULL) 
+                                where ((o.MailComercial!='' AND o.CUIT!='') OR (o.MailComercial!=NULL AND o.CUIT!=NULL)) AND (o.CUIT!='99999999999')
                                 Except 
                                 SELECT t.Cliente 
                                 FROM {this.mprCBD.tablaDestinoDC} t";
@@ -235,7 +235,7 @@ namespace CapaDatos
                                                         FROM {this.mprCBD.tablaOrigenDC}
                                                         where Cliente NOT IN(SELECT o.Cliente 
                                                             FROM {this.mprCBD.tablaOrigenDC} o
-                                                            where (o.MailComercial!='' AND o.CUIT!='') OR (o.MailComercial!=NULL AND o.CUIT!=NULL) 
+                                                            where ((o.MailComercial!='' AND o.CUIT!='') OR (o.MailComercial!=NULL AND o.CUIT!=NULL)) AND (o.CUIT!='99999999999')
                                                             Except 
                                                             SELECT t.Cliente 
                                                             FROM {this.mprCBD.tablaDestinoDC} t) 
@@ -720,7 +720,10 @@ namespace CapaDatos
                 SqlDataAdapter mDA = new SqlDataAdapter();
                 DataTable mDT = new DataTable();
                 mDA.SelectCommand = Command.CommandObj(@$"SELECT o.Cliente,o.Producto
-                                                        FROM {this.mprCBD.tablaOrigenSA}  o 
+                                                        FROM {this.mprCBD.tablaOrigenSA}  o
+                                                        LEFT JOIN {this.mprCBD.tablaOrigenDC} cdc
+                                                        ON o.Cliente=cdc.Cliente
+                                                        where (cdc.CUIT!='99999999999')
                                                         Except
                                                         SELECT t.Cliente,t.Producto
                                                         FROM {this.mprCBD.tablaDestinoSA} t", mConeccion);
@@ -801,11 +804,29 @@ namespace CapaDatos
                 mConeccion.Open();
                 SqlDataAdapter mDA = new SqlDataAdapter();
                 DataTable mDT = new DataTable();
-                mDA.SelectCommand = Command.CommandObj(@$"SELECT Cliente,Producto,Tema,Desde,Vencimiento,Ejecutivo
-                                                        FROM {this.mprCBD.tablaOrigenSA}
+                //mDA.SelectCommand = Command.CommandObj(@$"SELECT Cliente,Producto,Tema,Desde,Vencimiento,Ejecutivo
+                //                                        FROM {this.mprCBD.tablaOrigenSA}
+                //                                        Except
+                //                                        SELECT Cliente,Producto,Tema,Desde,Vencimiento,Ejecutivo
+                //                                        FROM {this.mprCBD.tablaDestinoSA}", mConeccion);
+
+                mDA.SelectCommand = Command.CommandObj(@$"SELECT o.Cliente,o.Producto,o.Tema,o.Desde,o.Vencimiento,o.Ejecutivo
+                                                        FROM {this.mprCBD.tablaOrigenSA} o
+                                                        LEFT JOIN {this.mprCBD.tablaOrigenDC} cdc
+                                                        ON o.Cliente=cdc.Cliente
+                                                        WHERE o.Cliente NOT IN(
+                                                            select x.IDCliente from {this.mprCBD.tablaNovedadesSuscripcion} x
+                                                            where x.IDCliente=o.Cliente AND 
+                                                            x.FechaActualizacionAWS=
+                                                                (SELECT MAX(FechaActualizacionAWS) 
+                                                                FROM {this.mprCBD.tablaNovedadesSuscripcion} 
+                                                                WHERE IDCliente=x.IDCliente)
+                                                            AND x.Tipo='Alta'  OR (x.Tipo='Modificacion' AND x.Estado='Realizado')
+                                                            )
+                                                            AND cdc.CUIT!='99999999999'
                                                         Except
-                                                        SELECT Cliente,Producto,Tema,Desde,Vencimiento,Ejecutivo
-                                                        FROM {this.mprCBD.tablaDestinoSA}", mConeccion);
+                                                        SELECT t.Cliente,t.Producto,t.Tema,t.Desde,t.Vencimiento,t.Ejecutivo
+                                                        FROM {this.mprCBD.tablaDestinoSA} t", mConeccion);
 
                 mDA.Fill(mDT);
                 mConeccion.Close();

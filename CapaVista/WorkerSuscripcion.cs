@@ -118,8 +118,8 @@ namespace CapaVista
                 //var rta1 = await orquestador.updateProductCommProduct(susc);
                 //if (rta1 == true)
                 //{
-                var rta = await mprSuscipcion.ActualizarDatosSuscripcion(susc);
-                Console.WriteLine("La RTA ACTUALIZACION DE LA SUSCRIPCION ES: " + rta.ToString());
+                   var rta = await mprSuscipcion.ActualizarDatosSuscripcion(susc);
+                    Console.WriteLine("La RTA ACTUALIZACION DE LA SUSCRIPCION ES: " + rta.ToString());
                 //}
             }
             catch (Exception ex)
