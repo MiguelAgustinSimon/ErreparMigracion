@@ -14,9 +14,6 @@ namespace CapaDatos
             {
                 con = new SqlConnection(mString);
             }
-            
-            //string mString = "Data Source=srv-devi.errepar.com\\qa; Initial Catalog=ErpCloudData; User Id=nicolas.laugas; Password=estoyCansado123";
-
             return con;
 
         }
